@@ -11,7 +11,6 @@ import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
-import javafx.scene.effect.DropShadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -171,6 +170,24 @@ public class Controller {
 
         // create new tab data
         TabData tabData = new TabData(tab, splitPane, codeArea, filePath);
+
+        // auto complete loops
+        codeArea.setOnKeyTyped(keyEvent -> {
+            String character = keyEvent.getCharacter();
+
+            if (character.equals("[")) {
+                int position = codeArea.getCaretPosition();
+                codeArea.insert(position, "]", "loop");
+                codeArea.moveTo(position);
+            }
+            else if (character.equals("]")) {
+                int position = codeArea.getCaretPosition();
+                if (position != codeArea.getLength()) {
+                    String nextChar = codeArea.getText(position, position + 1);
+                    if (nextChar.equals("]")) codeArea.deleteText(position, position + 1);
+                }
+            }
+        });
 
         // recompute the syntax highlighting 500 ms after user stops editing area
         Subscription subscription = codeArea
@@ -607,10 +624,10 @@ public class Controller {
         label1.getStyleClass().add("title");
         vBox.getChildren().add(label1);
 
-        Hyperlink hyperlink1 = new Hyperlink("https://pratanumandal.in/brainfuck/");
+        Hyperlink hyperlink1 = new Hyperlink("https://github.com/prat-man/Brainfuck-IDE");
         hyperlink1.getStyleClass().add("hyperlink");
         hyperlink1.setOnAction(event -> {
-            Utils.browseURL("https://pratanumandal.in/brainfuck/");
+            Utils.browseURL("https://github.com/prat-man/Brainfuck-IDE");
         });
         vBox.getChildren().add(hyperlink1);
 

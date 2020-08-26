@@ -13,8 +13,10 @@ import org.fxmisc.richtext.model.PlainTextChange;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class TabData {
 
@@ -76,6 +78,8 @@ public class TabData {
         });
 
         tabHeader = tab.getText();
+
+        registerAutoSave();
     }
 
     public Tab getTab() {
@@ -167,6 +171,32 @@ public class TabData {
 
     public String getFileText() {
         return codeArea.getText();
+    }
+
+    private void registerAutoSave() {
+        Constants.EXECUTOR_SERVICE.scheduleAtFixedRate(() -> {
+            if (this.filePath != null) {
+                String filePath = this.filePath;
+                String fileText = this.getFileText();
+
+                boolean success = saveFile(filePath, fileText);
+
+                if (success) {
+                    Platform.runLater(() -> setModified(false));
+                }
+            }
+        }, 0, 10, TimeUnit.SECONDS);
+    }
+
+    private boolean saveFile(String filePath, String fileText) {
+        try {
+            Files.writeString(Path.of(filePath), fileText);
+            return true;
+        } catch (IOException e) {
+            // fail silently here
+            e.printStackTrace();
+            return false;
+        }
     }
 
 }

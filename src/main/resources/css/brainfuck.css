@@ -43,6 +43,9 @@
 	-fx-fill: #E45FB8;
 	-fx-font-weight: bold;
 }
+.code-area .paragraph-box .text.loop.match {
+    -rtfx-background-color: #00000055;
+}
 .code-area .paragraph-box:has-caret {
     -fx-background-color: #3A3F48;
 }
@@ -291,6 +294,16 @@
     -fx-text-fill: gray;
 }
 
+.tool-bar-overflow-button > .arrow {
+    -fx-background: white;
+    -fx-background-color: -fx-background;
+}
+.tool-bar-overflow-button:focused > .arrow,
+.tool-bar-overflow-button:hover > .arrow,
+.tool-bar-overflow-button:selected > .arrow {
+    -fx-background-color: derive(-fx-background, -15%);
+}
+
 .scroll-bar {
     -fx-background-color: #626770;
 }
@@ -359,4 +372,8 @@
     -fx-background-color: #3A3F48;
     -fx-background-insets: 2;
     -fx-background-radius: 2.0em;
+}
+
+.virtualized-scroll-pane, .corner, .scroll-pane > .corner {
+    -fx-background-color: #626770;
 }

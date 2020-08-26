@@ -137,7 +137,7 @@
             <Insets bottom="9.0" left="7.0" right="7.0" top="8.0" />
          </padding>
       </ToolBar>
-      <TabPane fx:id="tabPane" prefHeight="300.0" prefWidth="700.0" tabClosingPolicy="ALL_TABS" VBox.vgrow="ALWAYS" />
+      <TabPane fx:id="tabPane" minHeight="0.0" minWidth="0.0" prefHeight="150.0" prefWidth="700.0" tabClosingPolicy="ALL_TABS" VBox.vgrow="ALWAYS" />
       <HBox fx:id="findAndReplace" spacing="7.0" styleClass="find-and-replace" visible="false">
          <children>
             <TextField fx:id="findField" promptText="Find text" HBox.hgrow="ALWAYS" />

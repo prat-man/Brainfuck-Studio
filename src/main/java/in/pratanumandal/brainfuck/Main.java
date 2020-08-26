@@ -38,9 +38,9 @@ public class Main extends Application {
         controller.setStage(primaryStage);
 
         primaryStage.setTitle(Constants.APPLICATION_NAME);
-        primaryStage.setScene(new Scene(root));
-        primaryStage.setMinWidth(780);
-        primaryStage.setMinHeight(500);
+        primaryStage.setScene(new Scene(root, 780, 500));
+        primaryStage.setMinWidth(550);
+        primaryStage.setMinHeight(350);
         primaryStage.sizeToScene();
         primaryStage.show();
         primaryStage.setMaximized(true);

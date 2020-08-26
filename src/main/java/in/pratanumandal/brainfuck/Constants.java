@@ -9,6 +9,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Date;
 import java.util.UUID;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class Constants {
@@ -32,7 +34,7 @@ public class Constants {
 
     public static final AtomicReference<File> BROWSE_DIRECTORY = new AtomicReference<>(new File(System.getProperty("user.home")));
 
-
+    public static final ScheduledExecutorService EXECUTOR_SERVICE = Executors.newScheduledThreadPool(10);
 
 
 
