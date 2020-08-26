@@ -1,0 +1,362 @@
+.root {
+    -fx-font-family: 'Open Sans SemiBold';
+}
+
+.background {
+    -fx-background-color: #444952;
+}
+
+.code-area,
+.dark-tab-background {
+    -fx-background-color: #444952;
+    -fx-font-family: 'Bitstream Vera Sans Mono';
+}
+.code-area .paragraph-box .text.plain-text,
+.code-area .paragraph-box .text {
+    -fx-fill: gray;
+}
+.code-area .paragraph-box .text.increment-pointer {
+    -fx-fill: #449CEC;
+    -fx-font-weight: bold;
+}
+.code-area .paragraph-box .text.decrement-pointer {
+    -fx-fill: #EEC14D;
+    -fx-font-weight: bold;
+}
+.code-area .paragraph-box .text.increment-data {
+    -fx-fill: #6FC951;
+    -fx-font-weight: bold;
+}
+.code-area .paragraph-box .text.decrement-data {
+    -fx-fill: #FF6B4A;
+    -fx-font-weight: bold;
+}
+.code-area .paragraph-box .text.output {
+    -fx-fill: 	#00FFFF;
+    -fx-font-weight: bold;
+}
+.code-area .paragraph-box .text.input {
+    -fx-fill: #FAFAFA;
+    -fx-font-weight: bold;
+}
+.code-area .paragraph-box .text.loop {
+	-fx-fill: #E45FB8;
+	-fx-font-weight: bold;
+}
+.code-area .paragraph-box:has-caret {
+    -fx-background-color: #3A3F48;
+}
+.code-area .paragraph-box .lineno {
+    -fx-padding: 0 10 0 10;
+    -fx-background-color: #3A3F48;
+    -fx-font-family: 'Bitstream Vera Sans Mono';
+    -fx-text-fill: #6C717A;
+
+    -fx-border-width: 0 1 0 0;
+    -fx-border-color: #444952;
+}
+.caret {
+    -fx-stroke: white;
+}
+.main-selection, .line-highlighter {
+    -fx-fill: #585D66;
+}
+
+.progress-bar {
+    -fx-pref-height: 10;
+    -fx-pref-width: 450;
+}
+
+.progress-bar .track {
+    -fx-background-color: #6F6F6F;
+    -fx-background-insets: 1 0 0 0;
+}
+
+.progress-bar > .bar {
+    -fx-background-color: linear-gradient(
+        from 0px .75em to .75em 0px,
+        repeat,
+        -fx-accent 0%,
+        -fx-accent 49%,
+        derive(-fx-accent, 30%) 50%,
+        derive(-fx-accent, 30%) 99%
+    );
+    -fx-background-insets: 3 2 2 2;
+}
+
+.tool-bar {
+    -fx-background-color: #444952;
+}
+
+.label {
+    -fx-text-fill: white;
+}
+
+.button, .menu-button, .toggle-button, .choice-box,
+.split-menu-button, .split-menu-button > .label, .split-menu-button .arrow-button,
+.split-menu-button:focused:showing > .label {
+    -fx-background-color: #0EBFE9;
+    -fx-background-insets: 0 0 -1 0;
+    -fx-text-fill: white;
+    -fx-color: white;
+}
+
+.button:hover, .menu-button:hover, .toggle-button:hover, .choice-box:hover,
+.split-menu-button > .label:hover, .split-menu-button .arrow-button:hover {
+    -fx-background-color: #00B1DB;
+    -fx-background-insets: 0 0 -1 0;
+    -fx-text-fill: white;
+    -fx-color: white;
+}
+
+.button:focused, .menu-button:focused, .toggle-button:focused, .choice-box:focused,
+.split-menu-button:focused > .label {
+    -fx-background-color: #00A0CA;
+    -fx-background-insets: 0 0 -1 0;
+}
+
+.toggle-button:selected {
+    -fx-background-color: #3278A2;
+}
+
+.menu-button > .arrow-button > .arrow, .choice-box .arrow, .split-menu-button > .arrow-button > .arrow {
+    -fx-background-color: white;
+}
+
+.separator *.line {
+    -fx-border-color: gray;
+    -fx-border-style: solid;
+    -fx-border-width: 1px;
+}
+.tool-bar .separator *.line {
+    -fx-border-color: #585D66;
+}
+
+.dialog-pane {
+    -fx-background-color: #444952;
+}
+.dialog-pane:header .header-panel {
+    -fx-background-color: #222;
+}
+.dialog-pane * {
+    -fx-text-fill: white;
+}
+
+.button:default {
+    -fx-background-color: #00C78C;
+}
+
+.button:default:hover {
+    -fx-background-color: #00B378;
+}
+
+.button:default:focused {
+    -fx-background-color: #009F64;
+}
+
+.button:cancel {
+    -fx-background-color: #FF6565;
+}
+
+.button:cancel:hover {
+    -fx-background-color: #EB5151;
+}
+
+.button:cancel:focused {
+    -fx-background-color: #D73D3D;
+}
+
+.status-bar,
+.tab-header-background,
+.tab-pane {
+    -fx-background-color: #626770;
+}
+
+.tab {
+    -fx-background-color: #535861;
+    -fx-background-insets: 0 1 -1 0;
+    -fx-padding: 4 8 3 5;
+}
+.tab .tab-label {
+    -fx-text-fill: white;
+    -fx-padding: 0 5 0 5;
+}
+.tab.no-highlighter .tab-label {
+    -fx-text-fill: #EEC14D;
+}
+.tab.add {
+    -fx-padding: 0 2 7 2;
+}
+.tab.add .tab-label {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+}
+.tab:selected {
+    -fx-background-color: #444952;
+}
+.tab-pane:focused > .tab-header-area > .headers-region > .tab:selected .focus-indicator {
+    -fx-border-color: transparent;
+}
+.tab-pane > .tab-header-area > .headers-region > .tab > .tab-container > .tab-close-button {
+    -fx-mark-color: white;
+}
+.tab-pane > .tab-header-area > .headers-region > .tab > .tab-container > .tab-close-button:hover {
+    -fx-mark-color: white;
+}
+
+.context-menu {
+    -fx-background-color: #444952;
+    -fx-text-fill: white;
+    -fx-font-family: 'Open Sans SemiBold';
+    -fx-font-size: 12px;
+}
+
+.menu-item .label {
+    -fx-text-fill: white;
+}
+
+.find-and-replace {
+    -fx-background-color: #585D66;
+}
+.button.secondary,
+.button.secondary:focused {
+    -fx-min-height: 25px;
+    -fx-background-color: #585D66;
+}
+.button.secondary:hover,
+.button.secondary:focused:hover {
+    -fx-background-color: #6C717A;
+}
+
+.text-field {
+    -fx-text-fill: white;
+    -fx-prompt-text-fill: #AAA;
+    -fx-background: #6C717A;
+    -fx-background-color: -fx-background;
+    -fx-border-color: transparent;
+    -fx-border-radius: 0;
+    -fx-background-insets: 0 0 1 0;
+}
+
+.split-pane-divider {
+    -fx-background-color: #4E535C;
+}
+
+.hyperlink {
+    -fx-border-color: transparent;
+    -fx-padding: 4 0 4 0;
+}
+
+.about-dialog {
+    -fx-background-color: #3A3F48;
+}
+.about {
+    -fx-padding: 30px 60px 10px 60px;
+}
+.about .icon {
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.8), 15, 0, 0, 0);
+}
+.about .title {
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+    -fx-padding: 25px 0 0 0;
+}
+.about .subheading1 {
+    -fx-font-size: 16px;
+    -fx-padding: 20px 0 0 0;
+}
+.about .subheading2 {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-padding: 5px 0 0 0;
+}
+.about .hyperlink {
+    -fx-font-size: 14px;
+}
+.about .subheading3 {
+    -fx-font-size: 16px;
+    -fx-padding: 25px 0 10px 0;
+}
+.about .subheading4,
+.about .subheading5 {
+    -fx-font-size: 14px;
+    -fx-text-fill: gray;
+    -fx-padding: 25px 0 0 0;
+}
+.about .subheading5 {
+    -fx-font-weight: bold;
+}
+.about .hyperlink-sm {
+    -fx-font-size: 12px;
+    -fx-text-fill: gray;
+}
+
+.scroll-bar {
+    -fx-background-color: #626770;
+}
+
+.scroll-bar:horizontal .track {
+    -fx-background-color: #626770;
+    -fx-border-color: transparent;
+    -fx-background-radius: 0.0em;
+    -fx-border-radius: 2.0em;
+    -fx-background-insets: 0;
+}
+
+.scroll-bar:vertical .track {
+    -fx-background-color: #626770;
+    -fx-border-color: transparent;
+    -fx-background-radius : 0.0em;
+    -fx-border-radius :2.0em;
+    -fx-background-insets: 0;
+}
+
+.scroll-bar:horizontal .increment-button ,
+.scroll-bar:horizontal .decrement-button {
+    -fx-background-color :transparent;
+    -fx-background-radius : 0.0em;
+    -fx-padding :0.0 0.0 10.0 0.0;
+}
+
+.scroll-bar:vertical .increment-button ,
+.scroll-bar:vertical .decrement-button {
+    -fx-background-color :transparent;
+    -fx-background-radius : 0.0em;
+    -fx-padding :0.0 10.0 0.0 0.0;
+}
+
+.scroll-bar .increment-arrow,
+.scroll-bar .decrement-arrow{
+    -fx-shape : " ";
+    -fx-padding :0.15em 0.0;
+}
+
+.scroll-bar:vertical .increment-arrow,
+.scroll-bar:vertical .decrement-arrow{
+    -fx-shape : " ";
+    -fx-padding :0.0 0.15em;
+}
+
+.scroll-bar:horizontal .thumb {
+    -fx-background-color: #444952;
+    -fx-background-insets : 2;
+    -fx-background-radius : 2.0em;
+}
+
+.scroll-bar:horizontal .thumb:hover {
+    -fx-background-color: #3A3F48;
+    -fx-background-insets : 2;
+    -fx-background-radius : 2.0em;
+}
+
+.scroll-bar:vertical .thumb {
+    -fx-background-color: #444952;
+    -fx-background-insets: 2;
+    -fx-background-radius: 2.0em;
+}
+
+.scroll-bar:vertical .thumb:hover {
+    -fx-background-color: #3A3F48;
+    -fx-background-insets: 2;
+    -fx-background-radius: 2.0em;
+}
