@@ -36,6 +36,7 @@ public class Constants {
 
     public static final ScheduledExecutorService EXECUTOR_SERVICE = Executors.newScheduledThreadPool(10);
 
+    public static final Integer MEMORY_SIZE = 30000;
 
 
     private static File executable;

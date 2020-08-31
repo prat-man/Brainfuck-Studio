@@ -11,6 +11,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -152,9 +153,14 @@ public class Controller {
         // create a new tab
         Tab tab = new Tab();
 
+        // create a horizontal split pane
+        SplitPane horizontalSplitPane = new SplitPane();
+        horizontalSplitPane.setOrientation(Orientation.HORIZONTAL);
+
         // create a split pane
         SplitPane splitPane = new SplitPane();
         splitPane.setOrientation(Orientation.VERTICAL);
+        horizontalSplitPane.getItems().add(splitPane);
 
         // create a new code area
         CodeArea codeArea = new CodeArea();
@@ -220,8 +226,128 @@ public class Controller {
         codePane.getChildren().add(new VirtualizedScrollPane<>(codeArea));
         splitPane.getItems().add(codePane);
 
+        // create a debug sidebar
+        VBox debug = new VBox();
+        debug.setMinWidth(220);
+        debug.setMaxWidth(300);
+
+        debug.setVisible(false);
+        debug.managedProperty().bind(debug.visibleProperty());
+        debug.visibleProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal) horizontalSplitPane.getItems().add(debug);
+            else horizontalSplitPane.getItems().remove(debug);
+        });
+
+        // set the debug side pane
+        tabData.setDebug(debug);
+
+        HBox debugTools = new HBox();
+        debugTools.setPadding(new Insets(10, 0, 10, 0));
+        debugTools.setSpacing(5);
+        debugTools.setAlignment(Pos.CENTER);
+        debug.getChildren().add(debugTools);
+
+        Button stop = new Button();
+        stop.getStyleClass().add("secondary");
+        Image stopImage = new Image(getClass().getClassLoader().getResourceAsStream("images/stop.png"));
+        ImageView stopImageView = new ImageView(stopImage);
+        stop.setGraphic(stopImageView);
+        Tooltip stopTooltip = new Tooltip("Stop");
+        stopTooltip.setShowDelay(Duration.millis(300));
+        stop.setTooltip(stopTooltip);
+        debugTools.getChildren().add(stop);
+
+        Button run = new Button();
+        run.getStyleClass().add("secondary");
+        Image runImage = new Image(getClass().getClassLoader().getResourceAsStream("images/run.png"));
+        ImageView runImageView = new ImageView(runImage);
+        run.setGraphic(runImageView);
+        Tooltip runTooltip = new Tooltip("Run");
+        runTooltip.setShowDelay(Duration.millis(300));
+        run.setTooltip(runTooltip);
+        debugTools.getChildren().add(run);
+        run.setDisable(true);
+
+        Button pause = new Button();
+        pause.getStyleClass().add("secondary");
+        Image pauseImage = new Image(getClass().getClassLoader().getResourceAsStream("images/pause.png"));
+        ImageView pauseImageView = new ImageView(pauseImage);
+        pause.setGraphic(pauseImageView);
+        Tooltip pauseTooltip = new Tooltip("Pause");
+        pauseTooltip.setShowDelay(Duration.millis(300));
+        pause.setTooltip(pauseTooltip);
+        debugTools.getChildren().add(pause);
+
+        Button step = new Button();
+        step.getStyleClass().add("secondary");
+        Image stepImage = new Image(getClass().getClassLoader().getResourceAsStream("images/step.png"));
+        ImageView stepImageView = new ImageView(stepImage);
+        step.setGraphic(stepImageView);
+        Tooltip stepTooltip = new Tooltip("Step");
+        stepTooltip.setShowDelay(Duration.millis(300));
+        step.setTooltip(stepTooltip);
+        debugTools.getChildren().add(step);
+
+        // create a tableview for memory
+        TableView<Memory> tableView = new TableView<>();
+        tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        VBox.setVgrow(tableView, Priority.ALWAYS);
+
+        // add to debug side pane
+        debug.getChildren().add(tableView);
+
+        // set the tableview
+        tabData.setTableView(tableView);
+
+        // initialize the tableview columns
+        TableColumn<Memory, Integer> column1 = new TableColumn<>("Address");
+        column1.setCellValueFactory(new PropertyValueFactory<>("address"));
+        String format1 = "%0" + (int) (Math.log10(Constants.MEMORY_SIZE) + 1) + "d";
+        column1.setCellFactory(column -> {
+            TableCell<Memory, Integer> cell = new TableCell<>() {
+                @Override
+                protected void updateItem(Integer item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if(empty) setText(null);
+                    else setText(String.format(format1, item));
+                }
+            };
+            return cell;
+        });
+        column1.setSortable(false);
+        tableView.getColumns().add(column1);
+
+        TableColumn<Memory, Integer> column2 = new TableColumn<>("Data");
+        column2.setCellValueFactory(new PropertyValueFactory<>("data"));
+        String format2 = "%03d";
+        column2.setCellFactory(column -> {
+            TableCell<Memory, Integer> cell = new TableCell<>() {
+                @Override
+                protected void updateItem(Integer item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if(empty) setText(null);
+                    else setText(String.format(format2, item));
+                }
+            };
+            return cell;
+        });
+        column2.setSortable(false);
+        tableView.getColumns().add(column2);
+
+        TableColumn<Memory, Character> column3 = new TableColumn<>("Character");
+        column3.setCellValueFactory(new PropertyValueFactory<>("character"));
+        column3.setSortable(false);
+        tableView.getColumns().add(column3);
+
+        // initialize the memory
+        Memory[] memory = tabData.getMemory();
+        for (int i = 0; i < memory.length; i++) {
+            memory[i] = new Memory(i + 1, i % 256, (char) (i % 256));
+        }
+        tableView.getItems().addAll(memory);
+
         // set tab content
-        tab.setContent(splitPane);
+        tab.setContent(horizontalSplitPane);
 
         // add tab data to tab data list
         tabDataList.add(tabData);
@@ -680,6 +806,14 @@ public class Controller {
 
         alert.initOwner(tabPane.getScene().getWindow());
         alert.showAndWait();
+    }
+
+    @FXML
+    private void debug() {
+        TabData tabData = currentTab;
+        tabData.getDebug().setVisible(true);
+        tabData.getTableView().scrollTo(0);
+        tabData.getTableView().getSelectionModel().select(0);
     }
 
     @FXML

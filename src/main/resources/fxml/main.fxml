@@ -46,6 +46,20 @@
                   </ImageView>
                </graphic>
             </SplitMenuButton>
+            <Separator layoutX="233.0" layoutY="10.0">
+               <padding>
+                  <Insets left="5.0" right="5.0" />
+               </padding>
+            </Separator>
+            <Button layoutX="253.0" layoutY="10.0" mnemonicParsing="false" onAction="#debug" text="Debug">
+               <graphic>
+                  <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/debug.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
             <Separator layoutX="118.0" layoutY="10.0">
                <padding>
                   <Insets left="5.0" right="5.0" />
@@ -89,7 +103,7 @@
                         </image></ImageView>
                 </graphic>
                 <tooltip>
-                    <Tooltip showDelay="100ms" text="Find and Replace" />
+                    <Tooltip showDelay="300ms" text="Find and Replace" />
                 </tooltip>
             </ToggleButton>
             <Separator layoutX="721.0" layoutY="10.0">
@@ -151,7 +165,7 @@
                     </ImageView>
                 </graphic>
                 <tooltip>
-                    <Tooltip showDelay="100ms" text="Regex" />
+                    <Tooltip showDelay="300ms" text="Regex" />
                 </tooltip>
             </ToggleButton>
             <Button contentDisplay="RIGHT" mnemonicParsing="false" onAction="#findNext">
@@ -163,7 +177,7 @@
                     </ImageView>
                 </graphic>
                 <tooltip>
-                    <Tooltip showDelay="100ms" text="Find Next" />
+                    <Tooltip showDelay="300ms" text="Find Next" />
                 </tooltip>
             </Button>
             <Button contentDisplay="RIGHT" mnemonicParsing="false" onAction="#findPrevious">
@@ -175,7 +189,7 @@
                     </ImageView>
                 </graphic>
                 <tooltip>
-                    <Tooltip showDelay="100ms" text="Find Previous" />
+                    <Tooltip showDelay="300ms" text="Find Previous" />
                 </tooltip>
             </Button>
             <Button contentDisplay="RIGHT" mnemonicParsing="false" onAction="#replace">
@@ -187,7 +201,7 @@
                     </ImageView>
                 </graphic>
                 <tooltip>
-                    <Tooltip showDelay="100ms" text="Replace" />
+                    <Tooltip showDelay="300ms" text="Replace" />
                 </tooltip>
             </Button>
             <Button contentDisplay="RIGHT" mnemonicParsing="false" onAction="#replaceAll">
@@ -199,7 +213,7 @@
                     </ImageView>
                 </graphic>
                 <tooltip>
-                    <Tooltip showDelay="100ms" text="Replace All" />
+                    <Tooltip showDelay="300ms" text="Replace All" />
                 </tooltip>
             </Button>
             <Button mnemonicParsing="false" onAction="#toggleSearch" styleClass="secondary">
@@ -209,7 +223,11 @@
                         <Image url="@../images/close.png" />
                      </image>
                   </ImageView>
-               </graphic></Button>
+               </graphic>
+                <tooltip>
+                    <Tooltip showDelay="300ms" text="Close" />
+                </tooltip>
+            </Button>
          </children>
          <padding>
             <Insets bottom="7.0" left="7.0" right="7.0" top="8.0" />

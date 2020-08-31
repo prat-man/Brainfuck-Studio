@@ -2,10 +2,8 @@ package in.pratanumandal.brainfuck;
 
 import in.pratanumandal.brainfuck.terminal.Terminal;
 import javafx.application.Platform;
-import javafx.scene.control.Alert;
-import javafx.scene.control.SplitPane;
-import javafx.scene.control.Tab;
-import javafx.scene.control.Tooltip;
+import javafx.scene.control.*;
+import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.model.PlainTextChange;
@@ -24,6 +22,10 @@ public class TabData {
     private SplitPane splitPane;
     private CodeArea codeArea;
     private Terminal terminal;
+
+    private Memory[] memory;
+    private VBox debug;
+    private TableView<Memory> tableView;
 
     private String filePath;
     private boolean modified;
@@ -44,6 +46,7 @@ public class TabData {
         this.filePath = filePath;
         this.modified = false;
         this.dividerPosition = 0.5;
+        this.memory = new Memory[Constants.MEMORY_SIZE];
 
         if (this.filePath == null) {
             tab.setText("Untitled " + untitledTabIndex++);
@@ -100,6 +103,30 @@ public class TabData {
 
     public void setTerminal(Terminal terminal) {
         this.terminal = terminal;
+    }
+
+    public TableView<Memory> getTableView() {
+        return tableView;
+    }
+
+    public void setTableView(TableView<Memory> tableView) {
+        this.tableView = tableView;
+    }
+
+    public VBox getDebug() {
+        return debug;
+    }
+
+    public void setDebug(VBox debug) {
+        this.debug = debug;
+    }
+
+    public Memory[] getMemory() {
+        return memory;
+    }
+
+    public void setMemory(Memory[] memory) {
+        this.memory = memory;
     }
 
     public String getFilePath() {
