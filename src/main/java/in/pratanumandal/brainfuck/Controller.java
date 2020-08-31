@@ -342,7 +342,7 @@ public class Controller {
         // initialize the memory
         Memory[] memory = tabData.getMemory();
         for (int i = 0; i < memory.length; i++) {
-            memory[i] = new Memory(i + 1, i % 256, (char) (i % 256));
+            memory[i] = new Memory(i + 1, 0, (char) 0);
         }
         tableView.getItems().addAll(memory);
 
