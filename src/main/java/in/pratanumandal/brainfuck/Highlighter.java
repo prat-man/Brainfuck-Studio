@@ -25,6 +25,7 @@ public class Highlighter {
     private static final String OUTPUT_PATTERN = "\\.";
     private static final String INPUT_PATTERN = "\\,";
     private static final String LOOP_PATTERN = "\\[|\\]";
+    private static final String BREAKPOINT_PATTERN = "\\~";
 
     private static final Pattern PATTERN = Pattern.compile(
             "(?<PTRINCR>" + POINTER_INCREMENT_PATTERN + ")"
@@ -34,6 +35,7 @@ public class Highlighter {
                     + "|(?<OUTPUT>" + OUTPUT_PATTERN + ")"
                     + "|(?<INPUT>" + INPUT_PATTERN + ")"
                     + "|(?<LOOP>" + LOOP_PATTERN + ")"
+                    + "|(?<BREAKPOINT>" + BREAKPOINT_PATTERN + ")"
     );
 
     public static void computeHighlighting(List<PlainTextChange> changes, TabData tabData) {
@@ -127,7 +129,8 @@ public class Highlighter {
                                                     matcher.group("INPUT") != null ? "input" :
                                                             matcher.group("OUTPUT") != null ? "output" :
                                                                     matcher.group("LOOP") != null ? "loop" :
-                                                                            null; /* never happens */ assert styleClass != null;
+                                                                            matcher.group("BREAKPOINT") != null ? "breakpoint" :
+                                                                                    null; /* never happens */ assert styleClass != null;
 
             //spansBuilder.add(Collections.emptyList(), matcher.start() - lastKwEnd);
             spansBuilder.add(Collections.singleton("plain-text"), matcher.start() - lastKwEnd);

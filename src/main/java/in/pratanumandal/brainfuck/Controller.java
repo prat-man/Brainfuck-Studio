@@ -226,7 +226,51 @@ public class Controller {
         codePane.getChildren().add(new VirtualizedScrollPane<>(codeArea));
         splitPane.getItems().add(codePane);
 
-        // create a debug sidebar
+        // create toolbar for debug terminal
+        HBox debugTerminalControls = new HBox();
+        debugTerminalControls.setPadding(new Insets(9, 5, 10, 5));
+        debugTerminalControls.setSpacing(7);
+        debugTerminalControls.setAlignment(Pos.CENTER_LEFT);
+
+        // add title to toolbar
+        Label label = new Label("Debug Terminal");
+        debugTerminalControls.getChildren().add(label);
+
+        // create a debug terminal
+        DebugTerminal debugTerminal = new DebugTerminal();
+
+        // set the debug terminal
+        tabData.setDebugTerminal(debugTerminal);
+
+        // add debug terminal toolbar and debug terminal to vbox
+        VBox debugTerminalToolbar = new VBox();
+        debugTerminalToolbar.getChildren().add(debugTerminalControls);
+        debugTerminalToolbar.getChildren().add(debugTerminal);
+
+        // set font size for code area
+        debugTerminalToolbar.setStyle("-fx-background-color: #585D66;");
+
+        // bind terminal height property
+        debugTerminal.prefHeightProperty().bind(debugTerminalToolbar.heightProperty());
+
+        // bind debug terminal visibility
+        debugTerminal.setVisible(false);
+        debugTerminalToolbar.setVisible(false);
+        debugTerminalToolbar.managedProperty().bind(debugTerminal.visibleProperty());
+        debugTerminalToolbar.visibleProperty().bind(debugTerminal.visibleProperty());
+        debugTerminal.managedProperty().bind(debugTerminal.visibleProperty());
+        debugTerminal.visibleProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal) {
+                splitPane.getItems().add(debugTerminalToolbar);
+                splitPane.setDividerPositions(tabData.getDividerPosition());
+            }
+            else {
+                tabData.setDividerPosition(tabData.getSplitPane().getDividerPositions()[0]);
+                splitPane.getItems().remove(debugTerminalToolbar);
+            }
+        });
+
+        // create a debug side pane
         VBox debug = new VBox();
         debug.setMinWidth(220);
         debug.setMaxWidth(300);
@@ -241,52 +285,67 @@ public class Controller {
         // set the debug side pane
         tabData.setDebug(debug);
 
+        // debug tools
         HBox debugTools = new HBox();
-        debugTools.setPadding(new Insets(10, 0, 10, 0));
+        debugTools.setPadding(new Insets(10, 5, 10, 5));
         debugTools.setSpacing(5);
-        debugTools.setAlignment(Pos.CENTER);
+        debugTools.setAlignment(Pos.CENTER_LEFT);
         debug.getChildren().add(debugTools);
 
-        Button stop = new Button();
-        stop.getStyleClass().add("secondary");
-        Image stopImage = new Image(getClass().getClassLoader().getResourceAsStream("images/stop.png"));
-        ImageView stopImageView = new ImageView(stopImage);
-        stop.setGraphic(stopImageView);
-        Tooltip stopTooltip = new Tooltip("Stop");
-        stopTooltip.setShowDelay(Duration.millis(300));
-        stop.setTooltip(stopTooltip);
-        debugTools.getChildren().add(stop);
+        Button resumeButton = generateDebugButton("run", "Resume");
+        resumeButton.setOnAction(event -> tabData.getDebugger().resume());
+        tabData.setResumeButton(resumeButton);
+        debugTools.getChildren().add(resumeButton);
+        resumeButton.setDisable(true);
 
-        Button run = new Button();
-        run.getStyleClass().add("secondary");
-        Image runImage = new Image(getClass().getClassLoader().getResourceAsStream("images/run.png"));
-        ImageView runImageView = new ImageView(runImage);
-        run.setGraphic(runImageView);
-        Tooltip runTooltip = new Tooltip("Run");
-        runTooltip.setShowDelay(Duration.millis(300));
-        run.setTooltip(runTooltip);
-        debugTools.getChildren().add(run);
-        run.setDisable(true);
+        Button pauseButton = generateDebugButton("pause", "Pause");
+        pauseButton.setOnAction(event -> tabData.getDebugger().pause());
+        tabData.setPauseButton(pauseButton);
+        debugTools.getChildren().add(pauseButton);
 
-        Button pause = new Button();
-        pause.getStyleClass().add("secondary");
-        Image pauseImage = new Image(getClass().getClassLoader().getResourceAsStream("images/pause.png"));
-        ImageView pauseImageView = new ImageView(pauseImage);
-        pause.setGraphic(pauseImageView);
-        Tooltip pauseTooltip = new Tooltip("Pause");
-        pauseTooltip.setShowDelay(Duration.millis(300));
-        pause.setTooltip(pauseTooltip);
-        debugTools.getChildren().add(pause);
+        Button stepButton = generateDebugButton("step", "Step");
+        stepButton.setOnAction(event -> tabData.getDebugger().step());
+        tabData.setStepButton(stepButton);
+        debugTools.getChildren().add(stepButton);
 
-        Button step = new Button();
-        step.getStyleClass().add("secondary");
-        Image stepImage = new Image(getClass().getClassLoader().getResourceAsStream("images/step.png"));
-        ImageView stepImageView = new ImageView(stepImage);
-        step.setGraphic(stepImageView);
-        Tooltip stepTooltip = new Tooltip("Step");
-        stepTooltip.setShowDelay(Duration.millis(300));
-        step.setTooltip(stepTooltip);
-        debugTools.getChildren().add(step);
+        // add spacer
+        Pane spacer = new Pane();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+        debugTools.getChildren().add(spacer);
+
+        Button stopButton = generateDebugButton("stop", "Stop");
+        stopButton.setOnAction(event -> tabData.getDebugger().stop());
+        tabData.setStopButton(stopButton);
+        debugTools.getChildren().add(stopButton);
+
+        Button closeButton = generateDebugButton("close", "Close");
+        closeButton.setOnAction(event -> {
+            debug.setVisible(false);
+            debugTerminal.setVisible(false);
+        });
+        tabData.setCloseButton(closeButton);
+        debugTools.getChildren().add(closeButton);
+        closeButton.setDisable(true);
+
+        // debug speed controls
+        HBox debugSpeedControls = new HBox();
+        debugSpeedControls.setPadding(new Insets(10, 10, 15, 10));
+        debugSpeedControls.setSpacing(10);
+        debugSpeedControls.setAlignment(Pos.CENTER);
+        debug.getChildren().add(debugSpeedControls);
+
+        Label debugSpeedLabel = new Label("Speed");
+        debugSpeedControls.getChildren().add(debugSpeedLabel);
+
+        Slider debugSpeed = new Slider(0, 450, 350);
+        debugSpeed.setMajorTickUnit(50);
+        debugSpeed.setMinorTickCount(0);
+        debugSpeed.setSnapToTicks(true);
+        HBox.setHgrow(debugSpeed, Priority.ALWAYS);
+        debugSpeedControls.getChildren().add(debugSpeed);
+
+        // set the debug speed control
+        tabData.setDebugSpeed(debugSpeed);
 
         // create a tableview for memory
         TableView<Memory> tableView = new TableView<>();
@@ -409,6 +468,21 @@ public class Controller {
         });
 
         return tabData;
+    }
+
+    private Button generateDebugButton(String imageStr, String tooltipStr) {
+        Button button = new Button();
+        button.getStyleClass().add("secondary");
+
+        Image stopImage = new Image(getClass().getClassLoader().getResourceAsStream("images/" + imageStr + ".png"));
+        ImageView stopImageView = new ImageView(stopImage);
+        button.setGraphic(stopImageView);
+
+        Tooltip tooltip = new Tooltip(tooltipStr);
+        tooltip.setShowDelay(Duration.millis(300));
+        button.setTooltip(tooltip);
+
+        return button;
     }
 
     @FXML
@@ -811,9 +885,75 @@ public class Controller {
     @FXML
     private void debug() {
         TabData tabData = currentTab;
-        tabData.getDebug().setVisible(true);
-        tabData.getTableView().scrollTo(0);
-        tabData.getTableView().getSelectionModel().select(0);
+        saveFile();
+        if (tabData.getFilePath() != null) {
+            if (tabData.getDebugger().isAlive()) {
+                tabData.getDebugger().stop();
+                tabData.getDebug().setVisible(false);
+                tabData.getDebugTerminal().setVisible(false);
+            }
+            else {
+                // remove old vbox from split pane if present
+                Terminal oldTerminal = tabData.getTerminal();
+                if (oldTerminal != null) {
+                    oldTerminal.onTerminalFxReady(() -> {
+                        Process process = oldTerminal.getProcess();
+                        if (process.isAlive()) process.destroyForcibly();
+                    });
+                    if (tabData.getSplitPane().getItems().size() > 1) {
+                        tabData.setDividerPosition(tabData.getSplitPane().getDividerPositions()[0]);
+                        tabData.getSplitPane().getItems().remove(1);
+                    }
+                }
+            }
+
+            if (Debugger.getThreadCount() > 1) {
+                // show warning message
+                Alert alert = new Alert(Alert.AlertType.WARNING, null, ButtonType.YES, ButtonType.NO);
+                alert.setTitle(Constants.APPLICATION_NAME);
+                alert.setContentText("Multiple instances of the debugger is already running.\n" +
+                        "Running more instances is highly discouraged and can be fatal.\n\n" +
+                        "Wait for the previous instances to finish?\n\n");
+
+                DialogPane pane = alert.getDialogPane();
+                for (ButtonType t : alert.getButtonTypes()) {
+                    ((Button) pane.lookupButton(t)).setDefaultButton(t == ButtonType.NO);
+                }
+
+                alert.initOwner(tabPane.getScene().getWindow());
+                alert.showAndWait();
+
+                if (alert.getResult() == ButtonType.YES) {
+                    return;
+                }
+            }
+            else if (Debugger.getThreadCount() > 0) {
+                // show warning message
+                Alert alert = new Alert(Alert.AlertType.WARNING, null, ButtonType.YES, ButtonType.NO);
+                alert.setTitle(Constants.APPLICATION_NAME);
+                alert.setContentText("An instance of the debugger is already running.\n" +
+                        "It is highly recommended that you let the previous instance finish.\n\n" +
+                        "Wait for the previous instance to finish?\n\n");
+
+                DialogPane pane = alert.getDialogPane();
+                for (ButtonType t : alert.getButtonTypes()) {
+                    ((Button) pane.lookupButton(t)).setDefaultButton(t == ButtonType.NO);
+                }
+
+                alert.initOwner(tabPane.getScene().getWindow());
+                alert.showAndWait();
+
+                if (alert.getResult() == ButtonType.YES) {
+                    return;
+                }
+            }
+
+            tabData.getDebug().setVisible(true);
+            tabData.getDebugTerminal().setVisible(true);
+            tabData.getTableView().scrollTo(0);
+            tabData.getTableView().getSelectionModel().select(0);
+            tabData.getDebugger().start();
+        }
     }
 
     @FXML
@@ -821,6 +961,12 @@ public class Controller {
         TabData tabData = currentTab;
         saveFile();
         if (tabData.getFilePath() != null) {
+            if (tabData.getDebugger().isAlive()) {
+                tabData.getDebugger().stop();
+                tabData.getDebug().setVisible(false);
+                tabData.getDebugTerminal().setVisible(false);
+            }
+
             String filePath = tabData.getFilePath();
             String escapedFilePath = filePath.replace("\\", "\\\\");
             execute(tabData, "Interpret", Constants.getExecutablePath(), escapedFilePath);
@@ -832,6 +978,12 @@ public class Controller {
         TabData tabData = currentTab;
         saveFile();
         if (tabData.getFilePath() != null) {
+            if (tabData.getDebugger().isAlive()) {
+                tabData.getDebugger().stop();
+                tabData.getDebug().setVisible(false);
+                tabData.getDebugTerminal().setVisible(false);
+            }
+
             String filePath = tabData.getFilePath();
             String escapedFilePath = filePath.replace("\\", "\\\\");
             execute(tabData, "Build", Constants.getExecutablePath(), "-c", escapedFilePath);
@@ -843,6 +995,12 @@ public class Controller {
         TabData tabData = currentTab;
         saveFile();
         if (tabData.getFilePath() != null) {
+            if (tabData.getDebugger().isAlive()) {
+                tabData.getDebugger().stop();
+                tabData.getDebug().setVisible(false);
+                tabData.getDebugTerminal().setVisible(false);
+            }
+
             String filePath = tabData.getFilePath();
             String escapedFilePath = filePath.replace("\\", "\\\\");
             Future<Integer> future = execute(tabData, "Build", Constants.getExecutablePath(), "-c", escapedFilePath);

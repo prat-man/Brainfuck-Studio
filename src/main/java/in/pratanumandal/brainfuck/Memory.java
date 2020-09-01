@@ -26,6 +26,7 @@ public class Memory {
 
     public void setData(Integer data) {
         this.data = data;
+        this.character = (char) data.intValue();
     }
 
     public Character getCharacter() {
@@ -34,6 +35,7 @@ public class Memory {
 
     public void setCharacter(Character character) {
         this.character = character;
+        this.data = (int) character;
     }
 
 }

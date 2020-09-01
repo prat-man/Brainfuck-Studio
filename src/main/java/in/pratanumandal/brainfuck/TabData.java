@@ -23,9 +23,19 @@ public class TabData {
     private CodeArea codeArea;
     private Terminal terminal;
 
+    private Button resumeButton;
+    private Button pauseButton;
+    private Button stepButton;
+    private Button stopButton;
+    private Button closeButton;
+    private Slider debugSpeed;
+
     private Memory[] memory;
     private VBox debug;
     private TableView<Memory> tableView;
+
+    private Debugger debugger;
+    private DebugTerminal debugTerminal;
 
     private String filePath;
     private boolean modified;
@@ -47,6 +57,8 @@ public class TabData {
         this.modified = false;
         this.dividerPosition = 0.5;
         this.memory = new Memory[Constants.MEMORY_SIZE];
+
+        this.debugger = new Debugger(this);
 
         if (this.filePath == null) {
             tab.setText("Untitled " + untitledTabIndex++);
@@ -105,8 +117,68 @@ public class TabData {
         this.terminal = terminal;
     }
 
+    public Button getResumeButton() {
+        return resumeButton;
+    }
+
+    public void setResumeButton(Button resumeButton) {
+        this.resumeButton = resumeButton;
+    }
+
+    public Button getPauseButton() {
+        return pauseButton;
+    }
+
+    public void setPauseButton(Button pauseButton) {
+        this.pauseButton = pauseButton;
+    }
+
+    public Button getStepButton() {
+        return stepButton;
+    }
+
+    public void setStepButton(Button stepButton) {
+        this.stepButton = stepButton;
+    }
+
+    public Button getStopButton() {
+        return stopButton;
+    }
+
+    public void setStopButton(Button stopButton) {
+        this.stopButton = stopButton;
+    }
+
+    public Button getCloseButton() {
+        return closeButton;
+    }
+
+    public void setCloseButton(Button closeButton) {
+        this.closeButton = closeButton;
+    }
+
+    public Slider getDebugSpeed() {
+        return debugSpeed;
+    }
+
+    public void setDebugSpeed(Slider debugSpeed) {
+        this.debugSpeed = debugSpeed;
+    }
+
+    public DebugTerminal getDebugTerminal() {
+        return debugTerminal;
+    }
+
+    public void setDebugTerminal(DebugTerminal debugTerminal) {
+        this.debugTerminal = debugTerminal;
+    }
+
     public TableView<Memory> getTableView() {
         return tableView;
+    }
+
+    public Debugger getDebugger() {
+        return debugger;
     }
 
     public void setTableView(TableView<Memory> tableView) {
