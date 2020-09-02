@@ -1,7 +1,10 @@
-package in.pratanumandal.brainfuck;
+package in.pratanumandal.brainfuck.gui;
 
-import in.pratanumandal.brainfuck.terminal.Terminal;
-import in.pratanumandal.brainfuck.terminal.config.TerminalConfig;
+import in.pratanumandal.brainfuck.engine.Memory;
+import in.pratanumandal.brainfuck.common.Constants;
+import in.pratanumandal.brainfuck.common.Utils;
+import in.pratanumandal.brainfuck.gui.terminal.Terminal;
+import in.pratanumandal.brainfuck.gui.terminal.config.TerminalConfig;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;

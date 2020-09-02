@@ -1,5 +1,8 @@
-package in.pratanumandal.brainfuck;
+package in.pratanumandal.brainfuck.engine;
 
+import in.pratanumandal.brainfuck.gui.TabData;
+import in.pratanumandal.brainfuck.common.Constants;
+import in.pratanumandal.brainfuck.gui.TableViewExtra;
 import javafx.application.Platform;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -97,6 +100,10 @@ public class Debugger implements Runnable {
     }
 
     public void stop() {
+        stop(true);
+    }
+
+    private void stop(boolean join) {
         synchronized (this.kill) {
             this.kill.set(true);
         }
@@ -108,10 +115,12 @@ public class Debugger implements Runnable {
 
         tabData.getDebugTerminal().release();
 
-        try {
-            this.thread.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        if (join && this.thread.isAlive()) {
+            try {
+                this.thread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
 
         this.codeArea.setEditable(true);
@@ -133,7 +142,7 @@ public class Debugger implements Runnable {
     public void run() {
 
         Slider debugSpeed = tabData.getDebugSpeed();
-        TableViewExtra<MemoryRow> tvX = new TableViewExtra(tabData.getTableView());
+        TableViewExtra<Memory> tvX = new TableViewExtra(tabData.getTableView());
 
         int dataPointer = 0;
         int l = 0;
@@ -158,7 +167,7 @@ public class Debugger implements Runnable {
             char ch = code.charAt(i);
 
             if (ch == '~') {
-                pause();
+                this.pause();
             } else if (ch == '>') {
                 dataPointer = (dataPointer == Constants.MEMORY_SIZE - 1) ? 0 : dataPointer + 1;
 
@@ -235,6 +244,8 @@ public class Debugger implements Runnable {
                 e.printStackTrace();
             }
         }
+
+        this.stop(false);
 
     }
 

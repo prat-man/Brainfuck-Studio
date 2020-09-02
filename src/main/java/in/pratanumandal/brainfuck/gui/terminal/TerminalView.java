@@ -1,10 +1,10 @@
-package in.pratanumandal.brainfuck.terminal;
+package in.pratanumandal.brainfuck.gui.terminal;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.javafx.scene.control.ContextMenuContent;
-import in.pratanumandal.brainfuck.terminal.annotation.WebkitCall;
-import in.pratanumandal.brainfuck.terminal.config.TerminalConfig;
-import in.pratanumandal.brainfuck.terminal.helper.ThreadHelper;
+import in.pratanumandal.brainfuck.gui.terminal.annotation.WebkitCall;
+import in.pratanumandal.brainfuck.gui.terminal.config.TerminalConfig;
+import in.pratanumandal.brainfuck.gui.terminal.helper.ThreadHelper;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyIntegerProperty;
 import javafx.beans.property.ReadOnlyIntegerWrapper;

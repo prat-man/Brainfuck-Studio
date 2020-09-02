@@ -1,4 +1,4 @@
-package in.pratanumandal.brainfuck;
+package in.pratanumandal.brainfuck.engine;
 
 public class Memory {
 

@@ -1,4 +1,4 @@
-package in.pratanumandal.brainfuck;
+package in.pratanumandal.brainfuck.gui;
 
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.IndexRange;

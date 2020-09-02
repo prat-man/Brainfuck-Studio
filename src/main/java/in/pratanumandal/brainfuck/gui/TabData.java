@@ -1,6 +1,11 @@
-package in.pratanumandal.brainfuck;
+package in.pratanumandal.brainfuck.gui;
 
-import in.pratanumandal.brainfuck.terminal.Terminal;
+import in.pratanumandal.brainfuck.common.Constants;
+import in.pratanumandal.brainfuck.engine.Debugger;
+import in.pratanumandal.brainfuck.engine.Memory;
+import in.pratanumandal.brainfuck.gui.DebugTerminal;
+import in.pratanumandal.brainfuck.gui.Highlighter;
+import in.pratanumandal.brainfuck.gui.terminal.Terminal;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

@@ -1,4 +1,6 @@
-package in.pratanumandal.brainfuck;
+package in.pratanumandal.brainfuck.common;
+
+import in.pratanumandal.brainfuck.gui.Main;
 
 public class Utils {
 

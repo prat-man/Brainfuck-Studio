@@ -1,4 +1,4 @@
-package in.pratanumandal.brainfuck.terminal.helper;
+package in.pratanumandal.brainfuck.gui.terminal.helper;
 
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;

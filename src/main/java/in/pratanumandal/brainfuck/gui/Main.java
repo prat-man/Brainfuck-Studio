@@ -1,5 +1,6 @@
-package in.pratanumandal.brainfuck;
+package in.pratanumandal.brainfuck.gui;
 
+import in.pratanumandal.brainfuck.common.Constants;
 import javafx.application.Application;
 import javafx.application.HostServices;
 import javafx.fxml.FXMLLoader;

@@ -1,4 +1,4 @@
-package in.pratanumandal.brainfuck;
+package in.pratanumandal.brainfuck.gui;
 
 import javafx.application.Platform;
 import javafx.scene.Node;

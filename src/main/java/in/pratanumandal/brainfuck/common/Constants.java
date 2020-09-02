@@ -1,4 +1,4 @@
-package in.pratanumandal.brainfuck;
+package in.pratanumandal.brainfuck.common;
 
 import org.apache.commons.lang3.SystemUtils;
 

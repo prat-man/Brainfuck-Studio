@@ -1,10 +1,10 @@
-package in.pratanumandal.brainfuck.terminal.config;
+package in.pratanumandal.brainfuck.gui.terminal.config;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import in.pratanumandal.brainfuck.terminal.helper.FxHelper;
+import in.pratanumandal.brainfuck.gui.terminal.helper.FxHelper;
 import javafx.scene.paint.Color;
 
 import java.util.Objects;
