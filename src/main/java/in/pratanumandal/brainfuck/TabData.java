@@ -2,6 +2,8 @@ package in.pratanumandal.brainfuck;
 
 import in.pratanumandal.brainfuck.terminal.Terminal;
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
@@ -30,7 +32,7 @@ public class TabData {
     private Button closeButton;
     private Slider debugSpeed;
 
-    private Memory[] memory;
+    private ObservableList<Memory> memory;
     private VBox debug;
     private TableView<Memory> tableView;
 
@@ -56,7 +58,7 @@ public class TabData {
         this.filePath = filePath;
         this.modified = false;
         this.dividerPosition = 0.5;
-        this.memory = new Memory[Constants.MEMORY_SIZE];
+        this.memory = FXCollections.observableArrayList();
 
         this.debugger = new Debugger(this);
 
@@ -193,12 +195,8 @@ public class TabData {
         this.debug = debug;
     }
 
-    public Memory[] getMemory() {
+    public ObservableList<Memory> getMemory() {
         return memory;
-    }
-
-    public void setMemory(Memory[] memory) {
-        this.memory = memory;
     }
 
     public String getFilePath() {

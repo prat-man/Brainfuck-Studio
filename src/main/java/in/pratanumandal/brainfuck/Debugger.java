@@ -9,12 +9,8 @@ import org.fxmisc.richtext.CodeArea;
 
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class Debugger implements Runnable {
-
-    private static final Object EXCLUSIVITY_LOCK = new Object();
-    private static final AtomicInteger THREAD_COUNT = new AtomicInteger(0);
 
     private TabData tabData;
     private Byte[] memory;
@@ -57,19 +53,12 @@ public class Debugger implements Runnable {
         Arrays.fill(this.memory, (byte) 0);
 
         for (int i = 0; i < memory.length; i++) {
-            int finalI = i;
-            Platform.runLater(() -> {
-                tabData.getMemory()[finalI].setData(Byte.toUnsignedInt(memory[finalI]));
-                tabData.getTableView().refresh();
-            });
+            tabData.getMemory().get(i).setData(Byte.toUnsignedInt(memory[i]));
         }
+        Platform.runLater(() -> tabData.getTableView().refresh());
 
         thread = new Thread(this);
         thread.start();
-
-        synchronized (THREAD_COUNT) {
-            THREAD_COUNT.incrementAndGet();
-        }
 
         this.tabData.getResumeButton().setDisable(true);
         this.tabData.getPauseButton().setDisable(false);
@@ -129,10 +118,6 @@ public class Debugger implements Runnable {
 
         this.codeArea.removeEventFilter(ContextMenuEvent.CONTEXT_MENU_REQUESTED, consumeAllContextMenu);
 
-        synchronized (THREAD_COUNT) {
-            THREAD_COUNT.decrementAndGet();
-        }
-
         this.tabData.getResumeButton().setDisable(true);
         this.tabData.getPauseButton().setDisable(true);
         this.tabData.getStepButton().setDisable(true);
@@ -164,100 +149,93 @@ public class Debugger implements Runnable {
                 }
             }
 
-            synchronized (EXCLUSIVITY_LOCK) {
-                int finalI = i;
+            int finalI = i;
+            Platform.runLater(() -> {
+                this.codeArea.selectRange(finalI, finalI + 1);
+                this.codeArea.requestFollowCaret();
+            });
+
+            char ch = code.charAt(i);
+
+            if (ch == '~') {
+                pause();
+            } else if (ch == '>') {
+                dataPointer = (dataPointer == Constants.MEMORY_SIZE - 1) ? 0 : dataPointer + 1;
+
+                int finalDataPointer = dataPointer;
                 Platform.runLater(() -> {
-                    this.codeArea.selectRange(finalI, finalI + 1);
-                    this.codeArea.requestFollowCaret();
+                    int firstVisRowIndex = tvX.getFirstVisibleIndex();
+                    int lastVisRowIndex = tvX.getLastVisibleIndex();
+                    if (firstVisRowIndex > finalDataPointer || lastVisRowIndex < finalDataPointer) {
+                        tabData.getTableView().scrollTo(finalDataPointer);
+                    }
+                    tabData.getTableView().getSelectionModel().select(finalDataPointer);
                 });
+            } else if (code.charAt(i) == '<') {
+                dataPointer = (dataPointer == 0) ? Constants.MEMORY_SIZE - 1 : dataPointer - 1;
 
-                char ch = code.charAt(i);
+                int finalDataPointer = dataPointer;
+                Platform.runLater(() -> {
+                    int firstVisRowIndex = tvX.getFirstVisibleIndex();
+                    int lastVisRowIndex = tvX.getLastVisibleIndex();
+                    if (firstVisRowIndex > finalDataPointer || lastVisRowIndex < finalDataPointer) {
+                        tabData.getTableView().scrollTo(finalDataPointer);
+                    }
+                    tabData.getTableView().getSelectionModel().select(finalDataPointer);
+                });
+            } else if (code.charAt(i) == '+') {
+                memory[dataPointer]++;
 
-                if (ch == '~') {
-                    pause();
-                } else if (ch == '>') {
-                    dataPointer = (dataPointer == Constants.MEMORY_SIZE - 1) ? 0 : dataPointer + 1;
+                int finalDataPointer = dataPointer;
+                Platform.runLater(() -> {
+                    Memory memoryBlock = tabData.getMemory().get(finalDataPointer);
+                    memoryBlock.setData(Byte.toUnsignedInt(memory[finalDataPointer]));
+                    tabData.getMemory().set(finalDataPointer, memoryBlock);
+                });
+            } else if (code.charAt(i) == '-') {
+                memory[dataPointer]--;
 
-                    int finalDataPointer = dataPointer;
-                    Platform.runLater(() -> {
-                        int firstVisRowIndex = tvX.getFirstVisibleIndex();
-                        int lastVisRowIndex = tvX.getLastVisibleIndex();
-                        if (firstVisRowIndex > finalDataPointer || lastVisRowIndex < finalDataPointer) {
-                            tabData.getTableView().scrollTo(finalDataPointer);
-                        }
-                        tabData.getTableView().getSelectionModel().select(finalDataPointer);
-                        tabData.getTableView().refresh();
-                    });
-                } else if (code.charAt(i) == '<') {
-                    dataPointer = (dataPointer == 0) ? Constants.MEMORY_SIZE - 1 : dataPointer - 1;
-
-                    int finalDataPointer = dataPointer;
-                    Platform.runLater(() -> {
-                        int firstVisRowIndex = tvX.getFirstVisibleIndex();
-                        int lastVisRowIndex = tvX.getLastVisibleIndex();
-                        if (firstVisRowIndex > finalDataPointer || lastVisRowIndex < finalDataPointer) {
-                            tabData.getTableView().scrollTo(finalDataPointer);
-                        }
-                        tabData.getTableView().getSelectionModel().select(finalDataPointer);
-                        tabData.getTableView().refresh();
-                    });
-                } else if (code.charAt(i) == '+') {
-                    memory[dataPointer]++;
-
-                    int finalDataPointer = dataPointer;
-                    Platform.runLater(() -> {
-                        tabData.getMemory()[finalDataPointer].setData(Byte.toUnsignedInt(memory[finalDataPointer]));
-                        tabData.getTableView().refresh();
-                    });
-                } else if (code.charAt(i) == '-') {
-                    memory[dataPointer]--;
-
-                    int finalDataPointer = dataPointer;
-                    Platform.runLater(() -> {
-                        tabData.getMemory()[finalDataPointer].setData(Byte.toUnsignedInt(memory[finalDataPointer]));
-                        tabData.getTableView().refresh();
-                    });
-                } else if (code.charAt(i) == '.') {
-                    String text = String.valueOf((char) this.memory[dataPointer].intValue());
-                    Platform.runLater(() -> tabData.getDebugTerminal().write(text));
-                } else if (code.charAt(i) == ',') {
-                    Character character = tabData.getDebugTerminal().readChar();
-                    memory[dataPointer] = character == null ? (byte) 0 : (byte) (int) character;
-                } else if (code.charAt(i) == '[') {
-                    if (memory[dataPointer] == 0) {
+                int finalDataPointer = dataPointer;
+                Platform.runLater(() -> {
+                    Memory memoryBlock = tabData.getMemory().get(finalDataPointer);
+                    memoryBlock.setData(Byte.toUnsignedInt(memory[finalDataPointer]));
+                    tabData.getMemory().set(finalDataPointer, memoryBlock);
+                });
+            } else if (code.charAt(i) == '.') {
+                String text = String.valueOf((char) this.memory[dataPointer].intValue());
+                Platform.runLater(() -> tabData.getDebugTerminal().write(text));
+            } else if (code.charAt(i) == ',') {
+                Character character = tabData.getDebugTerminal().readChar();
+                memory[dataPointer] = character == null ? (byte) 0 : (byte) (int) character;
+            } else if (code.charAt(i) == '[') {
+                if (memory[dataPointer] == 0) {
+                    i++;
+                    while (l > 0 || code.charAt(i) != ']') {
+                        if (code.charAt(i) == '[') l++;
+                        if (code.charAt(i) == ']') l--;
                         i++;
-                        while (l > 0 || code.charAt(i) != ']') {
-                            if (code.charAt(i) == '[') l++;
-                            if (code.charAt(i) == ']') l--;
-                            i++;
-                        }
                     }
-                } else if (code.charAt(i) == ']') {
-                    if (memory[dataPointer] != 0) {
-                        i--;
-                        while (l > 0 || code.charAt(i) != '[') {
-                            if (code.charAt(i) == ']') l++;
-                            if (code.charAt(i) == '[') l--;
-                            i--;
-                        }
+                }
+            } else if (code.charAt(i) == ']') {
+                if (memory[dataPointer] != 0) {
+                    i--;
+                    while (l > 0 || code.charAt(i) != '[') {
+                        if (code.charAt(i) == ']') l++;
+                        if (code.charAt(i) == '[') l--;
                         i--;
                     }
+                    i--;
                 }
             }
 
             try {
-                int forcedDelay = (THREAD_COUNT.get() - 1) * 100;
-                int delay =  (int) (debugSpeed.getMax() - debugSpeed.getValue() + debugSpeed.getMajorTickUnit()) + forcedDelay;
+                int delay =  (int) (debugSpeed.getMax() - debugSpeed.getValue() + debugSpeed.getMajorTickUnit());
                 Thread.sleep(delay);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
 
-    }
-
-    public static int getThreadCount() {
-        return THREAD_COUNT.get();
     }
 
 }

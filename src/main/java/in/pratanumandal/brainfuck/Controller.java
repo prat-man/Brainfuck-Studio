@@ -399,11 +399,11 @@ public class Controller {
         tableView.getColumns().add(column3);
 
         // initialize the memory
-        Memory[] memory = tabData.getMemory();
-        for (int i = 0; i < memory.length; i++) {
-            memory[i] = new Memory(i + 1, 0, (char) 0);
+        ObservableList<Memory> memory = tabData.getMemory();
+        for (int i = 0; i < Constants.MEMORY_SIZE; i++) {
+            memory.add(i, new Memory(i + 1, 0, (char) 0));
         }
-        tableView.getItems().addAll(memory);
+        tableView.setItems(memory);
 
         // set tab content
         tab.setContent(horizontalSplitPane);
@@ -653,7 +653,7 @@ public class Controller {
             codeArea.selectRange(anchor + start, anchor + end);
 
             // scroll to selection
-            codeArea.scrollXToPixel(0);
+            //codeArea.scrollXToPixel(0);
             codeArea.requestFollowCaret();
         }
         else {
@@ -686,21 +686,27 @@ public class Controller {
         String text = tabData.getFileText().substring(0, anchor);
         String search = findField.getText();
 
-        Matcher matcher = Pattern.compile(search).matcher(text);
-
         int start = -1;
         int end = -1;
-        while (matcher.find()) {
-            start = matcher.start();
-            end = matcher.end();
+
+        if (this.regex) {
+            Matcher matcher = Pattern.compile(search).matcher(text);
+            while (matcher.find()) {
+                start = matcher.start();
+                end = matcher.end();
+            }
+        }
+        else {
+            start = text.lastIndexOf(search);
+            end = start + search.length();
         }
 
-        if (start != -1 && end != -1) {
+        if (start >= 0) {
             // select the text
             codeArea.selectRange(start, end);
 
             // scroll to selection
-            codeArea.scrollXToPixel(0);
+            //codeArea.scrollXToPixel(0);
             codeArea.requestFollowCaret();
         }
         else {
@@ -904,47 +910,6 @@ public class Controller {
                         tabData.setDividerPosition(tabData.getSplitPane().getDividerPositions()[0]);
                         tabData.getSplitPane().getItems().remove(1);
                     }
-                }
-            }
-
-            if (Debugger.getThreadCount() > 1) {
-                // show warning message
-                Alert alert = new Alert(Alert.AlertType.WARNING, null, ButtonType.YES, ButtonType.NO);
-                alert.setTitle(Constants.APPLICATION_NAME);
-                alert.setContentText("Multiple instances of the debugger is already running.\n" +
-                        "Running more instances is highly discouraged and can be fatal.\n\n" +
-                        "Wait for the previous instances to finish?\n\n");
-
-                DialogPane pane = alert.getDialogPane();
-                for (ButtonType t : alert.getButtonTypes()) {
-                    ((Button) pane.lookupButton(t)).setDefaultButton(t == ButtonType.NO);
-                }
-
-                alert.initOwner(tabPane.getScene().getWindow());
-                alert.showAndWait();
-
-                if (alert.getResult() == ButtonType.YES) {
-                    return;
-                }
-            }
-            else if (Debugger.getThreadCount() > 0) {
-                // show warning message
-                Alert alert = new Alert(Alert.AlertType.WARNING, null, ButtonType.YES, ButtonType.NO);
-                alert.setTitle(Constants.APPLICATION_NAME);
-                alert.setContentText("An instance of the debugger is already running.\n" +
-                        "It is highly recommended that you let the previous instance finish.\n\n" +
-                        "Wait for the previous instance to finish?\n\n");
-
-                DialogPane pane = alert.getDialogPane();
-                for (ButtonType t : alert.getButtonTypes()) {
-                    ((Button) pane.lookupButton(t)).setDefaultButton(t == ButtonType.NO);
-                }
-
-                alert.initOwner(tabPane.getScene().getWindow());
-                alert.showAndWait();
-
-                if (alert.getResult() == ButtonType.YES) {
-                    return;
                 }
             }
 
