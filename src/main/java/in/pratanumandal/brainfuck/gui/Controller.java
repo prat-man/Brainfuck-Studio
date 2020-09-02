@@ -177,6 +177,9 @@ public class Controller {
         // add line numbers to the left of area
         codeArea.setParagraphGraphicFactory(LineNumberFactory.get(codeArea));
 
+        // enable text wrapping
+        codeArea.setWrapText(true);
+
         // create new tab data
         TabData tabData = new TabData(tab, splitPane, codeArea, filePath);
 
@@ -417,12 +420,37 @@ public class Controller {
         tab.setOnClosed((event) -> {
             tabDataList.remove(tabData);
 
+            if (tabData.getFilePath() != null) {
+                if (tabData.getDebugger().isAlive()) {
+                    tabData.getDebugger().stop();
+                    tabData.getDebug().setVisible(false);
+                    tabData.getDebugTerminal().setVisible(false);
+                } else {
+                    // remove old vbox from split pane if present
+                    Terminal oldTerminal = tabData.getTerminal();
+                    if (oldTerminal != null) {
+                        oldTerminal.onTerminalFxReady(() -> {
+                            Process process = oldTerminal.getProcess();
+                            if (process.isAlive()) process.destroyForcibly();
+                        });
+                        if (tabData.getSplitPane().getItems().size() > 1) {
+                            tabData.setDividerPosition(tabData.getSplitPane().getDividerPositions()[0]);
+                            tabData.getSplitPane().getItems().remove(1);
+                            tabData.setTerminal(null);
+                        }
+                    }
+                }
+            }
+
             if (tabDataList.isEmpty()) {
                 addUntitledTab();
             }
 
             // clean up subscription
             subscription.unsubscribe();
+
+            // unregister auto save
+            tabData.unregisterAutoSave();
         });
 
         tab.setOnCloseRequest(event -> {
@@ -912,6 +940,7 @@ public class Controller {
                     if (tabData.getSplitPane().getItems().size() > 1) {
                         tabData.setDividerPosition(tabData.getSplitPane().getDividerPositions()[0]);
                         tabData.getSplitPane().getItems().remove(1);
+                        tabData.setTerminal(null);
                     }
                 }
             }
@@ -931,9 +960,9 @@ public class Controller {
         if (tabData.getFilePath() != null) {
             if (tabData.getDebugger().isAlive()) {
                 tabData.getDebugger().stop();
-                tabData.getDebug().setVisible(false);
-                tabData.getDebugTerminal().setVisible(false);
             }
+            tabData.getDebug().setVisible(false);
+            tabData.getDebugTerminal().setVisible(false);
 
             String filePath = tabData.getFilePath();
             String escapedFilePath = filePath.replace("\\", "\\\\");
@@ -948,9 +977,9 @@ public class Controller {
         if (tabData.getFilePath() != null) {
             if (tabData.getDebugger().isAlive()) {
                 tabData.getDebugger().stop();
-                tabData.getDebug().setVisible(false);
-                tabData.getDebugTerminal().setVisible(false);
             }
+            tabData.getDebug().setVisible(false);
+            tabData.getDebugTerminal().setVisible(false);
 
             String filePath = tabData.getFilePath();
             String escapedFilePath = filePath.replace("\\", "\\\\");
@@ -965,9 +994,9 @@ public class Controller {
         if (tabData.getFilePath() != null) {
             if (tabData.getDebugger().isAlive()) {
                 tabData.getDebugger().stop();
-                tabData.getDebug().setVisible(false);
-                tabData.getDebugTerminal().setVisible(false);
             }
+            tabData.getDebug().setVisible(false);
+            tabData.getDebugTerminal().setVisible(false);
 
             String filePath = tabData.getFilePath();
             String escapedFilePath = filePath.replace("\\", "\\\\");
@@ -1092,6 +1121,7 @@ public class Controller {
             if (splitPane.getItems().size() > 1) {
                 tabData.setDividerPosition(splitPane.getDividerPositions()[0]);
                 splitPane.getItems().remove(1);
+                tabData.setTerminal(null);
             }
         }
 
@@ -1109,6 +1139,7 @@ public class Controller {
         closeButton.setOnAction(actionEvent -> {
             tabData.setDividerPosition(splitPane.getDividerPositions()[0]);
             splitPane.getItems().remove(1);
+            tabData.setTerminal(null);
         });
 
         // create a new executor

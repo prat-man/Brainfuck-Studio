@@ -21,6 +21,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 public class TabData {
@@ -52,6 +53,8 @@ public class TabData {
     private String tabHeader;
 
     private double dividerPosition;
+
+    private ScheduledFuture<?> saveFuture;
 
     // untitled tab index
     private static int untitledTabIndex = 1;
@@ -276,7 +279,7 @@ public class TabData {
     }
 
     private void registerAutoSave() {
-        Constants.EXECUTOR_SERVICE.scheduleAtFixedRate(() -> {
+        this.saveFuture = Constants.EXECUTOR_SERVICE.scheduleAtFixedRate(() -> {
             if (this.filePath != null) {
                 String filePath = this.filePath;
                 String fileText = this.getFileText();
@@ -288,6 +291,12 @@ public class TabData {
                 }
             }
         }, 0, 10, TimeUnit.SECONDS);
+    }
+
+    public void unregisterAutoSave() {
+        if (this.saveFuture != null) {
+            this.saveFuture.cancel(false);
+        }
     }
 
     private boolean saveFile(String filePath, String fileText) {

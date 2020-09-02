@@ -1,8 +1,12 @@
 package in.pratanumandal.brainfuck.gui;
 
+import javafx.application.Platform;
+import javafx.scene.control.IndexRange;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.input.KeyCode;
+
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class DebugTerminal extends TextArea {
 
@@ -10,7 +14,7 @@ public class DebugTerminal extends TextArea {
 
     private String readBuffer;
 
-    private final Object readLock;
+    private final AtomicBoolean readLock;
 
     public DebugTerminal() {
         this(new String());
@@ -23,43 +27,55 @@ public class DebugTerminal extends TextArea {
 
         this.readBuffer = new String();
 
-        this.readLock = new Object();
-
-        this.setEditable(false);
+        this.readLock = new AtomicBoolean(false);
 
         this.getStyleClass().add("debug-terminal");
 
+        // disable changing text
         this.setTextFormatter(new TextFormatter<String>((TextFormatter.Change c) -> {
             String proposed = c.getControlNewText();
-            if (proposed.startsWith(this.existingText)) {
+            boolean readLock = this.readLock.get();
+            if (!readLock && proposed.equals(this.existingText)) {
+                return c;
+            } else if (readLock && proposed.startsWith(this.existingText)) {
                 return c;
             } else {
                 return null;
             }
         }));
 
+        // disable lock when enter key is pressed
         this.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ENTER) {
                 synchronized (this.readLock) {
-                    this.readLock.notify();
+                    this.readLock.set(false);
+                    this.readLock.notifyAll();
                 }
+            }
+        });
+
+        // correct mouse click at end of text
+        this.setOnMouseClicked(event -> {
+            if (this.getCaretPosition() == this.getLength()) {
+                this.positionCaret(0);
+                this.positionCaret(this.getLength());
             }
         });
     }
 
     public Character readChar() {
         if (this.readBuffer.isEmpty()) {
-            this.setEditable(true);
             this.positionCaret(this.getLength());
+            Platform.runLater(() -> this.requestFocus());
 
             synchronized (this.readLock) {
                 try {
+                    this.readLock.set(true);
                     this.readLock.wait();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
-            this.setEditable(false);
 
             this.readBuffer = this.getText().substring(this.existingText.length());
             this.existingText = this.getText();
@@ -74,8 +90,10 @@ public class DebugTerminal extends TextArea {
     }
 
     public void write(String text) {
+        IndexRange range = this.getSelection();
         this.existingText += text;
         this.setText(this.existingText);
+        this.selectRange(range.getStart(), range.getEnd());
     }
 
     public void clear() {
@@ -89,6 +107,7 @@ public class DebugTerminal extends TextArea {
 
     public void release() {
         synchronized (this.readLock) {
+            this.readLock.set(false);
             this.readLock.notifyAll();
         }
     }
