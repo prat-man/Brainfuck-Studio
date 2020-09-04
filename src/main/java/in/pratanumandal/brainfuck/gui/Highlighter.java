@@ -78,7 +78,10 @@ public class Highlighter {
                         int from = i * 500;
 
                         Platform.runLater(() -> {
-                            codeArea.setStyleSpans(from + start, styleSpans);
+                            try {
+                                codeArea.setStyleSpans(from + start, styleSpans);
+                            } catch (IndexOutOfBoundsException e) {}
+                            tabData.getBracketHighlighter().highlightBracket();
                         });
 
                         double progress = i / (double) splitText.length;
@@ -102,6 +105,7 @@ public class Highlighter {
                             try {
                                 codeArea.setStyleSpans(from + start, styleSpans);
                             } catch (IndexOutOfBoundsException e) {}
+                            tabData.getBracketHighlighter().highlightBracket();
                         });
 
                         try {

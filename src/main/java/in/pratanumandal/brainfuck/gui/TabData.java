@@ -28,7 +28,7 @@ public class TabData {
 
     private Tab tab;
     private SplitPane splitPane;
-    private CodeArea codeArea;
+    private CustomCodeArea codeArea;
     private Terminal terminal;
 
     private Button resumeButton;
@@ -45,6 +45,8 @@ public class TabData {
     private Debugger debugger;
     private DebugTerminal debugTerminal;
 
+    private BracketHighlighter bracketHighlighter;
+
     private String filePath;
     private boolean modified;
 
@@ -59,7 +61,7 @@ public class TabData {
     // untitled tab index
     private static int untitledTabIndex = 1;
 
-    public TabData(Tab tab, SplitPane splitPane, CodeArea codeArea, String filePath) throws IOException {
+    public TabData(Tab tab, SplitPane splitPane, CustomCodeArea codeArea, String filePath) throws IOException {
         this.tab = tab;
         this.splitPane = splitPane;
         this.codeArea = codeArea;
@@ -115,7 +117,7 @@ public class TabData {
         return splitPane;
     }
 
-    public CodeArea getCodeArea() {
+    public CustomCodeArea getCodeArea() {
         return codeArea;
     }
 
@@ -189,6 +191,14 @@ public class TabData {
 
     public Debugger getDebugger() {
         return debugger;
+    }
+
+    public BracketHighlighter getBracketHighlighter() {
+        return bracketHighlighter;
+    }
+
+    public void setBracketHighlighter(BracketHighlighter bracketHighlighter) {
+        this.bracketHighlighter = bracketHighlighter;
     }
 
     public void setTableView(TableView<Memory> tableView) {

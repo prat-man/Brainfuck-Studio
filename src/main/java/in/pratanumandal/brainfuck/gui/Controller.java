@@ -166,7 +166,7 @@ public class Controller {
         horizontalSplitPane.getItems().add(splitPane);
 
         // create a new code area
-        CodeArea codeArea = new CodeArea();
+        CustomCodeArea codeArea = new CustomCodeArea();
 
         // set context menu for code area
         codeArea.setContextMenu(new DefaultContextMenu());
@@ -185,6 +185,8 @@ public class Controller {
 
         // auto complete loops
         codeArea.setOnKeyTyped(keyEvent -> {
+            tabData.getBracketHighlighter().clearBracket();
+
             String character = keyEvent.getCharacter();
 
             if (character.equals("[")) {
@@ -200,6 +202,10 @@ public class Controller {
                 }
             }
         });
+
+        // highlight brackets
+        BracketHighlighter bracketHighlighter = new BracketHighlighter(tabData);
+        tabData.setBracketHighlighter(bracketHighlighter);
 
         // recompute the syntax highlighting 500 ms after user stops editing area
         Subscription subscription = codeArea
