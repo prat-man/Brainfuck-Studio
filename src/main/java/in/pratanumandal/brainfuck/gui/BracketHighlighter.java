@@ -1,6 +1,10 @@
 package in.pratanumandal.brainfuck.gui;
 
 import in.pratanumandal.brainfuck.common.Utils;
+import javafx.application.Platform;
+import javafx.event.Event;
+import org.fxmisc.richtext.NavigationActions;
+import org.fxmisc.richtext.model.GenericEditableStyledDocument;
 
 import java.util.*;
 
@@ -16,13 +20,10 @@ public class BracketHighlighter {
         this.tabData = tabData;
 
         this.brackets = new HashMap<>();
-
         this.bracketPairs = new ArrayList<>();
 
         this.tabData.getCodeArea().addTextInsertionListener((start, end, text) -> clearBracket());
-
         this.tabData.getCodeArea().textProperty().addListener((obs, oldVal, newVal) -> initializeBrackets(newVal));
-
         this.tabData.getCodeArea().caretPositionProperty().addListener((obs, oldVal, newVal) -> highlightBracket(newVal));
     }
 
@@ -64,24 +65,20 @@ public class BracketHighlighter {
             BracketPair pair = iterator.next();
 
             if (pair.start < this.tabData.getCodeArea().getLength()) {
-                Utils.runAndWait(() -> {
-                    String text = this.tabData.getCodeArea().getText(pair.start, pair.start + 1);
-                    if (text.equals("[") || text.equals("]")) {
-                        List<String> styleList = new ArrayList<>();
-                        styleList.add("loop");
-                        this.tabData.getCodeArea().setStyle(pair.start, pair.start + 1, styleList);
-                    }
-                });
+                String text = this.tabData.getCodeArea().getText(pair.start, pair.start + 1);
+                if (text.equals("[") || text.equals("]")) {
+                    List<String> styleList = new ArrayList<>();
+                    styleList.add("loop");
+                    this.tabData.getCodeArea().setStyle(pair.start, pair.start + 1, styleList);
+                }
             }
             if (pair.end < this.tabData.getCodeArea().getLength()) {
-                Utils.runAndWait(() -> {
-                    String text = this.tabData.getCodeArea().getText(pair.end, pair.end + 1);
-                    if (text.equals("[") || text.equals("]")) {
-                        List<String> styleList = new ArrayList<>();
-                        styleList.add("loop");
-                        this.tabData.getCodeArea().setStyle(pair.end, pair.end + 1, styleList);
-                    }
-                });
+                String text = this.tabData.getCodeArea().getText(pair.end, pair.end + 1);
+                if (text.equals("[") || text.equals("]")) {
+                    List<String> styleList = new ArrayList<>();
+                    styleList.add("loop");
+                    this.tabData.getCodeArea().setStyle(pair.end, pair.end + 1, styleList);
+                }
             }
 
             iterator.remove();
@@ -93,26 +90,22 @@ public class BracketHighlighter {
             BracketPair pair = new BracketPair(newVal, other);
 
             if (pair.start < this.tabData.getCodeArea().getLength()) {
-                Utils.runAndWait(() -> {
-                    String text = this.tabData.getCodeArea().getText(pair.start, pair.start + 1);
-                    if (text.equals("[") || text.equals("]")) {
-                        List<String> styleList = new ArrayList<>();
-                        styleList.add("loop");
-                        styleList.add("match");
-                        this.tabData.getCodeArea().setStyle(pair.start, pair.start + 1, styleList);
-                    }
-                });
+                String text = this.tabData.getCodeArea().getText(pair.start, pair.start + 1);
+                if (text.equals("[") || text.equals("]")) {
+                    List<String> styleList = new ArrayList<>();
+                    styleList.add("loop");
+                    styleList.add("match");
+                    this.tabData.getCodeArea().setStyle(pair.start, pair.start + 1, styleList);
+                }
             }
             if (pair.end < this.tabData.getCodeArea().getLength()) {
-                Utils.runAndWait(() -> {
-                    String text = this.tabData.getCodeArea().getText(pair.end, pair.end + 1);
-                    if (text.equals("[") || text.equals("]")) {
-                        List<String> styleList = new ArrayList<>();
-                        styleList.add("loop");
-                        styleList.add("match");
-                        this.tabData.getCodeArea().setStyle(pair.end, pair.end + 1, styleList);
-                    }
-                });
+                String text = this.tabData.getCodeArea().getText(pair.end, pair.end + 1);
+                if (text.equals("[") || text.equals("]")) {
+                    List<String> styleList = new ArrayList<>();
+                    styleList.add("loop");
+                    styleList.add("match");
+                    this.tabData.getCodeArea().setStyle(pair.end, pair.end + 1, styleList);
+                }
             }
 
             this.bracketPairs.add(pair);
