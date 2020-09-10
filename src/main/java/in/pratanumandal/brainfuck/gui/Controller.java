@@ -180,20 +180,30 @@ public class Controller {
         // enable text wrapping
         codeArea.setWrapText(true);
 
+        // highlight brackets
+        BracketHighlighter bracketHighlighter = new BracketHighlighter(codeArea);
+
         // create new tab data
-        TabData tabData = new TabData(tab, splitPane, codeArea, filePath);
+        TabData tabData = new TabData(tab, splitPane, codeArea, bracketHighlighter, filePath);
+
+        // set tab data of code area
+        codeArea.setTabData(tabData);
 
         // auto complete loops
         codeArea.setOnKeyTyped(keyEvent -> {
-            tabData.getBracketHighlighter().clearBracket();
+            // clear bracket highlighting
+            bracketHighlighter.clearBracket();
 
+            // get typed character
             String character = keyEvent.getCharacter();
 
+            // add a ] if [ is typed
             if (character.equals("[")) {
                 int position = codeArea.getCaretPosition();
                 codeArea.insert(position, "]", "loop");
                 codeArea.moveTo(position);
             }
+            // remove next ] if ] is typed
             else if (character.equals("]")) {
                 int position = codeArea.getCaretPosition();
                 if (position != codeArea.getLength()) {
@@ -201,11 +211,16 @@ public class Controller {
                     if (nextChar.equals("]")) codeArea.deleteText(position, position + 1);
                 }
             }
+            // remove adjacent ] if [ is removed
+            else if (character.equals("\b")) {
+                int position = codeArea.getLastBracketDelete();
+                if (position != -1) {
+                    if (position < codeArea.getLength() && codeArea.getText(position, position + 1).equals("]")) {
+                        codeArea.deleteText(position, position + 1);
+                    }
+                }
+            }
         });
-
-        // highlight brackets
-        BracketHighlighter bracketHighlighter = new BracketHighlighter(tabData);
-        tabData.setBracketHighlighter(bracketHighlighter);
 
         // recompute the syntax highlighting 500 ms after user stops editing area
         Subscription subscription = codeArea

@@ -1,36 +1,51 @@
 package in.pratanumandal.brainfuck.gui;
 
-import in.pratanumandal.brainfuck.common.Utils;
 import javafx.application.Platform;
-import javafx.event.Event;
-import org.fxmisc.richtext.NavigationActions;
-import org.fxmisc.richtext.model.GenericEditableStyledDocument;
 
 import java.util.*;
 
 public class BracketHighlighter {
 
-    private final TabData tabData;
+    // the code area
+    private final CustomCodeArea codeArea;
 
+    // the map of bracket pairs existing in code
     private Map<Integer, Integer> brackets;
 
+    // the list of highlighted bracket pairs
     private List<BracketPair> bracketPairs;
 
-    public BracketHighlighter(TabData tabData) {
-        this.tabData = tabData;
+    /**
+     * Style lists
+     */
+    private static final List<String> LOOP_STYLE = Collections.singletonList("loop");
+    private static final List<String> MATCH_STYLE = Arrays.asList("match", "loop");
+
+    /**
+     * Parameterized constructor
+     * @param codeArea the code area
+     */
+    public BracketHighlighter(CustomCodeArea codeArea) {
+        this.codeArea = codeArea;
 
         this.brackets = new HashMap<>();
         this.bracketPairs = new ArrayList<>();
 
-        this.tabData.getCodeArea().addTextInsertionListener((start, end, text) -> clearBracket());
-        this.tabData.getCodeArea().textProperty().addListener((obs, oldVal, newVal) -> initializeBrackets(newVal));
-        this.tabData.getCodeArea().caretPositionProperty().addListener((obs, oldVal, newVal) -> highlightBracket(newVal));
+        this.codeArea.addTextInsertionListener((start, end, text) -> clearBracket());
+        this.codeArea.textProperty().addListener((obs, oldVal, newVal) -> initializeBrackets(newVal));
+        this.codeArea.caretPositionProperty().addListener((obs, oldVal, newVal) -> Platform.runLater(() -> highlightBracket(newVal)));
     }
 
-    private synchronized void initializeBrackets(String code) {
-
+    /**
+     * Method to initialize the bracket pairs (do only when text is changed)
+     *
+     * @param code the next text
+     */
+    public synchronized void initializeBrackets(String code) {
+        // clear bracket map
         this.brackets.clear();
 
+        // compute matching brackets and add to map
         Stack<Integer> stack = new Stack<>();
         int index = 0;
 
@@ -52,75 +67,92 @@ public class BracketHighlighter {
                 index = j + 1;
             }
         }
-
     }
 
+    /**
+     * Highlight the matching bracket at new caret position
+     *
+     * @param newVal the new caret position
+     */
     private synchronized void highlightBracket(int newVal) {
+        // first clear existing bracket highlights
+        this.clearBracket();
 
-        String prevChar = (newVal > 0) ? this.tabData.getCodeArea().getText(newVal - 1, newVal) : "";
+        // detect caret position both before and after bracket
+        String prevChar = (newVal > 0 && newVal <= codeArea.getLength()) ? codeArea.getText(newVal - 1, newVal) : "";
         if (prevChar.equals("[") || prevChar.equals("]")) newVal--;
 
-        Iterator<BracketPair> iterator = this.bracketPairs.iterator();
-        while (iterator.hasNext()) {
-            BracketPair pair = iterator.next();
-
-            if (pair.start < this.tabData.getCodeArea().getLength()) {
-                String text = this.tabData.getCodeArea().getText(pair.start, pair.start + 1);
-                if (text.equals("[") || text.equals("]")) {
-                    List<String> styleList = new ArrayList<>();
-                    styleList.add("loop");
-                    this.tabData.getCodeArea().setStyle(pair.start, pair.start + 1, styleList);
-                }
-            }
-            if (pair.end < this.tabData.getCodeArea().getLength()) {
-                String text = this.tabData.getCodeArea().getText(pair.end, pair.end + 1);
-                if (text.equals("[") || text.equals("]")) {
-                    List<String> styleList = new ArrayList<>();
-                    styleList.add("loop");
-                    this.tabData.getCodeArea().setStyle(pair.end, pair.end + 1, styleList);
-                }
-            }
-
-            iterator.remove();
-        }
-
+        // get other half of matching bracket
         Integer other = this.brackets.get(newVal);
 
         if (other != null) {
+            // other half exists
             BracketPair pair = new BracketPair(newVal, other);
 
-            if (pair.start < this.tabData.getCodeArea().getLength()) {
-                String text = this.tabData.getCodeArea().getText(pair.start, pair.start + 1);
-                if (text.equals("[") || text.equals("]")) {
-                    List<String> styleList = new ArrayList<>();
-                    styleList.add("loop");
-                    styleList.add("match");
-                    this.tabData.getCodeArea().setStyle(pair.start, pair.start + 1, styleList);
-                }
-            }
-            if (pair.end < this.tabData.getCodeArea().getLength()) {
-                String text = this.tabData.getCodeArea().getText(pair.end, pair.end + 1);
-                if (text.equals("[") || text.equals("]")) {
-                    List<String> styleList = new ArrayList<>();
-                    styleList.add("loop");
-                    styleList.add("match");
-                    this.tabData.getCodeArea().setStyle(pair.end, pair.end + 1, styleList);
-                }
-            }
+            // highlight pair
+            styleBrackets(pair, MATCH_STYLE);
 
+            // add bracket pair to list
             this.bracketPairs.add(pair);
         }
-
     }
 
+    /**
+     * Highlight the matching bracket at current caret position
+     */
     public synchronized void highlightBracket() {
-        this.highlightBracket(this.tabData.getCodeArea().getCaretPosition());
+        this.highlightBracket(codeArea.getCaretPosition());
     }
 
+    /**
+     * Clear the existing highlighted bracket styles
+     */
     public synchronized void clearBracket() {
-        this.highlightBracket(-1);
+        // get iterator of bracket pairs
+        Iterator<BracketPair> iterator = this.bracketPairs.iterator();
+
+        // loop through bracket pairs and clear all
+        while (iterator.hasNext()) {
+            // get next bracket pair
+            BracketPair pair = iterator.next();
+
+            // clear pair
+            styleBrackets(pair, LOOP_STYLE);
+
+            // remove bracket pair from list
+            iterator.remove();
+        }
     }
 
+    /**
+     * Set a list of styles to a pair of brackets
+     *
+     * @param pair pair of brackets
+     * @param styles the style list to set
+     */
+    private void styleBrackets(BracketPair pair, List<String> styles) {
+        styleBracket(pair.start, styles);
+        styleBracket(pair.end, styles);
+    }
+
+    /**
+     * Set a list of styles for a position
+     *
+     * @param pos the position
+     * @param styles the style list to set
+     */
+    private void styleBracket(int pos, List<String> styles) {
+        if (pos < codeArea.getLength()) {
+            String text = codeArea.getText(pos, pos + 1);
+            if (text.equals("[") || text.equals("]")) {
+                codeArea.setStyle(pos, pos + 1, styles);
+            }
+        }
+    }
+
+    /**
+     * Class representing a pair of matching bracket indices
+     */
     static class BracketPair {
 
         private int start;

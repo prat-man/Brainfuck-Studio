@@ -26,9 +26,9 @@ import java.util.concurrent.TimeUnit;
 
 public class TabData {
 
-    private Tab tab;
-    private SplitPane splitPane;
-    private CustomCodeArea codeArea;
+    private final Tab tab;
+    private final SplitPane splitPane;
+    private final CustomCodeArea codeArea;
     private Terminal terminal;
 
     private Button resumeButton;
@@ -45,7 +45,7 @@ public class TabData {
     private Debugger debugger;
     private DebugTerminal debugTerminal;
 
-    private BracketHighlighter bracketHighlighter;
+    private final BracketHighlighter bracketHighlighter;
 
     private String filePath;
     private boolean modified;
@@ -61,10 +61,11 @@ public class TabData {
     // untitled tab index
     private static int untitledTabIndex = 1;
 
-    public TabData(Tab tab, SplitPane splitPane, CustomCodeArea codeArea, String filePath) throws IOException {
+    public TabData(Tab tab, SplitPane splitPane, CustomCodeArea codeArea, BracketHighlighter bracketHighlighter, String filePath) throws IOException {
         this.tab = tab;
         this.splitPane = splitPane;
         this.codeArea = codeArea;
+        this.bracketHighlighter = bracketHighlighter;
         this.filePath = filePath;
         this.modified = false;
         this.dividerPosition = 0.5;
@@ -98,6 +99,9 @@ public class TabData {
             PlainTextChange change = new PlainTextChange(0, null, fileText);
             changes.add(change);
             Highlighter.computeHighlighting(changes, this);
+
+            // highlight brackets
+            bracketHighlighter.initializeBrackets(fileText);
         }
 
         codeArea.textProperty().addListener((observableValue, oldVal, newVal) -> {
@@ -195,10 +199,6 @@ public class TabData {
 
     public BracketHighlighter getBracketHighlighter() {
         return bracketHighlighter;
-    }
-
-    public void setBracketHighlighter(BracketHighlighter bracketHighlighter) {
-        this.bracketHighlighter = bracketHighlighter;
     }
 
     public void setTableView(TableView<Memory> tableView) {

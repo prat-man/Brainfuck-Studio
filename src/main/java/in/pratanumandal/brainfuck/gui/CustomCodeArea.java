@@ -2,27 +2,30 @@ package in.pratanumandal.brainfuck.gui;
 
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.model.EditableStyledDocument;
+import org.fxmisc.richtext.model.PlainTextChange;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class CustomCodeArea extends CodeArea {
 
-    private List<TextInsertionListener> insertionListeners;
-
-    public CustomCodeArea(EditableStyledDocument<Collection<String>, String, Collection<String>> document) {
-        super(document);
-        this.insertionListeners = new ArrayList<>();
-    }
+    private TabData tabData;
+    private List<TextInsertionListener> insertionListeners = new ArrayList<>();
+    private AtomicInteger lastBracketDelete = new AtomicInteger(-1);
 
     public CustomCodeArea() {
-        this.insertionListeners = new ArrayList<>();
+        super();
     }
 
     public CustomCodeArea(String text) {
         super(text);
-        this.insertionListeners = new ArrayList<>();
+    }
+
+    public CustomCodeArea(EditableStyledDocument<Collection<String>, String, Collection<String>> document) {
+        super(document);
     }
 
     public void addTextInsertionListener(TextInsertionListener listener) {
@@ -33,12 +36,39 @@ public class CustomCodeArea extends CodeArea {
         insertionListeners.remove(listener);
     }
 
+    public TabData getTabData() {
+        return tabData;
+    }
+
+    public void setTabData(TabData tabData) {
+        this.tabData = tabData;
+    }
+
+    public Integer getLastBracketDelete() {
+        return this.lastBracketDelete.get();
+    }
+
     @Override
     public void replaceText(int start, int end, String text) {
+        // notify all listeners
         for (TextInsertionListener listener : insertionListeners) {
             listener.codeInserted(start, end, text);
         }
+
+        // set last change
+        if (text.isEmpty() && getText(start, end).equals("[") && getSelectedText().isEmpty()) this.lastBracketDelete.set(start);
+        else this.lastBracketDelete.set(-1);
+
+        // call super
         super.replaceText(start, end, text);
+
+        // recompute highlighting
+        if (start != end && tabData != null) {
+            List<PlainTextChange> changes = new ArrayList<>();
+            PlainTextChange change = new PlainTextChange(start, null, text);
+            changes.add(change);
+            Highlighter.computeHighlighting(changes, tabData);
+        }
     }
 
 }
