@@ -220,6 +220,9 @@ public class Controller {
                     }
                 }
             }
+
+            // refresh bracket highlighting
+            bracketHighlighter.highlightBracket();
         });
 
         // recompute the syntax highlighting 500 ms after user stops editing area

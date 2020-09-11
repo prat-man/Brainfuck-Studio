@@ -3,12 +3,12 @@ package in.pratanumandal.brainfuck.gui;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.model.EditableStyledDocument;
 import org.fxmisc.richtext.model.PlainTextChange;
+import org.fxmisc.richtext.model.StyledDocument;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class CustomCodeArea extends CodeArea {
 
@@ -49,7 +49,10 @@ public class CustomCodeArea extends CodeArea {
     }
 
     @Override
-    public void replaceText(int start, int end, String text) {
+    public void replace(int start, int end, StyledDocument<Collection<String>, String, Collection<String>> replacement) {
+        // get replacement text
+        String text = replacement.getText();
+
         // notify all listeners
         for (TextInsertionListener listener : insertionListeners) {
             listener.codeInserted(start, end, text);
@@ -60,7 +63,7 @@ public class CustomCodeArea extends CodeArea {
         else this.lastBracketDelete.set(-1);
 
         // call super
-        super.replaceText(start, end, text);
+        super.replace(start, end, replacement);
 
         // recompute highlighting
         if (start != end && tabData != null) {
