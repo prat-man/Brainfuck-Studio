@@ -41,7 +41,7 @@ public class BracketHighlighter {
      *
      * @param code the next text
      */
-    public synchronized void initializeBrackets(String code) {
+    public void initializeBrackets(String code) {
         // clear bracket map
         this.brackets.clear();
 
@@ -74,7 +74,7 @@ public class BracketHighlighter {
      *
      * @param newVal the new caret position
      */
-    private synchronized void highlightBracket(int newVal) {
+    private void highlightBracket(int newVal) {
         // first clear existing bracket highlights
         this.clearBracket();
 
@@ -100,14 +100,14 @@ public class BracketHighlighter {
     /**
      * Highlight the matching bracket at current caret position
      */
-    public synchronized void highlightBracket() {
+    public void highlightBracket() {
         this.highlightBracket(codeArea.getCaretPosition());
     }
 
     /**
      * Clear the existing highlighted bracket styles
      */
-    public synchronized void clearBracket() {
+    public void clearBracket() {
         // get iterator of bracket pairs
         Iterator<BracketPair> iterator = this.bracketPairs.iterator();
 
