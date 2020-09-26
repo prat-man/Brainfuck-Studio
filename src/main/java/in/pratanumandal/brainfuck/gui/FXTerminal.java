@@ -80,8 +80,11 @@ public class FXTerminal extends TextArea {
         this.future = scheduler.scheduleWithFixedDelay(() -> {
             synchronized (this.writeBuffer) {
                 if (this.writeBuffer.length() > 0) {
-                    this.existingText += this.writeBuffer.toString();
+                    String newText = this.writeBuffer.toString();
                     this.writeBuffer.setLength(0);
+
+                    String sanitizedText = newText.replaceAll("[\\p{Cc}\\p{Cf}\\p{Co}\\p{Cn}&&[^\\s]]", "\uFFFD");
+                    this.existingText += sanitizedText;
 
                     if (this.autoScroll.get()) {
                         //set text
