@@ -371,7 +371,6 @@
     -fx-border-radius: 0;
 }
 .terminal .scroll-pane {
-    -fx-background-color: #535861;
     -fx-background-insets: 0;
     -fx-background-radius: 0;
     -fx-padding: 0;
@@ -474,6 +473,6 @@
     -fx-background-radius: 2.0em;
 }
 
-.virtualized-scroll-pane, .corner, .filler, .scroll-pane > .corner {
+.virtualized-scroll-pane, .scroll-pane, .corner, .filler {
     -fx-background-color: #626770;
 }
