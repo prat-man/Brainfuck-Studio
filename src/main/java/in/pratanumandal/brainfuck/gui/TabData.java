@@ -2,17 +2,14 @@ package in.pratanumandal.brainfuck.gui;
 
 import in.pratanumandal.brainfuck.common.Constants;
 import in.pratanumandal.brainfuck.engine.Debugger;
+import in.pratanumandal.brainfuck.engine.Interpreter;
 import in.pratanumandal.brainfuck.engine.Memory;
-import in.pratanumandal.brainfuck.gui.DebugTerminal;
-import in.pratanumandal.brainfuck.gui.Highlighter;
-import in.pratanumandal.brainfuck.gui.terminal.Terminal;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
-import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.model.PlainTextChange;
 
 import java.io.File;
@@ -29,21 +26,29 @@ public class TabData {
     private final Tab tab;
     private final SplitPane splitPane;
     private final CustomCodeArea codeArea;
-    private Terminal terminal;
+    //private Terminal terminal;
 
-    private Button resumeButton;
-    private Button pauseButton;
-    private Button stepButton;
-    private Button stopButton;
-    private Button closeButton;
+    private Button debugResumeButton;
+    private Button debugPauseButton;
+    private Button debugStepButton;
+    private Button debugStopButton;
+    private Button debugCloseButton;
     private Slider debugSpeed;
 
-    private ObservableList<Memory> memory;
+    private Button interpretStopButton;
+    private Button interpretCloseButton;
+
     private VBox debug;
+    private ObservableList<Memory> memory;
     private TableView<Memory> tableView;
 
+    private VBox interpret;
+
     private Debugger debugger;
-    private DebugTerminal debugTerminal;
+    private FXTerminal debugTerminal;
+
+    private Interpreter interpreter;
+    private FXTerminal interpretTerminal;
 
     private final BracketHighlighter bracketHighlighter;
 
@@ -72,6 +77,7 @@ public class TabData {
         this.memory = FXCollections.observableArrayList();
 
         this.debugger = new Debugger(this);
+        this.interpreter = new Interpreter(this);
 
         if (this.filePath == null) {
             tab.setText("Untitled " + untitledTabIndex++);
@@ -125,52 +131,52 @@ public class TabData {
         return codeArea;
     }
 
-    public Terminal getTerminal() {
+    /*public Terminal getTerminal() {
         return terminal;
     }
 
     public void setTerminal(Terminal terminal) {
         this.terminal = terminal;
+    }*/
+
+    public Button getDebugResumeButton() {
+        return debugResumeButton;
     }
 
-    public Button getResumeButton() {
-        return resumeButton;
+    public void setDebugResumeButton(Button debugResumeButton) {
+        this.debugResumeButton = debugResumeButton;
     }
 
-    public void setResumeButton(Button resumeButton) {
-        this.resumeButton = resumeButton;
+    public Button getDebugPauseButton() {
+        return debugPauseButton;
     }
 
-    public Button getPauseButton() {
-        return pauseButton;
+    public void setDebugPauseButton(Button debugPauseButton) {
+        this.debugPauseButton = debugPauseButton;
     }
 
-    public void setPauseButton(Button pauseButton) {
-        this.pauseButton = pauseButton;
+    public Button getDebugStepButton() {
+        return debugStepButton;
     }
 
-    public Button getStepButton() {
-        return stepButton;
+    public void setDebugStepButton(Button debugStepButton) {
+        this.debugStepButton = debugStepButton;
     }
 
-    public void setStepButton(Button stepButton) {
-        this.stepButton = stepButton;
+    public Button getDebugStopButton() {
+        return debugStopButton;
     }
 
-    public Button getStopButton() {
-        return stopButton;
+    public void setDebugStopButton(Button debugStopButton) {
+        this.debugStopButton = debugStopButton;
     }
 
-    public void setStopButton(Button stopButton) {
-        this.stopButton = stopButton;
+    public Button getDebugCloseButton() {
+        return debugCloseButton;
     }
 
-    public Button getCloseButton() {
-        return closeButton;
-    }
-
-    public void setCloseButton(Button closeButton) {
-        this.closeButton = closeButton;
+    public void setDebugCloseButton(Button debugCloseButton) {
+        this.debugCloseButton = debugCloseButton;
     }
 
     public Slider getDebugSpeed() {
@@ -181,12 +187,36 @@ public class TabData {
         this.debugSpeed = debugSpeed;
     }
 
-    public DebugTerminal getDebugTerminal() {
+    public Button getInterpretStopButton() {
+        return interpretStopButton;
+    }
+
+    public void setInterpretStopButton(Button interpretStopButton) {
+        this.interpretStopButton = interpretStopButton;
+    }
+
+    public Button getInterpretCloseButton() {
+        return interpretCloseButton;
+    }
+
+    public void setInterpretCloseButton(Button interpretCloseButton) {
+        this.interpretCloseButton = interpretCloseButton;
+    }
+
+    public FXTerminal getDebugTerminal() {
         return debugTerminal;
     }
 
-    public void setDebugTerminal(DebugTerminal debugTerminal) {
+    public void setDebugTerminal(FXTerminal debugTerminal) {
         this.debugTerminal = debugTerminal;
+    }
+
+    public FXTerminal getInterpretTerminal() {
+        return interpretTerminal;
+    }
+
+    public void setInterpretTerminal(FXTerminal interpretTerminal) {
+        this.interpretTerminal = interpretTerminal;
     }
 
     public TableView<Memory> getTableView() {
@@ -195,6 +225,10 @@ public class TabData {
 
     public Debugger getDebugger() {
         return debugger;
+    }
+
+    public Interpreter getInterpreter() {
+        return interpreter;
     }
 
     public BracketHighlighter getBracketHighlighter() {

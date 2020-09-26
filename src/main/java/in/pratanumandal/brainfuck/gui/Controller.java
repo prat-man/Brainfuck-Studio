@@ -3,8 +3,6 @@ package in.pratanumandal.brainfuck.gui;
 import in.pratanumandal.brainfuck.engine.Memory;
 import in.pratanumandal.brainfuck.common.Constants;
 import in.pratanumandal.brainfuck.common.Utils;
-import in.pratanumandal.brainfuck.gui.terminal.Terminal;
-import in.pratanumandal.brainfuck.gui.terminal.config.TerminalConfig;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -22,11 +20,9 @@ import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import org.apache.commons.lang3.SystemUtils;
 import org.fxmisc.flowless.VirtualizedScrollPane;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.LineNumberFactory;
@@ -39,8 +35,6 @@ import java.nio.file.Path;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.*;
-import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -178,7 +172,7 @@ public class Controller {
         codeArea.setParagraphGraphicFactory(LineNumberFactory.get(codeArea));
 
         // enable text wrapping
-        codeArea.setWrapText(true);
+        //codeArea.setWrapText(true);
 
         // highlight brackets
         BracketHighlighter bracketHighlighter = new BracketHighlighter(codeArea);
@@ -244,10 +238,8 @@ public class Controller {
         final Pattern whiteSpace = Pattern.compile("^\\s+");
         codeArea.addEventHandler(KeyEvent.KEY_PRESSED, KE -> {
             if (KE.getCode() == KeyCode.ENTER) {
-                int caretPosition = codeArea.getCaretPosition();
-                int currentParagraph = codeArea.getCurrentParagraph();
-                Matcher m0 = whiteSpace.matcher(codeArea.getParagraph(currentParagraph - 1).getSegments().get(0));
-                if (m0.find()) Platform.runLater(() -> codeArea.insertText(caretPosition, m0.group()));
+                Matcher matcher = whiteSpace.matcher(codeArea.getParagraph(codeArea.getCurrentParagraph() - 1).getSegments().get(0));
+                if (matcher.find()) Platform.runLater(() -> codeArea.insertText(codeArea.getCaretPosition(), matcher.group()));
             }
         });
 
@@ -263,11 +255,11 @@ public class Controller {
         debugTerminalControls.setAlignment(Pos.CENTER_LEFT);
 
         // add title to toolbar
-        Label label = new Label("Debug Terminal");
-        debugTerminalControls.getChildren().add(label);
+        Label debugLabel = new Label("Debug Terminal");
+        debugTerminalControls.getChildren().add(debugLabel);
 
         // create a debug terminal
-        DebugTerminal debugTerminal = new DebugTerminal();
+        FXTerminal debugTerminal = new FXTerminal();
 
         // set the debug terminal
         tabData.setDebugTerminal(debugTerminal);
@@ -277,10 +269,10 @@ public class Controller {
         debugTerminalToolbar.getChildren().add(debugTerminalControls);
         debugTerminalToolbar.getChildren().add(debugTerminal);
 
-        // set font size for code area
-        debugTerminalToolbar.setStyle("-fx-background-color: #585D66;");
+        // set style of interpreter toolbar
+        debugTerminalToolbar.getStyleClass().add("terminal-toolbar");
 
-        // bind terminal height property
+        // bind debug terminal height property
         debugTerminal.prefHeightProperty().bind(debugTerminalToolbar.heightProperty());
 
         // bind debug terminal visibility
@@ -324,18 +316,18 @@ public class Controller {
 
         Button resumeButton = generateDebugButton("run", "Resume");
         resumeButton.setOnAction(event -> tabData.getDebugger().resume());
-        tabData.setResumeButton(resumeButton);
+        tabData.setDebugResumeButton(resumeButton);
         debugTools.getChildren().add(resumeButton);
         resumeButton.setDisable(true);
 
         Button pauseButton = generateDebugButton("pause", "Pause");
         pauseButton.setOnAction(event -> tabData.getDebugger().pause());
-        tabData.setPauseButton(pauseButton);
+        tabData.setDebugPauseButton(pauseButton);
         debugTools.getChildren().add(pauseButton);
 
         Button stepButton = generateDebugButton("step", "Step");
         stepButton.setOnAction(event -> tabData.getDebugger().step());
-        tabData.setStepButton(stepButton);
+        tabData.setDebugStepButton(stepButton);
         debugTools.getChildren().add(stepButton);
 
         // add spacer
@@ -343,19 +335,19 @@ public class Controller {
         HBox.setHgrow(spacer, Priority.ALWAYS);
         debugTools.getChildren().add(spacer);
 
-        Button stopButton = generateDebugButton("stop", "Stop");
-        stopButton.setOnAction(event -> tabData.getDebugger().stop());
-        tabData.setStopButton(stopButton);
-        debugTools.getChildren().add(stopButton);
+        Button debugStopButton = generateDebugButton("stop", "Stop");
+        debugStopButton.setOnAction(event -> tabData.getDebugger().stop());
+        tabData.setDebugStopButton(debugStopButton);
+        debugTools.getChildren().add(debugStopButton);
 
-        Button closeButton = generateDebugButton("close", "Close");
-        closeButton.setOnAction(event -> {
+        Button debugCloseButton = generateDebugButton("close", "Close");
+        debugCloseButton.setOnAction(event -> {
             debug.setVisible(false);
             debugTerminal.setVisible(false);
         });
-        tabData.setCloseButton(closeButton);
-        debugTools.getChildren().add(closeButton);
-        closeButton.setDisable(true);
+        tabData.setDebugCloseButton(debugCloseButton);
+        debugTools.getChildren().add(debugCloseButton);
+        debugCloseButton.setDisable(true);
 
         // debug speed controls
         HBox debugSpeedControls = new HBox();
@@ -435,6 +427,94 @@ public class Controller {
         }
         tableView.setItems(memory);
 
+        // create toolbar for interpreter terminal
+        HBox interpreterTerminalControls = new HBox();
+        interpreterTerminalControls.setPadding(new Insets(5, 5, 6, 5));
+        interpreterTerminalControls.setSpacing(7);
+        interpreterTerminalControls.setAlignment(Pos.CENTER_LEFT);
+
+        // add title to toolbar
+        Label interpreterLabel = new Label("Interpreter Terminal");
+        interpreterTerminalControls.getChildren().add(interpreterLabel);
+
+        // add spacer
+        Pane spacerPane = new Pane();
+        HBox.setHgrow(spacerPane, Priority.ALWAYS);
+        interpreterTerminalControls.getChildren().add(spacerPane);
+
+        // add stop button
+        Button interpreterStopButton = new Button();
+        Image stopImage = new Image(getClass().getClassLoader().getResourceAsStream("images/stop.png"));
+        ImageView stopImageView = new ImageView(stopImage);
+        interpreterStopButton.setGraphic(stopImageView);
+        interpreterStopButton.getStyleClass().add("secondary");
+        interpreterTerminalControls.getChildren().add(interpreterStopButton);
+
+        // set stop button tooltip
+        Tooltip stopTooltip = new Tooltip("Stop");
+        stopTooltip.setShowDelay(Duration.millis(300));
+        interpreterStopButton.setTooltip(stopTooltip);
+
+        // set interpreter stop button
+        tabData.setInterpretStopButton(interpreterStopButton);
+
+        // add close button
+        Button interpreterCloseButton = new Button();
+        Image closeImage = new Image(getClass().getClassLoader().getResourceAsStream("images/close.png"));
+        ImageView closeImageView = new ImageView(closeImage);
+        interpreterCloseButton.setGraphic(closeImageView);
+        interpreterCloseButton.getStyleClass().add("secondary");
+        interpreterCloseButton.setDisable(true);
+        interpreterTerminalControls.getChildren().add(interpreterCloseButton);
+
+        // set interpreter close button
+        tabData.setInterpretCloseButton(interpreterCloseButton);
+
+        // set close button tooltip
+        Tooltip closeTooltip = new Tooltip("Close");
+        closeTooltip.setShowDelay(Duration.millis(300));
+        interpreterCloseButton.setTooltip(closeTooltip);
+
+        // create a interpreter terminal
+        FXTerminal interpreterTerminal = new FXTerminal();
+
+        // set the interpreter terminal
+        tabData.setInterpretTerminal(interpreterTerminal);
+
+        // add interpreter terminal toolbar and interpreter terminal to vbox
+        VBox interpreterTerminalToolbar = new VBox();
+        interpreterTerminalToolbar.getChildren().add(interpreterTerminalControls);
+        interpreterTerminalToolbar.getChildren().add(interpreterTerminal);
+
+        // set style of interpreter toolbar
+        interpreterTerminalToolbar.getStyleClass().add("terminal-toolbar");
+
+        // bind interpreter terminal height property
+        interpreterTerminal.prefHeightProperty().bind(interpreterTerminalToolbar.heightProperty());
+
+        // bind interpreter terminal visibility
+        interpreterTerminal.setVisible(false);
+        interpreterTerminalToolbar.setVisible(false);
+        interpreterTerminalToolbar.managedProperty().bind(interpreterTerminal.visibleProperty());
+        interpreterTerminalToolbar.visibleProperty().bind(interpreterTerminal.visibleProperty());
+        interpreterTerminal.managedProperty().bind(interpreterTerminal.visibleProperty());
+        interpreterTerminal.visibleProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal) {
+                splitPane.getItems().add(interpreterTerminalToolbar);
+                splitPane.setDividerPositions(tabData.getDividerPosition());
+            }
+            else {
+                tabData.setDividerPosition(tabData.getSplitPane().getDividerPositions()[0]);
+                splitPane.getItems().remove(interpreterTerminalToolbar);
+            }
+        });
+
+        // add stop button action
+        interpreterStopButton.setOnAction(actionEvent -> tabData.getInterpreter().stop());
+
+        // add close button action
+        interpreterCloseButton.setOnAction(actionEvent -> interpreterTerminal.setVisible(false));
+
         // set tab content
         tab.setContent(horizontalSplitPane);
 
@@ -449,20 +529,9 @@ public class Controller {
                     tabData.getDebugger().stop();
                     tabData.getDebug().setVisible(false);
                     tabData.getDebugTerminal().setVisible(false);
-                } else {
-                    // remove old vbox from split pane if present
-                    Terminal oldTerminal = tabData.getTerminal();
-                    if (oldTerminal != null) {
-                        oldTerminal.onTerminalFxReady(() -> {
-                            Process process = oldTerminal.getProcess();
-                            if (process.isAlive()) process.destroyForcibly();
-                        });
-                        if (tabData.getSplitPane().getItems().size() > 1) {
-                            tabData.setDividerPosition(tabData.getSplitPane().getDividerPositions()[0]);
-                            tabData.getSplitPane().getItems().remove(1);
-                            tabData.setTerminal(null);
-                        }
-                    }
+                } else if (tabData.getInterpreter().isAlive()) {
+                    tabData.getInterpreter().stop();
+                    tabData.getInterpretTerminal().setVisible(false);
                 }
             }
 
@@ -475,6 +544,9 @@ public class Controller {
 
             // unregister auto save
             tabData.unregisterAutoSave();
+
+            tabData.getDebugTerminal().destroy();
+            tabData.getInterpretTerminal().destroy();
         });
 
         tab.setOnCloseRequest(event -> {
@@ -948,27 +1020,16 @@ public class Controller {
         TabData tabData = currentTab;
         saveFile();
         if (tabData.getFilePath() != null) {
-            if (tabData.getDebugger().isAlive()) {
-                tabData.getDebugger().stop();
-                tabData.getDebug().setVisible(false);
-                tabData.getDebugTerminal().setVisible(false);
-            }
-            else {
-                // remove old vbox from split pane if present
-                Terminal oldTerminal = tabData.getTerminal();
-                if (oldTerminal != null) {
-                    oldTerminal.onTerminalFxReady(() -> {
-                        Process process = oldTerminal.getProcess();
-                        if (process.isAlive()) process.destroyForcibly();
-                    });
-                    if (tabData.getSplitPane().getItems().size() > 1) {
-                        tabData.setDividerPosition(tabData.getSplitPane().getDividerPositions()[0]);
-                        tabData.getSplitPane().getItems().remove(1);
-                        tabData.setTerminal(null);
-                    }
-                }
-            }
+            // stop and hide debugger
+            tabData.getDebugger().stop();
+            tabData.getDebug().setVisible(false);
+            tabData.getDebugTerminal().setVisible(false);
 
+            // stop and hide interpreter
+            tabData.getInterpreter().stop();
+            tabData.getInterpretTerminal().setVisible(false);
+
+            // show and start debugger
             tabData.getDebug().setVisible(true);
             tabData.getDebugTerminal().setVisible(true);
             tabData.getTableView().scrollTo(0);
@@ -982,268 +1043,20 @@ public class Controller {
         TabData tabData = currentTab;
         saveFile();
         if (tabData.getFilePath() != null) {
-            if (tabData.getDebugger().isAlive()) {
-                tabData.getDebugger().stop();
-            }
+            // stop and hide debugger
+            tabData.getDebugger().stop();
             tabData.getDebug().setVisible(false);
             tabData.getDebugTerminal().setVisible(false);
 
-            String filePath = tabData.getFilePath();
-            String escapedFilePath = filePath.replace("\\", "\\\\");
-            execute(tabData, "Interpret", Constants.getExecutablePath(), escapedFilePath);
+            // stop and hide interpreter
+            tabData.getInterpreter().stop();
+            tabData.getInterpretTerminal().setVisible(false);
+
+            // show and start interpreter
+            tabData.getInterpretTerminal().setVisible(true);
+            tabData.getInterpreter().start();
         }
     }
-
-    @FXML
-    private void build() {
-        TabData tabData = currentTab;
-        saveFile();
-        if (tabData.getFilePath() != null) {
-            if (tabData.getDebugger().isAlive()) {
-                tabData.getDebugger().stop();
-            }
-            tabData.getDebug().setVisible(false);
-            tabData.getDebugTerminal().setVisible(false);
-
-            String filePath = tabData.getFilePath();
-            String escapedFilePath = filePath.replace("\\", "\\\\");
-            execute(tabData, "Build", Constants.getExecutablePath(), "-c", escapedFilePath);
-        }
-    }
-
-    @FXML
-    private void buildAndRun() {
-        TabData tabData = currentTab;
-        saveFile();
-        if (tabData.getFilePath() != null) {
-            if (tabData.getDebugger().isAlive()) {
-                tabData.getDebugger().stop();
-            }
-            tabData.getDebug().setVisible(false);
-            tabData.getDebugTerminal().setVisible(false);
-
-            String filePath = tabData.getFilePath();
-            String escapedFilePath = filePath.replace("\\", "\\\\");
-            Future<Integer> future = execute(tabData, "Build", Constants.getExecutablePath(), "-c", escapedFilePath);
-
-            Thread thread = new Thread(() -> {
-                try {
-                    // get return code
-                    int returnCode = future.get();
-
-                    Platform.runLater(() -> {
-                        // generate output file path
-                        String outputFilePath = filePath.substring(0, filePath.length() - 3);
-                        if (SystemUtils.IS_OS_WINDOWS) {
-                            outputFilePath += ".exe";
-                        }
-
-                        // create file object for output file
-                        File outputFile = new File(outputFilePath);
-
-                        // check return code and existence of output file
-                        if (returnCode == 0 && outputFile.exists()){
-                            // try to run executable
-                            outputFile.setExecutable(true);
-                            String escapedOutputFilePath = outputFilePath.replace("\\", "\\\\");
-                            execute(tabData, "Run", escapedOutputFilePath);
-                        } else {
-                            // show error message
-                            Alert alert = new Alert(Alert.AlertType.ERROR);
-                            alert.setTitle(Constants.APPLICATION_NAME);
-                            alert.setContentText("Build failed!\n\n");
-
-                            alert.initOwner(tabPane.getScene().getWindow());
-                            alert.showAndWait();
-                        }
-                    });
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (ExecutionException e) {
-                    e.printStackTrace();
-                }
-            });
-            thread.start();
-        }
-    }
-
-    private Future<Integer> execute(TabData tabData, String subtitle, String ... command) {
-        // get the split pane
-        SplitPane splitPane = tabData.getSplitPane();
-
-        // create toolbar for terminal
-        HBox hBox = new HBox();
-        hBox.setPadding(new Insets(5, 5, 6, 5));
-        hBox.setSpacing(7);
-        hBox.setAlignment(Pos.CENTER_LEFT);
-
-        // add title to toolbar
-        String title = (subtitle == null || subtitle.isEmpty()) ? "Terminal" : "Terminal - " + subtitle;
-        Label label = new Label(title);
-        hBox.getChildren().add(label);
-
-        // add spacer
-        Pane pane = new Pane();
-        HBox.setHgrow(pane, Priority.ALWAYS);
-        hBox.getChildren().add(pane);
-
-        // add stop button
-        Button stopButton = new Button();
-        Image stopImage = new Image(getClass().getClassLoader().getResourceAsStream("images/stop.png"));
-        ImageView stopImageView = new ImageView(stopImage);
-        stopButton.setGraphic(stopImageView);
-        stopButton.getStyleClass().add("secondary");
-        hBox.getChildren().add(stopButton);
-
-        // set stop button tooltip
-        Tooltip stopTooltip = new Tooltip("Stop");
-        stopTooltip.setShowDelay(Duration.millis(300));
-        stopButton.setTooltip(stopTooltip);
-
-        // add close button
-        Button closeButton = new Button();
-        Image closeImage = new Image(getClass().getClassLoader().getResourceAsStream("images/close.png"));
-        ImageView closeImageView = new ImageView(closeImage);
-        closeButton.setGraphic(closeImageView);
-        closeButton.getStyleClass().add("secondary");
-        closeButton.setDisable(true);
-        hBox.getChildren().add(closeButton);
-
-        // set close button tooltip
-        Tooltip closeTooltip = new Tooltip("Close");
-        closeTooltip.setShowDelay(Duration.millis(300));
-        closeButton.setTooltip(closeTooltip);
-
-        // create a new terminal
-        Terminal terminal = new Terminal(command);
-
-        // set terminal look and feel
-        TerminalConfig darkConfig = new TerminalConfig();
-        darkConfig.setBackgroundColor(Color.rgb(68,73,82));
-        darkConfig.setForegroundColor(Color.rgb(240, 240, 240));
-        darkConfig.setCursorColor(Color.rgb(255, 255, 255, 0.5));
-        terminal.setTerminalConfig(darkConfig);
-
-        // add terminal toolbar and terminal to vbox
-        VBox vBox = new VBox();
-        vBox.getChildren().add(hBox);
-        vBox.getChildren().add(terminal);
-
-        // set font size for code area
-        vBox.setStyle("-fx-background-color: #585D66;");
-
-        // bind terminal height property
-        terminal.prefHeightProperty().bind(vBox.heightProperty());
-
-        // remove old vbox from split pane if present
-        Terminal oldTerminal = tabData.getTerminal();
-        if (oldTerminal != null) {
-            oldTerminal.onTerminalFxReady(() -> {
-                Process process = oldTerminal.getProcess();
-                if (process.isAlive()) process.destroyForcibly();
-            });
-            if (splitPane.getItems().size() > 1) {
-                tabData.setDividerPosition(splitPane.getDividerPositions()[0]);
-                splitPane.getItems().remove(1);
-                tabData.setTerminal(null);
-            }
-        }
-
-        // add vbox to split pane
-        splitPane.getItems().add(vBox);
-        splitPane.setDividerPositions(tabData.getDividerPosition());
-        tabData.setTerminal(terminal);
-
-        // add stop button action
-        stopButton.setOnAction(actionEvent -> {
-            terminal.getProcess().destroyForcibly();
-        });
-
-        // add close button action
-        closeButton.setOnAction(actionEvent -> {
-            tabData.setDividerPosition(splitPane.getDividerPositions()[0]);
-            splitPane.getItems().remove(1);
-            tabData.setTerminal(null);
-        });
-
-        // create a new executor
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-
-        // wait for process to finish
-        return executor.submit(() -> {
-            CountDownLatch latch = new CountDownLatch(1);
-
-            AtomicInteger returnCode = new AtomicInteger();
-
-            // wait for the terminal to finish
-            terminal.onTerminalFxReady(() -> {
-                try {
-                    // start time
-                    long startTime = System.nanoTime();
-
-                    // wait for process to terminate
-                    returnCode.set(terminal.getProcess().waitFor());
-
-                    // stop time
-                    long stopTime = System.nanoTime();
-
-                    // execution duration
-                    long duration = stopTime - startTime;
-                    String durationStr = nanoToBestFitTimeUnits(duration);
-
-                    // print the execution time
-                    terminal.printText("\r\n\r\n");
-                    terminal.printText("--------------------------------------------------------------------------------\r\n");
-                    terminal.printText("Execution completed in " + durationStr + "\r\n");
-                    terminal.printText("Process terminated with status " + returnCode + "\r\n");
-
-                    // change button states
-                    stopButton.setDisable(true);
-                    closeButton.setDisable(false);
-
-                    // let all threads proceed
-                    latch.countDown();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            });
-
-            try {
-                latch.await();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            return returnCode.get();
-        });
-    }
-
-    /*public static void runAndWait(Runnable action) {
-        if (action == null)
-            throw new NullPointerException("action");
-
-        // run synchronously on JavaFX thread
-        if (Platform.isFxApplicationThread()) {
-            action.run();
-            return;
-        }
-
-        // queue on JavaFX thread and wait for completion
-        final CountDownLatch doneLatch = new CountDownLatch(1);
-        Platform.runLater(() -> {
-            try {
-                action.run();
-            } finally {
-                doneLatch.countDown();
-            }
-        });
-
-        try {
-            doneLatch.await();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }*/
 
     private boolean saveFile(String filePath, String fileText) {
         try {
@@ -1300,25 +1113,6 @@ public class Controller {
             lines ++;
         }
         return lines;
-    }
-
-    private String nanoToBestFitTimeUnits(long nano) {
-        DecimalFormat df = new DecimalFormat("0.00");
-
-        double seconds = (double) nano / 1_000_000_000.0;
-        if (seconds < 60) return df.format(seconds) + " seconds";
-        else {
-            double minutes = seconds / 60;
-            if (minutes < 60) return df.format(minutes) + " minutes";
-            else {
-                double hours = minutes / 60;
-                if (hours < 24) return df.format(hours) + " hours";
-                else {
-                    double days = hours / 24;
-                    return df.format(days) + " days";
-                }
-            }
-        }
     }
 
 }

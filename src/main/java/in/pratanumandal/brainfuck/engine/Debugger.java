@@ -86,11 +86,11 @@ public class Debugger implements Runnable {
         thread = new Thread(this);
         thread.start();
 
-        this.tabData.getResumeButton().setDisable(true);
-        this.tabData.getPauseButton().setDisable(false);
-        this.tabData.getStepButton().setDisable(false);
-        this.tabData.getStopButton().setDisable(false);
-        this.tabData.getCloseButton().setDisable(true);
+        this.tabData.getDebugResumeButton().setDisable(true);
+        this.tabData.getDebugPauseButton().setDisable(false);
+        this.tabData.getDebugStepButton().setDisable(false);
+        this.tabData.getDebugStopButton().setDisable(false);
+        this.tabData.getDebugCloseButton().setDisable(true);
     }
 
     private void initializeBrackets() {
@@ -129,8 +129,8 @@ public class Debugger implements Runnable {
             this.pause.set(true);
         }
 
-        tabData.getResumeButton().setDisable(false);
-        tabData.getPauseButton().setDisable(true);
+        tabData.getDebugResumeButton().setDisable(false);
+        tabData.getDebugPauseButton().setDisable(true);
     }
 
     public void resume() {
@@ -139,8 +139,8 @@ public class Debugger implements Runnable {
             this.pause.notify();
         }
 
-        tabData.getResumeButton().setDisable(true);
-        tabData.getPauseButton().setDisable(false);
+        tabData.getDebugResumeButton().setDisable(true);
+        tabData.getDebugPauseButton().setDisable(false);
     }
 
     public void step() {
@@ -149,8 +149,8 @@ public class Debugger implements Runnable {
             this.pause.notify();
         }
 
-        tabData.getResumeButton().setDisable(false);
-        tabData.getPauseButton().setDisable(true);
+        tabData.getDebugResumeButton().setDisable(false);
+        tabData.getDebugPauseButton().setDisable(true);
     }
 
     public void stop() {
@@ -181,11 +181,11 @@ public class Debugger implements Runnable {
 
         this.codeArea.removeEventFilter(ContextMenuEvent.CONTEXT_MENU_REQUESTED, consumeAllContextMenu);
 
-        this.tabData.getResumeButton().setDisable(true);
-        this.tabData.getPauseButton().setDisable(true);
-        this.tabData.getStepButton().setDisable(true);
-        this.tabData.getStopButton().setDisable(true);
-        this.tabData.getCloseButton().setDisable(false);
+        this.tabData.getDebugResumeButton().setDisable(true);
+        this.tabData.getDebugPauseButton().setDisable(true);
+        this.tabData.getDebugStepButton().setDisable(true);
+        this.tabData.getDebugStopButton().setDisable(true);
+        this.tabData.getDebugCloseButton().setDisable(false);
     }
 
     public Boolean isAlive() {
@@ -261,7 +261,7 @@ public class Debugger implements Runnable {
                 Platform.runLater(() ->  tabData.getMemory().set(finalDataPointer, memoryBlock));
             } else if (code.charAt(i) == '.') {
                 String text = String.valueOf((char) this.memory[dataPointer].intValue());
-                Platform.runLater(() -> tabData.getDebugTerminal().write(text));
+                tabData.getDebugTerminal().write(text);
             } else if (code.charAt(i) == ',') {
                 Character character = tabData.getDebugTerminal().readChar();
                 memory[dataPointer] = character == null ? (byte) 0 : (byte) (int) character;

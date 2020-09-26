@@ -216,10 +216,15 @@
     -fx-text-fill: white;
     -fx-font-family: 'Open Sans SemiBold';
     -fx-font-size: 12px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.8), 15, 0, 0, 0);
 }
 
 .menu-item .label {
     -fx-text-fill: white;
+}
+
+.check-menu-item:checked > .left-container > .check {
+    -fx-background-color: white;
 }
 
 .find-and-replace {
@@ -350,14 +355,14 @@
     -fx-text-fill: #AAA;
 }
 
-.debug-terminal {
+.terminal {
     -fx-font-family: 'Bitstream Vera Sans Mono';
     -fx-text-fill: #F0F0F0;
     -fx-font-size: 13px;
     -fx-focus-color: transparent;
     -fx-faint-focus-color: transparent;
 }
-.debug-terminal .content {
+.terminal .content {
     -fx-background-color: #444952;
     -fx-background-insets: 0;
     -fx-background-radius: 0;
@@ -365,7 +370,7 @@
     -fx-border-width: 0;
     -fx-border-radius: 0;
 }
-.debug-terminal .scroll-pane {
+.terminal .scroll-pane {
     -fx-background-color: #535861;
     -fx-background-insets: 0;
     -fx-background-radius: 0;
@@ -373,6 +378,9 @@
     -fx-border-color: #535861;
     -fx-border-width: 0;
     -fx-border-radius: 0;
+}
+.terminal-toolbar {
+    -fx-background-color: #585D66;
 }
 
 .slider .thumb {

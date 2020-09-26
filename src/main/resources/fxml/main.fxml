@@ -73,27 +73,6 @@
                      </image>
                   </ImageView>
                </graphic></Button>
-            <Separator>
-               <padding>
-                  <Insets left="5.0" right="5.0" />
-               </padding>
-            </Separator>
-          <Button mnemonicParsing="false" onAction="#build" text="Build">
-               <graphic>
-                  <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../images/build.png" />
-                     </image>
-                  </ImageView>
-               </graphic></Button>
-            <Button layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#buildAndRun" text="Build &amp; Run">
-               <graphic>
-                  <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../images/build-and-run.png" />
-                     </image>
-                  </ImageView>
-               </graphic></Button>
             <Pane HBox.hgrow="ALWAYS" />
             <ToggleButton fx:id="searchButton" mnemonicParsing="false" prefHeight="25.0">
                 <graphic>

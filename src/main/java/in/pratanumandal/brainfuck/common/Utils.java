@@ -3,6 +3,7 @@ package in.pratanumandal.brainfuck.common;
 import in.pratanumandal.brainfuck.gui.Main;
 import javafx.application.Platform;
 
+import java.text.DecimalFormat;
 import java.util.concurrent.CountDownLatch;
 
 public class Utils {
@@ -35,6 +36,25 @@ public class Utils {
             doneLatch.await();
         } catch (InterruptedException e) {
             e.printStackTrace();
+        }
+    }
+
+    public static String nanoToBestFitTimeUnits(long nano) {
+        DecimalFormat df = new DecimalFormat("0.00");
+
+        double seconds = (double) nano / 1_000_000_000.0;
+        if (seconds < 60) return df.format(seconds) + " seconds";
+        else {
+            double minutes = seconds / 60;
+            if (minutes < 60) return df.format(minutes) + " minutes";
+            else {
+                double hours = minutes / 60;
+                if (hours < 24) return df.format(hours) + " hours";
+                else {
+                    double days = hours / 24;
+                    return df.format(days) + " days";
+                }
+            }
         }
     }
 
