@@ -27,7 +27,8 @@ public class FXTerminal extends TextArea {
     }
 
     public FXTerminal(String text) {
-        super(text);
+        text = text.replaceAll("[\\p{Cc}\\p{Cf}\\p{Co}\\p{Cn}&&[^\\s]]", "\uFFFD");
+        super.setText(text);
 
         this.existingText = text;
         this.readBuffer = new String();
