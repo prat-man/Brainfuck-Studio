@@ -88,7 +88,7 @@ public class FXTerminal extends TextArea {
                     this.existingText += sanitizedText;
 
                     if (this.autoScroll.get()) {
-                        //set text
+                        // set the text
                         this.setText(this.existingText);
 
                         // reset properties
@@ -147,7 +147,7 @@ public class FXTerminal extends TextArea {
         menu.getItems().add(new SeparatorMenuItem());
 
         CheckMenuItem scrollItem = new CheckMenuItem("Scroll on output");
-        scrollItem.setSelected(true);
+        scrollItem.setSelected(this.autoScroll.get());
         scrollItem.selectedProperty().addListener((obs, oldVal, newVal) -> this.autoScroll.set(newVal));
         menu.getItems().add(scrollItem);
 

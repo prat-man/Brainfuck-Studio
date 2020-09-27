@@ -1,5 +1,6 @@
 package in.pratanumandal.brainfuck.engine;
 
+import in.pratanumandal.brainfuck.common.Utils;
 import in.pratanumandal.brainfuck.gui.TabData;
 import in.pratanumandal.brainfuck.common.Constants;
 import javafx.application.Platform;
@@ -279,6 +280,9 @@ public class Interpreter implements Runnable {
     @Override
     public void run() {
 
+        // start time
+        long startTime = System.nanoTime();
+
         int dataPointer = 0;
 
         for (int i = 0; i < processed.length && !this.kill.get(); i++) {
@@ -333,6 +337,20 @@ public class Interpreter implements Runnable {
                 }
             }
         }
+
+        // stop time
+        long stopTime = System.nanoTime();
+
+        // execution duration
+        long duration = stopTime - startTime;
+        String durationStr = Utils.nanoToBestFitTimeUnits(duration);
+
+        // print the execution time
+        tabData.getInterpretTerminal().write("\n\n");
+        tabData.getInterpretTerminal().write("--------------------------------------------------------------------------------\n");
+
+        if (this.kill.get()) tabData.getInterpretTerminal().write("Execution terminated; Runtime " + durationStr + "\n");
+        else tabData.getInterpretTerminal().write("Execution completed in " + durationStr + "\n");
 
         this.stop(false);
 
