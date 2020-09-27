@@ -69,8 +69,13 @@ public class Controller {
     @FXML private Label charCount;
     @FXML private Label lineCount;
 
+    @FXML private VBox notificationPane;
+
     @FXML
     public void initialize() {
+        // initialize notification manager
+        Utils.initializeNotificationManager(notificationPane);
+
         // add a new untitled tab in the beginning
         TabData tabData = addUntitledTab();
 

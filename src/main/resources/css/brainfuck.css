@@ -403,6 +403,28 @@
     -fx-background-color: derive(-fx-background, -15%);
 }
 
+.notification {
+    -fx-background-color: #585D66;
+    -fx-background-radius: 0.5em;
+    -fx-padding: 10px 10px 10px 15px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.4), 10, 0, 0, 0);
+}
+.notification .button.close,
+.notification .button.close:focused {
+    -fx-padding: 1px 0 0 0;
+    -fx-min-width: 18px;
+    -fx-min-height: 6px;
+    -fx-background-color: #6C717A;
+    -fx-background-radius: 1.0em;
+}
+.notification .button.close:hover,
+.notification .button.close:focused:hover {
+    -fx-background-color: #80858E;
+}
+.notification .progress-bar {
+    -fx-pref-width: 200;
+}
+
 .scroll-bar {
     -fx-background-color: #626770;
 }

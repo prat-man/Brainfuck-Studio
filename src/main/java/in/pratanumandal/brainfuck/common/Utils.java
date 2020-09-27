@@ -1,12 +1,29 @@
 package in.pratanumandal.brainfuck.common;
 
 import in.pratanumandal.brainfuck.gui.Main;
+import in.pratanumandal.brainfuck.gui.NotificationManager;
 import javafx.application.Platform;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
 import java.text.DecimalFormat;
 import java.util.concurrent.CountDownLatch;
 
 public class Utils {
+
+    private static NotificationManager notificationManager;
+
+    public static void initializeNotificationManager(VBox notificationPane) {
+        notificationManager = new NotificationManager(notificationPane);
+    }
+
+    public static NotificationManager.Notification addNotification(String text) {
+        return notificationManager.addNotification(text);
+    }
+
+    public static NotificationManager.Notification addNotificationWithProgress(String text) {
+        return notificationManager.addNotificationWithProgress(text);
+    }
 
     public static void browseURL(String url) {
         Main.hostServices.showDocument(url);

@@ -1,6 +1,7 @@
 package in.pratanumandal.brainfuck.engine;
 
 import in.pratanumandal.brainfuck.common.Utils;
+import in.pratanumandal.brainfuck.gui.NotificationManager;
 import in.pratanumandal.brainfuck.gui.TabData;
 import in.pratanumandal.brainfuck.common.Constants;
 import javafx.application.Platform;
@@ -10,6 +11,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.input.ContextMenuEvent;
 import org.fxmisc.richtext.CodeArea;
 
+import java.awt.*;
 import java.util.Arrays;
 import java.util.Stack;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -349,8 +351,14 @@ public class Interpreter implements Runnable {
         tabData.getInterpretTerminal().write("\n\n");
         tabData.getInterpretTerminal().write("--------------------------------------------------------------------------------\n");
 
-        if (this.kill.get()) tabData.getInterpretTerminal().write("Execution terminated; Runtime " + durationStr + "\n");
-        else tabData.getInterpretTerminal().write("Execution completed in " + durationStr + "\n");
+        if (this.kill.get()) {
+            tabData.getInterpretTerminal().write("Execution terminated; Runtime " + durationStr + "\n");
+            Platform.runLater(() -> Utils.addNotification("File " + tabData.getTab().getText() + " execution terminated"));
+        }
+        else {
+            tabData.getInterpretTerminal().write("Execution completed in " + durationStr + "\n");
+            Platform.runLater(() -> Utils.addNotification("File " + tabData.getTab().getText() + " finished execution"));
+        }
 
         this.stop(false);
 
