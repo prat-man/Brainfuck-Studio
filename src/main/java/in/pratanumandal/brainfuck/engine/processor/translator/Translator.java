@@ -1,7 +1,7 @@
-package in.pratanumandal.brainfuck.engine;
+package in.pratanumandal.brainfuck.engine.processor.translator;
 
-import in.pratanumandal.brainfuck.common.Constants;
 import in.pratanumandal.brainfuck.common.Utils;
+import in.pratanumandal.brainfuck.engine.processor.Processor;
 import in.pratanumandal.brainfuck.gui.NotificationManager;
 import in.pratanumandal.brainfuck.gui.TabData;
 import javafx.application.Platform;
@@ -21,7 +21,7 @@ public abstract class Translator extends Processor {
     }
 
     public void start() {
-        String outputFilePath = tabData.getFilePath().substring(0, tabData.getFilePath().length() - 3) + ".c";
+        String outputFilePath = tabData.getFilePath().substring(0, tabData.getFilePath().length() - 2) + this.getExtension();
         this.outputFile = new File(outputFilePath);
         super.start();
     }
@@ -64,5 +64,7 @@ public abstract class Translator extends Processor {
     public abstract void doTranslate(NotificationManager.Notification notification, BufferedWriter writer) throws IOException;
 
     public abstract String getLanguage();
+
+    public abstract String getExtension();
 
 }

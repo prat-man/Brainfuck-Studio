@@ -1,4 +1,4 @@
-package in.pratanumandal.brainfuck.engine;
+package in.pratanumandal.brainfuck.engine.processor.translator;
 
 import in.pratanumandal.brainfuck.common.Constants;
 import in.pratanumandal.brainfuck.common.Utils;
@@ -91,6 +91,11 @@ public class JavaTranslator extends Translator {
     @Override
     public String getLanguage() {
         return "Java";
+    }
+
+    @Override
+    public String getExtension() {
+        return "java";
     }
 
 }

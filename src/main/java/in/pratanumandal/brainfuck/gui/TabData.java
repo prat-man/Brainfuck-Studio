@@ -1,8 +1,8 @@
 package in.pratanumandal.brainfuck.gui;
 
 import in.pratanumandal.brainfuck.common.Constants;
-import in.pratanumandal.brainfuck.engine.Debugger;
-import in.pratanumandal.brainfuck.engine.Interpreter;
+import in.pratanumandal.brainfuck.engine.debugger.Debugger;
+import in.pratanumandal.brainfuck.engine.processor.interpreter.Interpreter;
 import in.pratanumandal.brainfuck.engine.Memory;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;

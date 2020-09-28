@@ -1,5 +1,7 @@
-package in.pratanumandal.brainfuck.engine;
+package in.pratanumandal.brainfuck.engine.debugger;
 
+import in.pratanumandal.brainfuck.engine.Memory;
+import in.pratanumandal.brainfuck.engine.UnmatchedLoopException;
 import in.pratanumandal.brainfuck.gui.TabData;
 import in.pratanumandal.brainfuck.common.Constants;
 import in.pratanumandal.brainfuck.gui.TableViewExtra;

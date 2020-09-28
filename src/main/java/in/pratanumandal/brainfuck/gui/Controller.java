@@ -1,7 +1,7 @@
 package in.pratanumandal.brainfuck.gui;
 
-import in.pratanumandal.brainfuck.engine.CTranslator;
-import in.pratanumandal.brainfuck.engine.JavaTranslator;
+import in.pratanumandal.brainfuck.engine.processor.translator.CTranslator;
+import in.pratanumandal.brainfuck.engine.processor.translator.JavaTranslator;
 import in.pratanumandal.brainfuck.engine.Memory;
 import in.pratanumandal.brainfuck.common.Constants;
 import in.pratanumandal.brainfuck.common.Utils;
@@ -34,7 +34,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.*;
 import java.util.regex.Matcher;

@@ -1,6 +1,6 @@
-package in.pratanumandal.brainfuck.engine;
+package in.pratanumandal.brainfuck.engine.processor;
 
-import in.pratanumandal.brainfuck.common.Utils;
+import in.pratanumandal.brainfuck.engine.UnmatchedLoopException;
 import in.pratanumandal.brainfuck.gui.TabData;
 import in.pratanumandal.brainfuck.common.Constants;
 import javafx.application.Platform;
@@ -18,7 +18,7 @@ public abstract class Processor implements Runnable {
 
     protected TabData tabData;
 
-    protected Byte[] memory;
+
 
     protected CodeArea codeArea;
 
@@ -47,8 +47,6 @@ public abstract class Processor implements Runnable {
     public Processor(TabData tabData) {
         this.tabData = tabData;
 
-        this.memory = new Byte[Constants.MEMORY_SIZE];
-
         this.codeArea = tabData.getCodeArea();
 
         this.kill = new AtomicBoolean(true);
@@ -66,13 +64,6 @@ public abstract class Processor implements Runnable {
         synchronized (this.kill) {
             this.kill.set(false);
         }
-
-        Arrays.fill(this.memory, (byte) 0);
-
-        for (int i = 0; i < memory.length; i++) {
-            tabData.getMemory().get(i).setData(Byte.toUnsignedInt(memory[i]));
-        }
-        Platform.runLater(() -> tabData.getTableView().refresh());
 
         try {
             this.initializeJumps();

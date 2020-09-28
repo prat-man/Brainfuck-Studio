@@ -1,16 +1,12 @@
-package in.pratanumandal.brainfuck.engine;
+package in.pratanumandal.brainfuck.engine.processor.translator;
 
 import in.pratanumandal.brainfuck.common.Constants;
 import in.pratanumandal.brainfuck.common.Utils;
 import in.pratanumandal.brainfuck.gui.NotificationManager;
 import in.pratanumandal.brainfuck.gui.TabData;
-import javafx.application.Platform;
 
 import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class CTranslator extends Translator {
 
@@ -95,6 +91,11 @@ public class CTranslator extends Translator {
     @Override
     public String getLanguage() {
         return "C";
+    }
+
+    @Override
+    public String getExtension() {
+        return "c";
     }
 
 }

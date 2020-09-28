@@ -1,13 +1,33 @@
-package in.pratanumandal.brainfuck.engine;
+package in.pratanumandal.brainfuck.engine.processor.interpreter;
 
+import in.pratanumandal.brainfuck.common.Constants;
 import in.pratanumandal.brainfuck.common.Utils;
+import in.pratanumandal.brainfuck.engine.processor.Processor;
 import in.pratanumandal.brainfuck.gui.TabData;
 import javafx.application.Platform;
 
+import java.util.Arrays;
+
 public class Interpreter extends Processor {
+
+    protected Byte[] memory;
 
     public Interpreter(TabData tabData) {
         super(tabData);
+
+        this.memory = new Byte[Constants.MEMORY_SIZE];
+    }
+
+    @Override
+    public void start() {
+        Arrays.fill(this.memory, (byte) 0);
+
+        for (int i = 0; i < memory.length; i++) {
+            tabData.getMemory().get(i).setData(Byte.toUnsignedInt(memory[i]));
+        }
+        Platform.runLater(() -> tabData.getTableView().refresh());
+
+        super.start();
     }
 
     @Override
