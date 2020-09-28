@@ -421,8 +421,9 @@
 .notification .button.close:focused:hover {
     -fx-background-color: #80858E;
 }
+.notification .label,
 .notification .progress-bar {
-    -fx-pref-width: 200;
+    -fx-pref-width: 250;
 }
 
 .scroll-bar {

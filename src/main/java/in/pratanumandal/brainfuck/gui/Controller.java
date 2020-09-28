@@ -1,5 +1,7 @@
 package in.pratanumandal.brainfuck.gui;
 
+import in.pratanumandal.brainfuck.engine.CTranslator;
+import in.pratanumandal.brainfuck.engine.JavaTranslator;
 import in.pratanumandal.brainfuck.engine.Memory;
 import in.pratanumandal.brainfuck.common.Constants;
 import in.pratanumandal.brainfuck.common.Utils;
@@ -1060,6 +1062,26 @@ public class Controller {
             // show and start interpreter
             tabData.getInterpretTerminal().setVisible(true);
             tabData.getInterpreter().start();
+        }
+    }
+
+    @FXML
+    private void exportToC() {
+        TabData tabData = currentTab;
+        saveFile();
+        if (tabData.getFilePath() != null) {
+            CTranslator translator = new CTranslator(this.currentTab);
+            translator.start();
+        }
+    }
+
+    @FXML
+    private void exportToJava() {
+        TabData tabData = currentTab;
+        saveFile();
+        if (tabData.getFilePath() != null) {
+            JavaTranslator translator = new JavaTranslator(this.currentTab);
+            translator.start();
         }
     }
 

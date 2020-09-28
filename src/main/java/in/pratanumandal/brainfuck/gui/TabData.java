@@ -42,8 +42,6 @@ public class TabData {
     private ObservableList<Memory> memory;
     private TableView<Memory> tableView;
 
-    private VBox interpret;
-
     private Debugger debugger;
     private FXTerminal debugTerminal;
 

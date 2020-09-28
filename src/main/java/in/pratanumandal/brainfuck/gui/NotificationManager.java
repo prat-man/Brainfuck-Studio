@@ -45,8 +45,6 @@ public class NotificationManager {
         hBox.getChildren().add(vBox);
 
         Label label = new Label(text);
-        label.setMinWidth(200);
-        label.setMaxWidth(200);
         label.setWrapText(true);
         vBox.getChildren().add(label);
 

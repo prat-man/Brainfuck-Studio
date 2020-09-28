@@ -19,21 +19,21 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Debugger implements Runnable {
 
-    private TabData tabData;
+    protected TabData tabData;
 
-    private Byte[] memory;
-    private Map<Integer, Integer> brackets;
+    protected Byte[] memory;
+    protected Map<Integer, Integer> brackets;
 
-    private CodeArea codeArea;
+    protected CodeArea codeArea;
 
-    private String code;
-    private final AtomicBoolean pause;
+    protected String code;
+    protected final AtomicBoolean pause;
 
-    private final AtomicBoolean kill;
+    protected final AtomicBoolean kill;
 
-    private Thread thread;
+    protected Thread thread;
 
-    private final EventHandler<ContextMenuEvent> consumeAllContextMenu = Event::consume;
+    protected final EventHandler<ContextMenuEvent> consumeAllContextMenu = Event::consume;
 
     public Debugger(TabData tabData) {
         this.tabData = tabData;
@@ -157,7 +157,7 @@ public class Debugger implements Runnable {
         stop(true);
     }
 
-    private void stop(boolean join) {
+    protected void stop(boolean join) {
         synchronized (this.kill) {
             this.kill.set(true);
         }

@@ -74,6 +74,24 @@
                          </image>
                       </ImageView>
                    </graphic></Button>
+               <Separator layoutX="329.0" layoutY="10.0">
+                  <padding>
+                     <Insets left="5.0" right="5.0" />
+                  </padding>
+               </Separator>
+               <MenuButton mnemonicParsing="false" text="Export">
+                   <graphic>
+                       <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                               <Image url="@../images/export.png" />
+                           </image>
+                       </ImageView>
+                   </graphic>
+                 <items>
+                   <MenuItem mnemonicParsing="false" onAction="#exportToC" text="C" />
+                   <MenuItem mnemonicParsing="false" onAction="#exportToJava" text="Java" />
+                 </items>
+               </MenuButton>
                 <Pane HBox.hgrow="ALWAYS" />
                 <ToggleButton fx:id="searchButton" mnemonicParsing="false" prefHeight="25.0">
                     <graphic>
@@ -136,7 +154,7 @@
              <children>
                 <TextField fx:id="findField" promptText="Find text" HBox.hgrow="ALWAYS" />
                 <TextField fx:id="replaceField" promptText="Replace text" HBox.hgrow="ALWAYS" />
-                <ToggleButton contentDisplay="RIGHT" mnemonicParsing="false">
+                <ToggleButton contentDisplay="RIGHT" mnemonicParsing="false" onAction="#toggleRegex">
                     <graphic>
                         <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                             <image>
