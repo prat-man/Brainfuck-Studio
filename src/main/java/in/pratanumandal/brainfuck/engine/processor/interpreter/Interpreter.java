@@ -5,12 +5,17 @@ import in.pratanumandal.brainfuck.common.Utils;
 import in.pratanumandal.brainfuck.engine.processor.Processor;
 import in.pratanumandal.brainfuck.gui.TabData;
 import javafx.application.Platform;
+import javafx.event.Event;
+import javafx.event.EventHandler;
+import javafx.scene.input.ContextMenuEvent;
 
 import java.util.Arrays;
 
 public class Interpreter extends Processor {
 
     protected Byte[] memory;
+
+    //private final EventHandler<ContextMenuEvent> consumeAllContextMenu = Event::consume;
 
     public Interpreter(TabData tabData) {
         super(tabData);
@@ -20,6 +25,9 @@ public class Interpreter extends Processor {
 
     @Override
     public void start() {
+        tabData.getInterpretTerminal().clear();
+        tabData.getInterpretTerminal().flush();
+
         Arrays.fill(this.memory, (byte) 0);
 
         for (int i = 0; i < memory.length; i++) {
@@ -27,7 +35,32 @@ public class Interpreter extends Processor {
         }
         Platform.runLater(() -> tabData.getTableView().refresh());
 
+        //this.codeArea.setEditable(false);
+
+        //this.codeArea.addEventFilter(ContextMenuEvent.CONTEXT_MENU_REQUESTED, consumeAllContextMenu);
+
         super.start();
+
+        this.tabData.getInterpretStopButton().setDisable(false);
+        this.tabData.getInterpretCloseButton().setDisable(true);
+    }
+
+    @Override
+    protected void stop(boolean join) {
+        synchronized (this.kill) {
+            this.kill.set(true);
+        }
+
+        tabData.getInterpretTerminal().release();
+
+        super.stop(join);
+
+        //this.codeArea.setEditable(true);
+
+        //this.codeArea.removeEventFilter(ContextMenuEvent.CONTEXT_MENU_REQUESTED, consumeAllContextMenu);
+
+        this.tabData.getInterpretStopButton().setDisable(true);
+        this.tabData.getInterpretCloseButton().setDisable(false);
     }
 
     @Override

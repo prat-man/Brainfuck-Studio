@@ -21,23 +21,20 @@ public class CTranslator extends Translator {
         bw.write("#define MEMORY_SIZE " + Constants.MEMORY_SIZE + "\n\n");
         bw.write("unsigned char memory[MEMORY_SIZE];\n");
         bw.write("int pointer = 0;\n\n");
-        bw.write("int findZeroLeft(int position) {\n\tfor (int i = position; i >= 0; i--) {\n\t\tif (memory[i] == 0) {\n\t\t\treturn i;\n\t\t}\n\t}\n\tfor (int i = MEMORY_SIZE - 1; i > position; i--) {\n\t\tif (memory[i] == 0) {\n\t\t\treturn i;\n\t\t}\n\t}\n\treturn -1;\n}\n\n");
-        bw.write("int findZeroRight(int position) {\n\tfor (int i = position; i < MEMORY_SIZE; i++) {\n\t\tif (memory[i] == 0) {\n\t\t\treturn i;\n\t\t}\n\t}\n\tfor (int i = 0; i < position; i++) {\n\t\tif (memory[i] == 0) {\n\t\t\treturn i;\n\t\t}\n\t}\n\treturn -1;\n}\n\n");
+        bw.write("static inline int findZeroLeft(int position) {\n\tfor (int i = position; i >= 0; i--) {\n\t\tif (memory[i] == 0) {\n\t\t\treturn i;\n\t\t}\n\t}\n\tfor (int i = MEMORY_SIZE - 1; i > position; i--) {\n\t\tif (memory[i] == 0) {\n\t\t\treturn i;\n\t\t}\n\t}\n\treturn -1;\n}\n\n");
+        bw.write("static inline int findZeroRight(int position) {\n\tfor (int i = position; i < MEMORY_SIZE; i++) {\n\t\tif (memory[i] == 0) {\n\t\t\treturn i;\n\t\t}\n\t}\n\tfor (int i = 0; i < position; i++) {\n\t\tif (memory[i] == 0) {\n\t\t\treturn i;\n\t\t}\n\t}\n\treturn -1;\n}\n\n");
         bw.write("int main() {\n");
         bw.write("\tmemset(memory, 0, MEMORY_SIZE);\n\n");
 
         String indent = "\t";
-        int length = new String(processed).trim().length();
 
         for (int i = 0; i < processed.length && !this.kill.get(); i++) {
             if (i % 50 == 0) {
-                double progress = i / (double) length;
+                double progress = i / (double) processed.length;
                 Utils.runAndWait(() -> notification.setProgress(progress));
             }
 
             char ch = processed[i];
-
-            if (ch == '\0') break;
 
             // handle pointer movement (> and <)
             if (ch == ADDRESS) {

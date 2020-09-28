@@ -23,29 +23,24 @@ public class JavaTranslator extends Translator {
         bw.write("\tpublic static final char[] memory = new char[MEMORY_SIZE];\n\n");
         bw.write("\tpublic static int findZeroLeft(int position) {\n\t\tfor (int i = position; i >= 0; i--) {\n\t\t\tif (memory[i] == 0) {\n\t\t\t\treturn i;\n\t\t\t}\n\t\t}\n\t\tfor (int i = MEMORY_SIZE - 1; i > position; i--) {\n\t\t\tif (memory[i] == 0) {\n\t\t\t\treturn i;\n\t\t\t}\n\t\t}\n\t\treturn -1;\n\t}\n\n");
         bw.write("\tpublic static int findZeroRight(int position) {\n\t\tfor (int i = position; i < MEMORY_SIZE; i++) {\n\t\t\tif (memory[i] == 0) {\n\t\t\t\treturn i;\n\t\t\t}\n\t\t}\n\t\tfor (int i = 0; i < position; i++) {\n\t\t\tif (memory[i] == 0) {\n\t\t\t\treturn i;\n\t\t\t}\n\t\t}\n\t\treturn -1;\n\t}\n\n");
+        bw.write("\tpublic static int getUpdatedPointer(int pointer, int sum) {\n\t\tpointer += sum;\n\t\tif (pointer >= MEMORY_SIZE) pointer -= MEMORY_SIZE;\n\t\telse if (pointer < 0) pointer += MEMORY_SIZE;\n\t\treturn pointer;\n\t}\n\n");
         bw.write("\tpublic static void main(String[] args) throws IOException {\n\n");
         bw.write("\t\tint pointer = 0;\n\n");
 
         String indent = "\t\t";
-        int length = new String(processed).trim().length();
 
         for (int i = 0; i < processed.length && !this.kill.get(); i++) {
             if (i % 50 == 0) {
-                double progress = i / (double) length;
+                double progress = i / (double) processed.length;
                 Utils.runAndWait(() -> notification.setProgress(progress));
             }
 
             char ch = processed[i];
 
-            if (ch == '\0') break;
-
             // handle pointer movement (> and <)
             if (ch == ADDRESS) {
                 int sum = jumps[i];
-
-                bw.write(indent + "pointer += " + sum + ";\n");
-                bw.write(indent + "if (pointer >= MEMORY_SIZE) pointer -= MEMORY_SIZE;\n");
-                bw.write(indent + "else if (pointer < 0) pointer += MEMORY_SIZE;\n");
+                bw.write(indent + "pointer = getUpdatedPointer(pointer, " + sum + ");\n");
             }
             // handle value update (+ and -)
             else if (ch == DATA) {

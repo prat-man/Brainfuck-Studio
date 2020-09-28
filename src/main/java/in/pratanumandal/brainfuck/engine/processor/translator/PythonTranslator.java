@@ -26,17 +26,14 @@ public class PythonTranslator extends Translator {
         bw.write("def findZeroRight(position):\n\tfor i in range(position, MEMORY_SIZE, 1):\n\t\tif memory[i] == 0:\n\t\t\treturn i\n\tfor i in range(0, position, 1):\n\t\tif memory[i] == 0:\n\t\t\treturn i\n\treturn -1\n\n");
 
         String indent = "";
-        int length = new String(processed).trim().length();
 
         for (int i = 0; i < processed.length && !this.kill.get(); i++) {
             if (i % 50 == 0) {
-                double progress = i / (double) length;
+                double progress = i / (double) processed.length;
                 Utils.runAndWait(() -> notification.setProgress(progress));
             }
 
             char ch = processed[i];
-
-            if (ch == '\0') break;
 
             // handle pointer movement (> and <)
             if (ch == ADDRESS) {

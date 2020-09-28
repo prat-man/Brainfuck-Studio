@@ -38,8 +38,6 @@ public abstract class Processor implements Runnable {
         return "<>+-,.[]".indexOf(ch) >= 0;
     }
 
-    private final EventHandler<ContextMenuEvent> consumeAllContextMenu = Event::consume;
-
     public Processor(TabData tabData) {
         this.tabData = tabData;
 
@@ -53,9 +51,6 @@ public abstract class Processor implements Runnable {
 
         this.processed = new char[code.length()];
         this.jumps = new int[code.length()];
-
-        tabData.getInterpretTerminal().clear();
-        tabData.getInterpretTerminal().flush();
 
         synchronized (this.kill) {
             this.kill.set(false);
@@ -75,15 +70,8 @@ public abstract class Processor implements Runnable {
             return;
         }
 
-        this.codeArea.setEditable(false);
-
-        this.codeArea.addEventFilter(ContextMenuEvent.CONTEXT_MENU_REQUESTED, consumeAllContextMenu);
-
         thread = new Thread(this);
         thread.start();
-
-        this.tabData.getInterpretStopButton().setDisable(false);
-        this.tabData.getInterpretCloseButton().setDisable(true);
     }
 
     private void initializeJumps() {
@@ -197,6 +185,9 @@ public abstract class Processor implements Runnable {
                 index--;
             }
         }
+
+        // strip ending null characters
+        processed = new String(processed).trim().toCharArray();
     }
 
     public void stop() {
@@ -208,8 +199,6 @@ public abstract class Processor implements Runnable {
             this.kill.set(true);
         }
 
-        tabData.getInterpretTerminal().release();
-
         if (join && this.thread != null && this.thread.isAlive()) {
             try {
                 this.thread.join();
@@ -217,13 +206,6 @@ public abstract class Processor implements Runnable {
                 e.printStackTrace();
             }
         }
-
-        this.codeArea.setEditable(true);
-
-        this.codeArea.removeEventFilter(ContextMenuEvent.CONTEXT_MENU_REQUESTED, consumeAllContextMenu);
-
-        this.tabData.getInterpretStopButton().setDisable(true);
-        this.tabData.getInterpretCloseButton().setDisable(false);
     }
 
     public Boolean isAlive() {
