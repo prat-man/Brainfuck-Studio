@@ -90,6 +90,7 @@
                  <items>
                    <MenuItem mnemonicParsing="false" onAction="#exportToC" text="C" />
                    <MenuItem mnemonicParsing="false" onAction="#exportToJava" text="Java" />
+                   <MenuItem mnemonicParsing="false" onAction="#exportToPython" text="Python 3" />
                  </items>
                </MenuButton>
                 <Pane HBox.hgrow="ALWAYS" />
