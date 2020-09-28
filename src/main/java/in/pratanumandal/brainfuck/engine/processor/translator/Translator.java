@@ -61,6 +61,10 @@ public abstract class Translator extends Processor {
 
     }
 
+    public String getFileNameWithoutExtension() {
+        return outputFile.getName().substring(0, outputFile.getName().length() - this.getExtension().length() - 1);
+    }
+
     public abstract void doTranslate(NotificationManager.Notification notification, BufferedWriter writer) throws IOException;
 
     public abstract String getLanguage();

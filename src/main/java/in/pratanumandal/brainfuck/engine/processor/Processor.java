@@ -3,22 +3,18 @@ package in.pratanumandal.brainfuck.engine.processor;
 import in.pratanumandal.brainfuck.engine.UnmatchedLoopException;
 import in.pratanumandal.brainfuck.gui.TabData;
 import in.pratanumandal.brainfuck.common.Constants;
-import javafx.application.Platform;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
 import javafx.scene.input.ContextMenuEvent;
 import org.fxmisc.richtext.CodeArea;
 
-import java.util.Arrays;
 import java.util.Stack;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class Processor implements Runnable {
 
     protected TabData tabData;
-
-
 
     protected CodeArea codeArea;
 

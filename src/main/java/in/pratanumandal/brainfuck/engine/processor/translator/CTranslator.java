@@ -54,7 +54,7 @@ public class CTranslator extends Translator {
             }
             // handle output (.)
             else if (ch == '.') {
-                bw.write(indent + "printf(\"%%c\", memory[pointer]);\n");
+                bw.write(indent + "printf(\"%c\", memory[pointer]);\n");
                 bw.write(indent + "fflush(stdout);\n");
             }
             // handle input (,)

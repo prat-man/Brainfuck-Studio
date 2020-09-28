@@ -16,17 +16,17 @@ public class JavaTranslator extends Translator {
 
     @Override
     public void doTranslate(NotificationManager.Notification notification, BufferedWriter bw) throws IOException {
-        bw.write("#include<stdio.h>\n");
-        bw.write("#include<string.h>\n\n");
-        bw.write("#define MEMORY_SIZE " + Constants.MEMORY_SIZE + "\n\n");
-        bw.write("unsigned char memory[MEMORY_SIZE];\n");
-        bw.write("int pointer = 0;\n\n");
-        bw.write("int findZeroLeft(int position) {\n\tfor (int i = position; i >= 0; i--) {\n\t\tif (memory[i] == 0) {\n\t\t\treturn i;\n\t\t}\n\t}\n\tfor (int i = MEMORY_SIZE - 1; i > position; i--) {\n\t\tif (memory[i] == 0) {\n\t\t\treturn i;\n\t\t}\n\t}\n\treturn -1;\n}\n\n");
-        bw.write("int findZeroRight(int position) {\n\tfor (int i = position; i < MEMORY_SIZE; i++) {\n\t\tif (memory[i] == 0) {\n\t\t\treturn i;\n\t\t}\n\t}\n\tfor (int i = 0; i < position; i++) {\n\t\tif (memory[i] == 0) {\n\t\t\treturn i;\n\t\t}\n\t}\n\treturn -1;\n}\n\n");
-        bw.write("int main() {\n");
-        bw.write("\tmemset(memory, 0, MEMORY_SIZE);\n\n");
+        bw.write("import java.util.Scanner;\n\n");
+        bw.write("public class " + this.getFileNameWithoutExtension() + " {\n\n");
+        bw.write("\tpublic static final int MEMORY_SIZE = " + Constants.MEMORY_SIZE + ";\n\n");
+        bw.write("\tpublic static final Scanner SC = new Scanner(System.in);\n\n");
+        bw.write("\tpublic static final char[] memory = new char[MEMORY_SIZE];\n\n");
+        bw.write("\tpublic static int findZeroLeft(int position) {\n\t\tfor (int i = position; i >= 0; i--) {\n\t\t\tif (memory[i] == 0) {\n\t\t\t\treturn i;\n\t\t\t}\n\t\t}\n\t\tfor (int i = MEMORY_SIZE - 1; i > position; i--) {\n\t\t\tif (memory[i] == 0) {\n\t\t\t\treturn i;\n\t\t\t}\n\t\t}\n\t\treturn -1;\n\t}\n\n");
+        bw.write("\tpublic static int findZeroRight(int position) {\n\t\tfor (int i = position; i < MEMORY_SIZE; i++) {\n\t\t\tif (memory[i] == 0) {\n\t\t\t\treturn i;\n\t\t\t}\n\t\t}\n\t\tfor (int i = 0; i < position; i++) {\n\t\t\tif (memory[i] == 0) {\n\t\t\t\treturn i;\n\t\t\t}\n\t\t}\n\t\treturn -1;\n\t}\n\n");
+        bw.write("\tpublic static void main(String[] args) {\n\n");
+        bw.write("\t\tint pointer = 0;\n\n");
 
-        String indent = "\t";
+        String indent = "\t\t";
         int length = new String(processed).trim().length();
 
         for (int i = 0; i < processed.length && !this.kill.get(); i++) {
@@ -54,12 +54,11 @@ public class JavaTranslator extends Translator {
             }
             // handle output (.)
             else if (ch == '.') {
-                bw.write(indent + "printf(\"%%c\", memory[pointer]);\n");
-                bw.write(indent + "fflush(stdout);\n");
+                bw.write(indent + "System.out.printf(\"%c\", memory[pointer]);\n");
             }
             // handle input (,)
             else if (ch == ',') {
-                bw.write(indent + "memory[pointer] = getchar();\n");
+                bw.write(indent + "memory[pointer] = SC.next(\".\").charAt(0);\n");
             }
             // handle [-]
             else if (ch == SET_ZERO) {
@@ -85,7 +84,7 @@ public class JavaTranslator extends Translator {
             }
         }
 
-        bw.write("\n\treturn 0;\n}\n");
+        bw.write("\n\t}\n\n}\n");
     }
 
     @Override
