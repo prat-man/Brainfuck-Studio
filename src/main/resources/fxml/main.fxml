@@ -89,7 +89,10 @@
                    </graphic>
                  <items>
                    <MenuItem mnemonicParsing="false" onAction="#exportToC" text="C" />
+                   <SeparatorMenuItem mnemonicParsing="false" />
                    <MenuItem mnemonicParsing="false" onAction="#exportToJava" text="Java" />
+                   <MenuItem mnemonicParsing="false" onAction="#exportToJavaFast" text="Java (Fast)" />
+                   <SeparatorMenuItem mnemonicParsing="false" />
                    <MenuItem mnemonicParsing="false" onAction="#exportToPython" text="Python" />
                  </items>
                </MenuButton>

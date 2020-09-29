@@ -5,6 +5,7 @@ import in.pratanumandal.brainfuck.engine.processor.translator.JavaTranslator;
 import in.pratanumandal.brainfuck.engine.Memory;
 import in.pratanumandal.brainfuck.common.Constants;
 import in.pratanumandal.brainfuck.common.Utils;
+import in.pratanumandal.brainfuck.engine.processor.translator.JavaTranslatorFast;
 import in.pratanumandal.brainfuck.engine.processor.translator.PythonTranslator;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -1081,6 +1082,16 @@ public class Controller {
         saveFile();
         if (tabData.getFilePath() != null) {
             JavaTranslator translator = new JavaTranslator(this.currentTab);
+            translator.start();
+        }
+    }
+
+    @FXML
+    private void exportToJavaFast() {
+        TabData tabData = currentTab;
+        saveFile();
+        if (tabData.getFilePath() != null) {
+            JavaTranslatorFast translator = new JavaTranslatorFast(this.currentTab);
             translator.start();
         }
     }
