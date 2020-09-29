@@ -89,4 +89,12 @@ public class Utils {
         }
     }
 
+    public static String join(char[] arr) {
+        return new String(arr).chars().mapToObj(e -> "'" + (char) e + "'").collect(Collectors.joining(", "));
+    }
+
+    public static String join(int[] arr) {
+        return Arrays.stream(arr).mapToObj(e -> String.valueOf(e)).collect(Collectors.joining(", "));
+    }
+
 }

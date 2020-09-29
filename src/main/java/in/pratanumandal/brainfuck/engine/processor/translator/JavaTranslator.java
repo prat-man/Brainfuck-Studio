@@ -1,14 +1,11 @@
 package in.pratanumandal.brainfuck.engine.processor.translator;
 
-import in.pratanumandal.brainfuck.common.Constants;
 import in.pratanumandal.brainfuck.common.Utils;
 import in.pratanumandal.brainfuck.gui.NotificationManager;
 import in.pratanumandal.brainfuck.gui.TabData;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.stream.Collectors;
 
 public class JavaTranslator extends Translator {
 
@@ -18,74 +15,113 @@ public class JavaTranslator extends Translator {
 
     @Override
     public void doTranslate(NotificationManager.Notification notification, BufferedWriter bw) throws IOException {
-        bw.write("import java.io.*;\n\n");
-        bw.write("public class " + this.getFileNameWithoutExtension() + " {\n\n");
-        bw.write("\tpublic static final int MEMORY_SIZE = " + Constants.MEMORY_SIZE + ";\n\n");
-        bw.write("\tpublic static final BufferedReader BR = new BufferedReader(new InputStreamReader(System.in));\n\n");
-        bw.write("\tpublic static final char[] memory = new char[MEMORY_SIZE];\n\n");
-        bw.write("\tpublic static int pointer = 0;\n\n");
-        bw.write("\tpublic static int findZeroLeft(int position) {\n\t\tfor (int i = position; i >= 0; i--) {\n\t\t\tif (memory[i] == 0) {\n\t\t\t\treturn i;\n\t\t\t}\n\t\t}\n\t\tfor (int i = MEMORY_SIZE - 1; i > position; i--) {\n\t\t\tif (memory[i] == 0) {\n\t\t\t\treturn i;\n\t\t\t}\n\t\t}\n\t\treturn -1;\n\t}\n\n");
-        bw.write("\tpublic static int findZeroRight(int position) {\n\t\tfor (int i = position; i < MEMORY_SIZE; i++) {\n\t\t\tif (memory[i] == 0) {\n\t\t\t\treturn i;\n\t\t\t}\n\t\t}\n\t\tfor (int i = 0; i < position; i++) {\n\t\t\tif (memory[i] == 0) {\n\t\t\t\treturn i;\n\t\t\t}\n\t\t}\n\t\treturn -1;\n\t}\n\n");
-        bw.write("\tpublic static int getUpdatedPointer(int pointer, int sum) {\n\t\tpointer += sum;\n\t\tif (pointer < 0 || pointer >= MEMORY_SIZE) {\n\t\t\tSystem.out.printf(\"\\nError: Memory index out of bounds %d\\n\", pointer);\n\t\t\tSystem.exit(1);\n\t\t}\n\t\treturn pointer;\n\t}\n\n");
-        bw.write("\tpublic static void main(String[] args) throws IOException {\n\n");
-
-        String indent = "\t\t";
-
-        for (int i = 0; i < processed.length && !this.kill.get(); i++) {
-            if (i % 50 == 0) {
-                double progress = i / (double) processed.length;
-                Utils.runAndWait(() -> notification.setProgress(progress));
-            }
-
-            char ch = processed[i];
-
-            // handle pointer movement (> and <)
-            if (ch == ADDRESS) {
-                int sum = jumps[i];
-                bw.write(indent + "pointer = getUpdatedPointer(pointer, " + sum + ");\n");
-                //bw.write(indent + "if (pointer < 0 || pointer >= MEMORY_SIZE) {\n");
-                //bw.write(indent + "\tSystem.out.printf(\"\\nError: Memory index out of bounds %d\\n\", pointer);\n");
-                //bw.write(indent + "\tSystem.exit(1);\n");
-                //bw.write(indent + "}\n");
-            }
-            // handle value update (+ and -)
-            else if (ch == DATA) {
-                int sum = jumps[i];
-                bw.write(indent + "memory[pointer] += " + sum + ";\n");
-            }
-            // handle output (.)
-            else if (ch == '.') {
-                bw.write(indent + "System.out.printf(\"%c\", memory[pointer]);\n");
-            }
-            // handle input (,)
-            else if (ch == ',') {
-                bw.write(indent + "memory[pointer] = (char) BR.read();\n");
-            }
-            // handle [-]
-            else if (ch == SET_ZERO) {
-                bw.write(indent + "memory[pointer] = 0;\n");
-            }
-            // handle [<]
-            else if (ch == SCAN_ZERO_LEFT) {
-                bw.write(indent + "pointer = findZeroLeft(pointer);\n");
-            }
-            // handle [>]
-            else if (ch == SCAN_ZERO_RIGHT) {
-                bw.write(indent + "pointer = findZeroRight(pointer);\n");
-            }
-            // handle loop opening ([)
-            else if (ch == '[') {
-                bw.write(indent + "while (memory[pointer] != 0) {\n");
-                indent += '\t';
-            }
-            // handle loop closing (])
-            else if (ch == ']') {
-                indent = indent.substring(0, indent.length() - 1);
-                bw.write(indent + "}\n");
-            }
-        }
-
-        bw.write("\n\t}\n\n}\n");
+        bw.write("import java.io.*;\n" +
+                "\n" +
+                "public class mandelbrot {\n" +
+                "\n" +
+                "\tpublic static final int MEMORY_SIZE = 30000;\n" +
+                "\n" +
+                "\tpublic static final Integer NO_JUMP = 0;\n" +
+                "\tpublic static final Character SET_ZERO = '!';\n" +
+                "\tpublic static final Character SCAN_ZERO_LEFT = '@';\n" +
+                "\tpublic static final Character SCAN_ZERO_RIGHT = '#';\n" +
+                "\tpublic static final Character ADDRESS = '$';\n" +
+                "\tpublic static final Character DATA = '%';\n" +
+                "\n" +
+                "\tpublic static final BufferedReader BR = new BufferedReader(new InputStreamReader(System.in));\n" +
+                "\n" +
+                "\tpublic static final char[] processed = {" + Utils.join(processed) + "};\n" +
+                "\tpublic static final int[] jumps = {" + Utils.join(jumps) + "};\n" +
+                "\tpublic static final char[] memory = new char[MEMORY_SIZE];\n" +
+                "\n" +
+                "\tpublic static int pointer = 0;\n" +
+                "\n" +
+                "\tpublic static int findZeroLeft(int position) {\n" +
+                "\t\tfor (int i = position; i >= 0; i--) {\n" +
+                "\t\t\tif (memory[i] == 0) {\n" +
+                "\t\t\t\treturn i;\n" +
+                "\t\t\t}\n" +
+                "\t\t}\n" +
+                "\t\tfor (int i = MEMORY_SIZE - 1; i > position; i--) {\n" +
+                "\t\t\tif (memory[i] == 0) {\n" +
+                "\t\t\t\treturn i;\n" +
+                "\t\t\t}\n" +
+                "\t\t}\n" +
+                "\t\treturn -1;\n" +
+                "\t}\n" +
+                "\n" +
+                "\tpublic static int findZeroRight(int position) {\n" +
+                "\t\tfor (int i = position; i < MEMORY_SIZE; i++) {\n" +
+                "\t\t\tif (memory[i] == 0) {\n" +
+                "\t\t\t\treturn i;\n" +
+                "\t\t\t}\n" +
+                "\t\t}\n" +
+                "\t\tfor (int i = 0; i < position; i++) {\n" +
+                "\t\t\tif (memory[i] == 0) {\n" +
+                "\t\t\t\treturn i;\n" +
+                "\t\t\t}\n" +
+                "\t\t}\n" +
+                "\t\treturn -1;\n" +
+                "\t}\n" +
+                "\n" +
+                "\tpublic static void main(String[] args) throws IOException {\n" +
+                "\n" +
+                "\t\tfor (int i = 0; i < processed.length; i++) {\n" +
+                "\t\t\tchar ch = processed[i];\n" +
+                "\n" +
+                "\t\t\tif (ch == '\\0') break;\n" +
+                "\n" +
+                "\t\t\t// handle pointer movement (> and <)\n" +
+                "\t\t\tif (ch == ADDRESS) {\n" +
+                "\t\t\t\tint sum = jumps[i];\n" +
+                "\t\t\t\tpointer += sum;\n" +
+                "\t\t\t\tif (pointer < 0 || pointer >= memory.length) {\n" +
+                "\t\t\t\t\tSystem.out.println(\"\\nError: Memory index out of bounds \" + pointer + \"\\n\");\n" +
+                "\t\t\t\t\tSystem.exit(1);\n" +
+                "\t\t\t\t}\n" +
+                "\t\t\t}\n" +
+                "\t\t\t// handle value update (+ and -)\n" +
+                "\t\t\telse if (ch == DATA) {\n" +
+                "\t\t\t\tint sum = jumps[i];\n" +
+                "\t\t\t\tmemory[pointer] = (char) (memory[pointer] + sum);\n" +
+                "\t\t\t}\n" +
+                "\t\t\t// handle output (.)\n" +
+                "\t\t\telse if (ch == '.') {\n" +
+                "\t\t\t\tSystem.out.printf(\"%c\", memory[pointer]);\n" +
+                "\t\t\t}\n" +
+                "\t\t\t// handle input (,)\n" +
+                "\t\t\telse if (ch == ',') {\n" +
+                "\t\t\t\tmemory[pointer] = (char) BR.read();\n" +
+                "\t\t\t}\n" +
+                "\t\t\t// handle [-]\n" +
+                "\t\t\telse if (ch == SET_ZERO) {\n" +
+                "\t\t\t\tmemory[pointer] = 0;\n" +
+                "\t\t\t}\n" +
+                "\t\t\t// handle [<]\n" +
+                "\t\t\telse if (ch == SCAN_ZERO_LEFT) {\n" +
+                "\t\t\t\tpointer = findZeroLeft(pointer);\n" +
+                "\t\t\t}\n" +
+                "\t\t\t// handle [>]\n" +
+                "\t\t\telse if (ch == SCAN_ZERO_RIGHT) {\n" +
+                "\t\t\t\tpointer = findZeroRight(pointer);\n" +
+                "\t\t\t}\n" +
+                "\t\t\t// handle loop opening ([)\n" +
+                "\t\t\telse if (ch == '[') {\n" +
+                "\t\t\t\tif (memory[pointer] == 0) {\n" +
+                "\t\t\t\t\ti = jumps[i];\n" +
+                "\t\t\t\t}\n" +
+                "\t\t\t}\n" +
+                "\t\t\t// handle loop closing (])\n" +
+                "\t\t\telse if (ch == ']') {\n" +
+                "\t\t\t\tif (memory[pointer] != 0) {\n" +
+                "\t\t\t\t\ti = jumps[i];\n" +
+                "\t\t\t\t}\n" +
+                "\t\t\t}\n" +
+                "\t\t}\n" +
+                "\n" +
+                "\t}\n" +
+                "\n" +
+                "}\n");
     }
 
     @Override
