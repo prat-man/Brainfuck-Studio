@@ -939,6 +939,11 @@ public class Controller {
     }
 
     @FXML
+    private void settings() {
+
+    }
+
+    @FXML
     private void about() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle(Constants.APPLICATION_NAME);

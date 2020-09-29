@@ -93,6 +93,7 @@
 
 .tool-bar {
     -fx-background-color: #444952;
+    -fx-spacing: 7px;
 }
 
 .label {

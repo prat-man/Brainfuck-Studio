@@ -47,11 +47,7 @@
                       </ImageView>
                    </graphic>
                 </SplitMenuButton>
-                <Separator layoutX="233.0" layoutY="10.0">
-                   <padding>
-                      <Insets left="5.0" right="5.0" />
-                   </padding>
-                </Separator>
+                <Separator layoutX="233.0" layoutY="10.0" />
                 <Button layoutX="253.0" layoutY="10.0" mnemonicParsing="false" onAction="#debug" text="Debug">
                    <graphic>
                       <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
@@ -61,11 +57,7 @@
                       </ImageView>
                    </graphic>
                 </Button>
-                <Separator layoutX="118.0" layoutY="10.0">
-                   <padding>
-                      <Insets left="5.0" right="5.0" />
-                   </padding>
-                </Separator>
+                <Separator layoutX="118.0" layoutY="10.0" />
                 <Button layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#interpret" text="Run">
                    <graphic>
                       <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
@@ -74,11 +66,7 @@
                          </image>
                       </ImageView>
                    </graphic></Button>
-               <Separator layoutX="329.0" layoutY="10.0">
-                  <padding>
-                     <Insets left="5.0" right="5.0" />
-                  </padding>
-               </Separator>
+               <Separator layoutX="329.0" layoutY="10.0" />
                <MenuButton mnemonicParsing="false" text="Export">
                    <graphic>
                        <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
@@ -108,11 +96,7 @@
                         <Tooltip showDelay="300ms" text="Find and Replace" />
                     </tooltip>
                 </ToggleButton>
-                <Separator layoutX="721.0" layoutY="10.0">
-                   <padding>
-                      <Insets left="5.0" right="5.0" />
-                   </padding>
-                </Separator>
+                <Separator layoutX="721.0" layoutY="10.0" />
                 <HBox alignment="CENTER" spacing="5.0">
                    <children>
                       <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
@@ -135,11 +119,16 @@
                       </ChoiceBox>
                    </children>
                 </HBox>
-                <Separator layoutX="177.0" layoutY="10.0">
-                   <padding>
-                      <Insets left="5.0" right="5.0" />
-                   </padding>
-                </Separator>
+                <Separator layoutX="177.0" layoutY="10.0" />
+                <Button layoutX="192.0" layoutY="10.0" mnemonicParsing="false" onAction="#settings" text="Settings">
+                    <graphic>
+                        <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                            <image>
+                                <Image url="@../images/settings.png" />
+                            </image>
+                        </ImageView>
+                    </graphic>
+                </Button>
                 <Button layoutX="192.0" layoutY="10.0" mnemonicParsing="false" onAction="#about" text="About">
                    <graphic>
                       <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
@@ -147,7 +136,8 @@
                             <Image url="@../images/about.png" />
                          </image>
                       </ImageView>
-                   </graphic></Button>
+                   </graphic>
+                </Button>
             </items>
              <padding>
                 <Insets bottom="9.0" left="7.0" right="7.0" top="8.0" />
