@@ -29,11 +29,11 @@ public class JavaTranslatorFast extends Translator {
                 "\tpublic static final Character ADDRESS = '$';\n" +
                 "\tpublic static final Character DATA = '%';\n" +
                 "\n" +
-                "\tpublic static final BufferedReader BR = new BufferedReader(new InputStreamReader(System.in));\n" +
+                "\tpublic static final Reader CR = System.console().reader();\n" +
                 "\n" +
                 "\tpublic static final char[] processed = {" + Utils.join(processed) + "};\n" +
                 "\tpublic static final int[] jumps = {" + Utils.join(jumps) + "};\n" +
-                "\tpublic static final char[] memory = new char[MEMORY_SIZE];\n" +
+                "\tpublic static final byte[] memory = new byte[MEMORY_SIZE];\n" +
                 "\n" +
                 "\tpublic static int pointer = 0;\n" +
                 "\n" +
@@ -82,15 +82,15 @@ public class JavaTranslatorFast extends Translator {
                 "\t\t\t// handle value update (+ and -)\n" +
                 "\t\t\telse if (ch == DATA) {\n" +
                 "\t\t\t\tint sum = jumps[i];\n" +
-                "\t\t\t\tmemory[pointer] = (char) (memory[pointer] + sum);\n" +
+                "\t\t\t\tmemory[pointer] = (byte) (memory[pointer] + sum);\n" +
                 "\t\t\t}\n" +
                 "\t\t\t// handle output (.)\n" +
                 "\t\t\telse if (ch == '.') {\n" +
-                "\t\t\t\tSystem.out.printf(\"%c\", memory[pointer]);\n" +
+                "\t\t\t\tSystem.out.printf(\"%c\", memory[pointer] >= 0 ? memory[pointer] : memory[pointer] + 256);\n" +
                 "\t\t\t}\n" +
                 "\t\t\t// handle input (,)\n" +
                 "\t\t\telse if (ch == ',') {\n" +
-                "\t\t\t\tmemory[pointer] = (char) BR.read();\n" +
+                "\t\t\t\tmemory[pointer] = (byte) CR.read();\n" +
                 "\t\t\t}\n" +
                 "\t\t\t// handle [-]\n" +
                 "\t\t\telse if (ch == SET_ZERO) {\n" +

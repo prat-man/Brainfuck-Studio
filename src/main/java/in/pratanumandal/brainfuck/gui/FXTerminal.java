@@ -156,13 +156,6 @@ public class FXTerminal extends TextArea {
         scrollItem.setSelected(this.autoScroll.get());
         scrollItem.selectedProperty().addListener((obs, oldVal, newVal) -> this.autoScroll.set(newVal));
         menu.getItems().add(scrollItem);
-
-        this.setOnKeyPressed(event -> {
-            if (event.isControlDown() && event.getText().equalsIgnoreCase("V")) {
-                Clipboard clipboard = Clipboard.getSystemClipboard();
-                this.appendText(clipboard.getString());
-            }
-        });
     }
 
     public Character readChar() {

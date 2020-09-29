@@ -5,9 +5,6 @@ import in.pratanumandal.brainfuck.common.Utils;
 import in.pratanumandal.brainfuck.engine.processor.Processor;
 import in.pratanumandal.brainfuck.gui.TabData;
 import javafx.application.Platform;
-import javafx.event.Event;
-import javafx.event.EventHandler;
-import javafx.scene.input.ContextMenuEvent;
 
 import java.util.Arrays;
 
@@ -90,7 +87,9 @@ public class Interpreter extends Processor {
             }
             // handle output (.)
             else if (ch == '.') {
-                String text = String.valueOf((char) this.memory[dataPointer].intValue());
+                int codePoint = this.memory[dataPointer].intValue();
+                if (codePoint < 0) codePoint += 256;
+                String text = String.valueOf((char) codePoint);
                 tabData.getInterpretTerminal().write(text);
             }
             // handle input (,)

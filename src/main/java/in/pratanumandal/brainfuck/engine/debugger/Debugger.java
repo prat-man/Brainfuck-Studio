@@ -224,29 +224,39 @@ public class Debugger implements Runnable {
             if (ch == '~') {
                 this.pause();
             } else if (ch == '>') {
-                dataPointer = (dataPointer == Constants.MEMORY_SIZE - 1) ? 0 : dataPointer + 1;
-
-                int finalDataPointer = dataPointer;
-                Platform.runLater(() -> {
-                    int firstVisRowIndex = tvX.getFirstVisibleIndex();
-                    int lastVisRowIndex = tvX.getLastVisibleIndex();
-                    if (firstVisRowIndex > finalDataPointer || lastVisRowIndex < finalDataPointer) {
-                        tabData.getTableView().scrollTo(finalDataPointer);
-                    }
-                    tabData.getTableView().getSelectionModel().select(finalDataPointer);
-                });
+                dataPointer++;
+                if (dataPointer >= Constants.MEMORY_SIZE) {
+                    tabData.getDebugTerminal().write("\nError: Memory index out of bounds " + dataPointer + "\n");
+                    this.stop(false);
+                }
+                else {
+                    int finalDataPointer = dataPointer;
+                    Platform.runLater(() -> {
+                        int firstVisRowIndex = tvX.getFirstVisibleIndex();
+                        int lastVisRowIndex = tvX.getLastVisibleIndex();
+                        if (firstVisRowIndex > finalDataPointer || lastVisRowIndex < finalDataPointer) {
+                            tabData.getTableView().scrollTo(finalDataPointer);
+                        }
+                        tabData.getTableView().getSelectionModel().select(finalDataPointer);
+                    });
+                }
             } else if (code.charAt(i) == '<') {
-                dataPointer = (dataPointer == 0) ? Constants.MEMORY_SIZE - 1 : dataPointer - 1;
-
-                int finalDataPointer = dataPointer;
-                Platform.runLater(() -> {
-                    int firstVisRowIndex = tvX.getFirstVisibleIndex();
-                    int lastVisRowIndex = tvX.getLastVisibleIndex();
-                    if (firstVisRowIndex > finalDataPointer || lastVisRowIndex < finalDataPointer) {
-                        tabData.getTableView().scrollTo(finalDataPointer);
-                    }
-                    tabData.getTableView().getSelectionModel().select(finalDataPointer);
-                });
+                dataPointer--;
+                if (dataPointer < 0) {
+                    tabData.getDebugTerminal().write("\nError: Memory index out of bounds " + dataPointer + "\n");
+                    this.stop(false);
+                }
+                else {
+                    int finalDataPointer = dataPointer;
+                    Platform.runLater(() -> {
+                        int firstVisRowIndex = tvX.getFirstVisibleIndex();
+                        int lastVisRowIndex = tvX.getLastVisibleIndex();
+                        if (firstVisRowIndex > finalDataPointer || lastVisRowIndex < finalDataPointer) {
+                            tabData.getTableView().scrollTo(finalDataPointer);
+                        }
+                        tabData.getTableView().getSelectionModel().select(finalDataPointer);
+                    });
+                }
             } else if (code.charAt(i) == '+') {
                 memory[dataPointer]++;
 
@@ -262,7 +272,9 @@ public class Debugger implements Runnable {
                 memoryBlock.setData(Byte.toUnsignedInt(memory[finalDataPointer]));
                 Platform.runLater(() ->  tabData.getMemory().set(finalDataPointer, memoryBlock));
             } else if (code.charAt(i) == '.') {
-                String text = String.valueOf((char) this.memory[dataPointer].intValue());
+                int codePoint = this.memory[dataPointer].intValue();
+                if (codePoint < 0) codePoint += 256;
+                String text = String.valueOf((char) codePoint);
                 tabData.getDebugTerminal().write(text);
             } else if (code.charAt(i) == ',') {
                 Character character = tabData.getDebugTerminal().readChar();

@@ -19,8 +19,8 @@ public class JavaTranslator extends Translator {
         bw.write("import java.io.*;\n\n");
         bw.write("public class " + this.getFileNameWithoutExtension() + " {\n\n");
         bw.write("\tpublic static final int MEMORY_SIZE = " + Constants.MEMORY_SIZE + ";\n\n");
-        bw.write("\tpublic static final BufferedReader BR = new BufferedReader(new InputStreamReader(System.in));\n\n");
-        bw.write("\tpublic static final char[] memory = new char[MEMORY_SIZE];\n\n");
+        bw.write("\tpublic static final Reader CR = System.console().reader();\n\n");
+        bw.write("\tpublic static final byte[] memory = new byte[MEMORY_SIZE];\n\n");
         bw.write("\tpublic static int pointer = 0;\n\n");
         bw.write("\tpublic static int findZeroLeft(int position) {\n\t\tfor (int i = position; i >= 0; i--) {\n\t\t\tif (memory[i] == 0) {\n\t\t\t\treturn i;\n\t\t\t}\n\t\t}\n\t\tfor (int i = MEMORY_SIZE - 1; i > position; i--) {\n\t\t\tif (memory[i] == 0) {\n\t\t\t\treturn i;\n\t\t\t}\n\t\t}\n\t\treturn -1;\n\t}\n\n");
         bw.write("\tpublic static int findZeroRight(int position) {\n\t\tfor (int i = position; i < MEMORY_SIZE; i++) {\n\t\t\tif (memory[i] == 0) {\n\t\t\t\treturn i;\n\t\t\t}\n\t\t}\n\t\tfor (int i = 0; i < position; i++) {\n\t\t\tif (memory[i] == 0) {\n\t\t\t\treturn i;\n\t\t\t}\n\t\t}\n\t\treturn -1;\n\t}\n\n");
@@ -49,11 +49,11 @@ public class JavaTranslator extends Translator {
             }
             // handle output (.)
             else if (ch == '.') {
-                bw.write(indent + "System.out.printf(\"%c\", memory[pointer]);\n");
+                bw.write(indent + "System.out.printf(\"%c\", memory[pointer] >= 0 ? memory[pointer] : memory[pointer] + 256);\n");
             }
             // handle input (,)
             else if (ch == ',') {
-                bw.write(indent + "memory[pointer] = (char) BR.read();\n");
+                bw.write(indent + "memory[pointer] = (byte) CR.read();\n");
             }
             // handle [-]
             else if (ch == SET_ZERO) {
