@@ -27,7 +27,10 @@ public class FXTerminal extends TextArea {
     }
 
     public FXTerminal(String text) {
-        text = text.replaceAll("[\\p{Cc}\\p{Cf}\\p{Co}\\p{Cn}&&[^\\s]]", "\uFFFD");
+        text = text.replace("\r\n", "\n")
+                .replace("\r", "\n")
+                .replaceAll("[\\p{Cc}\\p{Cf}\\p{Co}\\p{Cn}&&[^\\s]]", "\uFFFD");
+
         super.setText(text);
 
         this.existingText = text;
@@ -84,7 +87,10 @@ public class FXTerminal extends TextArea {
                     String newText = this.writeBuffer.toString();
                     this.writeBuffer.setLength(0);
 
-                    String sanitizedText = newText.replaceAll("[\\p{Cc}\\p{Cf}\\p{Co}\\p{Cn}&&[^\\s]]", "\uFFFD");
+                    String sanitizedText = newText.replace("\r\n", "\n")
+                            .replace("\r", "\n")
+                            .replaceAll("[\\p{Cc}\\p{Cf}\\p{Co}\\p{Cn}&&[^\\s]]", "\uFFFD");
+
                     this.existingText += sanitizedText;
 
                     if (this.autoScroll.get()) {

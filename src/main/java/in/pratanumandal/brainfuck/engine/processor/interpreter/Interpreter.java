@@ -80,8 +80,10 @@ public class Interpreter extends Processor {
             if (ch == ADDRESS) {
                 int sum = jumps[i];
                 dataPointer += sum;
-                if (dataPointer >= this.memory.length) dataPointer -= this.memory.length;
-                else if (dataPointer < 0) dataPointer += this.memory.length;
+                if (dataPointer < 0 || dataPointer >= this.memory.length) {
+                    tabData.getInterpretTerminal().write("\nError: Memory index out of bounds " + dataPointer + "\n");
+                    this.stop(false);
+                }
             }
             // handle value update (+ and -)
             else if (ch == DATA) {

@@ -41,8 +41,10 @@ public class CTranslator extends Translator {
                 int sum = jumps[i];
 
                 bw.write(indent + "pointer += " + sum + ";\n");
-                bw.write(indent + "if (pointer >= MEMORY_SIZE) pointer -= MEMORY_SIZE;\n");
-                bw.write(indent + "else if (pointer < 0) pointer += MEMORY_SIZE;\n");
+                bw.write(indent + "if (pointer < 0 || pointer >= MEMORY_SIZE) {\n");
+                bw.write(indent + "\tprintf(\"\\nError: Memory index out of bounds %d\\n\", pointer);\n");
+                bw.write(indent + "\treturn 1;\n");
+                bw.write(indent + "}\n");
             }
             // handle value update (+ and -)
             else if (ch == DATA) {

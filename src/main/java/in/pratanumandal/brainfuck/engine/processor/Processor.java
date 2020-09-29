@@ -1,12 +1,10 @@
 package in.pratanumandal.brainfuck.engine.processor;
 
+import in.pratanumandal.brainfuck.common.Utils;
 import in.pratanumandal.brainfuck.engine.UnmatchedLoopException;
 import in.pratanumandal.brainfuck.gui.TabData;
 import in.pratanumandal.brainfuck.common.Constants;
-import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
-import javafx.scene.input.ContextMenuEvent;
 import org.fxmisc.richtext.CodeArea;
 
 import java.util.Stack;
@@ -188,6 +186,7 @@ public abstract class Processor implements Runnable {
 
         // strip ending null characters
         processed = new String(processed).trim().toCharArray();
+        jumps = Utils.truncate(jumps, processed.length);
     }
 
     public void stop() {

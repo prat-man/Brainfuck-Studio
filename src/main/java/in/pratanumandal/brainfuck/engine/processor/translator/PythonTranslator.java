@@ -40,8 +40,9 @@ public class PythonTranslator extends Translator {
                 int sum = jumps[i];
 
                 bw.write(indent + "pointer = pointer + " + sum + "\n");
-                bw.write(indent + "if pointer >= MEMORY_SIZE: pointer -= MEMORY_SIZE\n");
-                bw.write(indent + "elif pointer < 0: pointer += MEMORY_SIZE\n");
+                bw.write(indent + "if pointer < 0 or pointer >= MEMORY_SIZE:\n");
+                bw.write(indent + "\tprint(\"\\nError: Memory index out of bounds \" + str(pointer))\n");
+                bw.write(indent + "\texit(1)\n");
             }
             // handle value update (+ and -)
             else if (ch == DATA) {

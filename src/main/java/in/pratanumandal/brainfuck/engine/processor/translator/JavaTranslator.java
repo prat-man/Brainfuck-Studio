@@ -7,6 +7,8 @@ import in.pratanumandal.brainfuck.gui.TabData;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 public class JavaTranslator extends Translator {
 
@@ -21,11 +23,11 @@ public class JavaTranslator extends Translator {
         bw.write("\tpublic static final int MEMORY_SIZE = " + Constants.MEMORY_SIZE + ";\n\n");
         bw.write("\tpublic static final BufferedReader BR = new BufferedReader(new InputStreamReader(System.in));\n\n");
         bw.write("\tpublic static final char[] memory = new char[MEMORY_SIZE];\n\n");
+        bw.write("\tpublic static int pointer = 0;\n\n");
         bw.write("\tpublic static int findZeroLeft(int position) {\n\t\tfor (int i = position; i >= 0; i--) {\n\t\t\tif (memory[i] == 0) {\n\t\t\t\treturn i;\n\t\t\t}\n\t\t}\n\t\tfor (int i = MEMORY_SIZE - 1; i > position; i--) {\n\t\t\tif (memory[i] == 0) {\n\t\t\t\treturn i;\n\t\t\t}\n\t\t}\n\t\treturn -1;\n\t}\n\n");
         bw.write("\tpublic static int findZeroRight(int position) {\n\t\tfor (int i = position; i < MEMORY_SIZE; i++) {\n\t\t\tif (memory[i] == 0) {\n\t\t\t\treturn i;\n\t\t\t}\n\t\t}\n\t\tfor (int i = 0; i < position; i++) {\n\t\t\tif (memory[i] == 0) {\n\t\t\t\treturn i;\n\t\t\t}\n\t\t}\n\t\treturn -1;\n\t}\n\n");
-        bw.write("\tpublic static int getUpdatedPointer(int pointer, int sum) {\n\t\tpointer += sum;\n\t\tif (pointer >= MEMORY_SIZE) pointer -= MEMORY_SIZE;\n\t\telse if (pointer < 0) pointer += MEMORY_SIZE;\n\t\treturn pointer;\n\t}\n\n");
+        bw.write("\tpublic static int getUpdatedPointer(int pointer, int sum) {\n\t\tpointer += sum;\n\t\tif (pointer < 0 || pointer >= MEMORY_SIZE) {\n\t\t\tSystem.out.printf(\"\\nError: Memory index out of bounds %d\\n\", pointer);\n\t\t\tSystem.exit(1);\n\t\t}\n\t\treturn pointer;\n\t}\n\n");
         bw.write("\tpublic static void main(String[] args) throws IOException {\n\n");
-        bw.write("\t\tint pointer = 0;\n\n");
 
         String indent = "\t\t";
 
@@ -41,6 +43,10 @@ public class JavaTranslator extends Translator {
             if (ch == ADDRESS) {
                 int sum = jumps[i];
                 bw.write(indent + "pointer = getUpdatedPointer(pointer, " + sum + ");\n");
+                //bw.write(indent + "if (pointer < 0 || pointer >= MEMORY_SIZE) {\n");
+                //bw.write(indent + "\tSystem.out.printf(\"\\nError: Memory index out of bounds %d\\n\", pointer);\n");
+                //bw.write(indent + "\tSystem.exit(1);\n");
+                //bw.write(indent + "}\n");
             }
             // handle value update (+ and -)
             else if (ch == DATA) {

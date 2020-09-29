@@ -7,7 +7,11 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.concurrent.CountDownLatch;
+import java.util.stream.Collectors;
 
 public class Utils {
 
@@ -72,6 +76,16 @@ public class Utils {
                     return df.format(days) + " days";
                 }
             }
+        }
+    }
+
+    public static int[] truncate(int[] array, int newLength) {
+        if (array.length < newLength) {
+            return array;
+        } else {
+            int[] truncated = new int[newLength];
+            System.arraycopy(array, 0, truncated, 0, newLength);
+            return truncated;
         }
     }
 
