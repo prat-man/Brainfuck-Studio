@@ -74,8 +74,6 @@ public class Interpreter extends Processor {
         for (int i = 0; i < processed.length && !this.kill.get(); i++) {
             char ch = processed[i];
 
-            if (ch == '\0') break;
-
             // handle pointer movement (> and <)
             if (ch == ADDRESS) {
                 int sum = jumps[i];

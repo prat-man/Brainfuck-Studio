@@ -69,8 +69,6 @@ public class JavaTranslator extends Translator {
                 "\t\tfor (int i = 0; i < processed.length; i++) {\n" +
                 "\t\t\tchar ch = processed[i];\n" +
                 "\n" +
-                "\t\t\tif (ch == '\\0') break;\n" +
-                "\n" +
                 "\t\t\t// handle pointer movement (> and <)\n" +
                 "\t\t\tif (ch == ADDRESS) {\n" +
                 "\t\t\t\tint sum = jumps[i];\n" +
