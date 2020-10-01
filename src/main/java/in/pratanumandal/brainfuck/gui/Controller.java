@@ -1034,15 +1034,18 @@ public class Controller {
         saveFile();
         if (tabData.getFilePath() != null) {
             // stop and hide debugger
-            tabData.getDebugger().stop();
+            if (tabData.getDebugger() != null)
+                tabData.getDebugger().stop();
             tabData.getDebug().setVisible(false);
             tabData.getDebugTerminal().setVisible(false);
 
             // stop and hide interpreter
-            tabData.getInterpreter().stop();
+            if (tabData.getInterpreter() != null)
+                tabData.getInterpreter().stop();
             tabData.getInterpretTerminal().setVisible(false);
 
             // show and start debugger
+            tabData.initializeDebugger();
             tabData.getDebug().setVisible(true);
             tabData.getDebugTerminal().setVisible(true);
             tabData.getTableView().scrollTo(0);
@@ -1057,15 +1060,18 @@ public class Controller {
         saveFile();
         if (tabData.getFilePath() != null) {
             // stop and hide debugger
-            tabData.getDebugger().stop();
+            if (tabData.getDebugger() != null)
+                tabData.getDebugger().stop();
             tabData.getDebug().setVisible(false);
             tabData.getDebugTerminal().setVisible(false);
 
             // stop and hide interpreter
-            tabData.getInterpreter().stop();
+            if (tabData.getInterpreter() != null)
+                tabData.getInterpreter().stop();
             tabData.getInterpretTerminal().setVisible(false);
 
             // show and start interpreter
+            tabData.initializeInterpreter();
             tabData.getInterpretTerminal().setVisible(true);
             tabData.getInterpreter().start();
         }

@@ -2,8 +2,8 @@ package in.pratanumandal.brainfuck.gui;
 
 import in.pratanumandal.brainfuck.common.Constants;
 import in.pratanumandal.brainfuck.engine.debugger.Debugger;
-import in.pratanumandal.brainfuck.engine.processor.interpreter.Interpreter;
 import in.pratanumandal.brainfuck.engine.Memory;
+import in.pratanumandal.brainfuck.engine.processor.interpreter.Interpreter;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -74,9 +74,6 @@ public class TabData {
         this.dividerPosition = 0.5;
         this.memory = FXCollections.observableArrayList();
 
-        this.debugger = new Debugger(this);
-        this.interpreter = new Interpreter(this);
-
         if (this.filePath == null) {
             tab.setText("Untitled " + untitledTabIndex++);
         }
@@ -128,14 +125,6 @@ public class TabData {
     public CustomCodeArea getCodeArea() {
         return codeArea;
     }
-
-    /*public Terminal getTerminal() {
-        return terminal;
-    }
-
-    public void setTerminal(Terminal terminal) {
-        this.terminal = terminal;
-    }*/
 
     public Button getDebugResumeButton() {
         return debugResumeButton;
@@ -221,12 +210,20 @@ public class TabData {
         return tableView;
     }
 
+    public void initializeDebugger() {
+        this.debugger = Debugger.getDebugger(this);
+    }
+
     public Debugger getDebugger() {
-        return debugger;
+        return this.debugger;
+    }
+
+    public void initializeInterpreter() {
+        this.interpreter = Interpreter.getInterpreter(this);
     }
 
     public Interpreter getInterpreter() {
-        return interpreter;
+        return this.interpreter;
     }
 
     public BracketHighlighter getBracketHighlighter() {

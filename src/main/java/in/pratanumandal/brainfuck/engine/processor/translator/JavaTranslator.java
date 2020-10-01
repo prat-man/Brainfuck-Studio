@@ -20,7 +20,14 @@ public class JavaTranslator extends Translator {
         bw.write("public class " + this.getFileNameWithoutExtension() + " {\n\n");
         bw.write("\tpublic static final int MEMORY_SIZE = " + Constants.MEMORY_SIZE + ";\n\n");
         bw.write("\tpublic static final Reader CR = System.console().reader();\n\n");
-        bw.write("\tpublic static final byte[] memory = new byte[MEMORY_SIZE];\n\n");
+
+        if (this.cellSize == 8) {
+            bw.write("\tpublic static final byte[] memory = new byte[MEMORY_SIZE];\n\n");
+        }
+        else if (this.cellSize == 16) {
+            bw.write("\tpublic static final short[] memory = new short[MEMORY_SIZE];\n\n");
+        }
+
         bw.write("\tpublic static int pointer = 0;\n\n");
         bw.write("\tpublic static int findZeroLeft(int position) {\n\t\tfor (int i = position; i >= 0; i--) {\n\t\t\tif (memory[i] == 0) {\n\t\t\t\treturn i;\n\t\t\t}\n\t\t}\n\t\tfor (int i = MEMORY_SIZE - 1; i > position; i--) {\n\t\t\tif (memory[i] == 0) {\n\t\t\t\treturn i;\n\t\t\t}\n\t\t}\n\t\treturn -1;\n\t}\n\n");
         bw.write("\tpublic static int findZeroRight(int position) {\n\t\tfor (int i = position; i < MEMORY_SIZE; i++) {\n\t\t\tif (memory[i] == 0) {\n\t\t\t\treturn i;\n\t\t\t}\n\t\t}\n\t\tfor (int i = 0; i < position; i++) {\n\t\t\tif (memory[i] == 0) {\n\t\t\t\treturn i;\n\t\t\t}\n\t\t}\n\t\treturn -1;\n\t}\n\n");
@@ -53,7 +60,12 @@ public class JavaTranslator extends Translator {
             }
             // handle input (,)
             else if (ch == ',') {
-                bw.write(indent + "memory[pointer] = (byte) CR.read();\n");
+                if (this.cellSize == 8) {
+                    bw.write(indent + "memory[pointer] = (byte) CR.read();\n");
+                }
+                else if (this.cellSize == 16) {
+                    bw.write(indent + "memory[pointer] = (short) CR.read();\n");
+                }
             }
             // handle [-]
             else if (ch == SET_ZERO) {

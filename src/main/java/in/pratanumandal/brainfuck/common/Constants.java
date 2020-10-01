@@ -38,6 +38,8 @@ public class Constants {
 
     public static final Integer MEMORY_SIZE = 30000;
 
+    public static final Integer CELL_SIZE = 16;
+
 
     private static File executable;
 

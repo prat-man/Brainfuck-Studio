@@ -1,46 +1,39 @@
 package in.pratanumandal.brainfuck.engine.debugger;
 
-import in.pratanumandal.brainfuck.engine.Memory;
 import in.pratanumandal.brainfuck.engine.UnmatchedLoopException;
 import in.pratanumandal.brainfuck.gui.TabData;
 import in.pratanumandal.brainfuck.common.Constants;
-import in.pratanumandal.brainfuck.gui.TableViewExtra;
-import javafx.application.Platform;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
-import javafx.scene.control.Slider;
 import javafx.scene.input.ContextMenuEvent;
 import org.fxmisc.richtext.CodeArea;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Stack;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class Debugger implements Runnable {
+public abstract class Debugger implements Runnable {
 
     protected TabData tabData;
 
-    protected Byte[] memory;
     protected Map<Integer, Integer> brackets;
 
     protected CodeArea codeArea;
 
     protected String code;
-    protected final AtomicBoolean pause;
 
+    protected final AtomicBoolean pause;
     protected final AtomicBoolean kill;
 
     protected Thread thread;
 
     protected final EventHandler<ContextMenuEvent> consumeAllContextMenu = Event::consume;
 
-    public Debugger(TabData tabData) {
+    protected Debugger(TabData tabData) {
         this.tabData = tabData;
 
-        this.memory = new Byte[Constants.MEMORY_SIZE];
         this.brackets = new HashMap<>();
 
         this.codeArea = tabData.getCodeArea();
@@ -60,12 +53,7 @@ public class Debugger implements Runnable {
             this.kill.set(false);
         }
 
-        Arrays.fill(this.memory, (byte) 0);
-
-        for (int i = 0; i < memory.length; i++) {
-            tabData.getMemory().get(i).setData(Byte.toUnsignedInt(memory[i]));
-        }
-        Platform.runLater(() -> tabData.getTableView().refresh());
+        this.clearMemory();
 
         try {
             this.initializeBrackets();
@@ -94,6 +82,8 @@ public class Debugger implements Runnable {
         this.tabData.getDebugStopButton().setDisable(false);
         this.tabData.getDebugCloseButton().setDisable(true);
     }
+
+    protected abstract void clearMemory();
 
     private void initializeBrackets() {
         this.brackets.clear();
@@ -194,116 +184,17 @@ public class Debugger implements Runnable {
         return !this.kill.get();
     }
 
-    @Override
-    public void run() {
+    public static Debugger getDebugger(TabData tabData) {
+        Integer cellSize = Constants.CELL_SIZE;
 
-        Slider debugSpeed = tabData.getDebugSpeed();
-        TableViewExtra<Memory> tvX = new TableViewExtra(tabData.getTableView());
-
-        int dataPointer = 0;
-
-        for (int i = 0; i < code.length() && !this.kill.get(); i++) {
-            synchronized (this.pause) {
-                if (this.pause.get()) {
-                    try {
-                        this.pause.wait();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-
-            int finalI = i;
-            Platform.runLater(() -> {
-                this.codeArea.selectRange(finalI, finalI + 1);
-                this.codeArea.requestFollowCaret();
-            });
-
-            char ch = code.charAt(i);
-
-            if (ch == '~') {
-                this.pause();
-            } else if (ch == '>') {
-                dataPointer++;
-                if (dataPointer >= Constants.MEMORY_SIZE) {
-                    tabData.getDebugTerminal().write("\nError: Memory index out of bounds " + dataPointer + "\n");
-                    this.stop(false);
-                }
-                else {
-                    int finalDataPointer = dataPointer;
-                    Platform.runLater(() -> {
-                        int firstVisRowIndex = tvX.getFirstVisibleIndex();
-                        int lastVisRowIndex = tvX.getLastVisibleIndex();
-                        if (firstVisRowIndex > finalDataPointer || lastVisRowIndex < finalDataPointer) {
-                            tabData.getTableView().scrollTo(finalDataPointer);
-                        }
-                        tabData.getTableView().getSelectionModel().select(finalDataPointer);
-                    });
-                }
-            } else if (code.charAt(i) == '<') {
-                dataPointer--;
-                if (dataPointer < 0) {
-                    tabData.getDebugTerminal().write("\nError: Memory index out of bounds " + dataPointer + "\n");
-                    this.stop(false);
-                }
-                else {
-                    int finalDataPointer = dataPointer;
-                    Platform.runLater(() -> {
-                        int firstVisRowIndex = tvX.getFirstVisibleIndex();
-                        int lastVisRowIndex = tvX.getLastVisibleIndex();
-                        if (firstVisRowIndex > finalDataPointer || lastVisRowIndex < finalDataPointer) {
-                            tabData.getTableView().scrollTo(finalDataPointer);
-                        }
-                        tabData.getTableView().getSelectionModel().select(finalDataPointer);
-                    });
-                }
-            } else if (code.charAt(i) == '+') {
-                memory[dataPointer]++;
-
-                int finalDataPointer = dataPointer;
-                Memory memoryBlock = tabData.getMemory().get(finalDataPointer);
-                memoryBlock.setData(Byte.toUnsignedInt(memory[finalDataPointer]));
-                Platform.runLater(() ->  tabData.getMemory().set(finalDataPointer, memoryBlock));
-            } else if (code.charAt(i) == '-') {
-                memory[dataPointer]--;
-
-                int finalDataPointer = dataPointer;
-                Memory memoryBlock = tabData.getMemory().get(finalDataPointer);
-                memoryBlock.setData(Byte.toUnsignedInt(memory[finalDataPointer]));
-                Platform.runLater(() ->  tabData.getMemory().set(finalDataPointer, memoryBlock));
-            } else if (code.charAt(i) == '.') {
-                int codePoint = this.memory[dataPointer].intValue();
-                if (codePoint < 0) codePoint += 256;
-                String text = String.valueOf((char) codePoint);
-                tabData.getDebugTerminal().write(text);
-            } else if (code.charAt(i) == ',') {
-                Character character = tabData.getDebugTerminal().readChar();
-                memory[dataPointer] = character == null ? (byte) 0 : (byte) (int) character;
-
-                int finalDataPointer = dataPointer;
-                Memory memoryBlock = tabData.getMemory().get(finalDataPointer);
-                memoryBlock.setData(Byte.toUnsignedInt(memory[finalDataPointer]));
-                Platform.runLater(() ->  tabData.getMemory().set(finalDataPointer, memoryBlock));
-            } else if (code.charAt(i) == '[') {
-                if (memory[dataPointer] == 0) {
-                    i = brackets.get(i);
-                }
-            } else if (code.charAt(i) == ']') {
-                if (memory[dataPointer] != 0) {
-                    i = brackets.get(i);
-                }
-            }
-
-            try {
-                int delay =  (int) (debugSpeed.getMax() - debugSpeed.getValue() + debugSpeed.getMajorTickUnit());
-                Thread.sleep(delay);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        if (cellSize == 8) {
+            return new Debugger8(tabData);
+        }
+        else if (cellSize == 16) {
+            return new Debugger16(tabData);
         }
 
-        this.stop(false);
-
+        return null;
     }
 
 }

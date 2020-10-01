@@ -20,7 +20,14 @@ public class PythonTranslator extends Translator {
         bw.write("import numpy as np\n\n");
         bw.write("np.seterr(over='ignore')\n\n");
         bw.write("MEMORY_SIZE = " + Constants.MEMORY_SIZE + "\n\n");
-        bw.write("memory = np.zeros((MEMORY_SIZE), dtype=np.ubyte)\n");
+
+        if (this.cellSize == 8) {
+            bw.write("memory = np.zeros((MEMORY_SIZE), dtype=np.ubyte)\n");
+        }
+        else if (this.cellSize == 16) {
+            bw.write("memory = np.zeros((MEMORY_SIZE), dtype=np.uintc)\n");
+        }
+
         bw.write("pointer = 0\n\n");
         bw.write("def findZeroLeft(position):\n\tfor i in range(position, 0, -1):\n\t\tif memory[i] == 0:\n\t\t\treturn i\n\tfor i in range(MEMORY_SIZE - 1, position, -1):\n\t\tif memory[i] == 0:\n\t\t\treturn i\n\treturn -1\n\n");
         bw.write("def findZeroRight(position):\n\tfor i in range(position, MEMORY_SIZE, 1):\n\t\tif memory[i] == 0:\n\t\t\treturn i\n\tfor i in range(0, position, 1):\n\t\tif memory[i] == 0:\n\t\t\treturn i\n\treturn -1\n\n");
@@ -47,7 +54,13 @@ public class PythonTranslator extends Translator {
             // handle value update (+ and -)
             else if (ch == DATA) {
                 int sum = jumps[i];
-                bw.write(indent + "memory[pointer] = memory[pointer] + np.ubyte(" + sum + ")\n");
+
+                if (this.cellSize == 8) {
+                    bw.write(indent + "memory[pointer] = memory[pointer] + np.ubyte(" + sum + ")\n");
+                }
+                else if (this.cellSize == 16) {
+                    bw.write(indent + "memory[pointer] = memory[pointer] + np.uintc(" + sum + ")\n");
+                }
             }
             // handle output (.)
             else if (ch == '.') {
@@ -55,7 +68,12 @@ public class PythonTranslator extends Translator {
             }
             // handle input (,)
             else if (ch == ',') {
-                bw.write(indent + "memory[pointer] = np.ubyte(ord(sys.stdin.read(1)))\n");
+                if (this.cellSize == 8) {
+                    bw.write(indent + "memory[pointer] = np.ubyte(ord(sys.stdin.read(1)))\n");
+                }
+                else if (this.cellSize == 16) {
+                    bw.write(indent + "memory[pointer] = np.uintc(ord(sys.stdin.read(1)))\n");
+                }
             }
             // handle [-]
             else if (ch == SET_ZERO) {

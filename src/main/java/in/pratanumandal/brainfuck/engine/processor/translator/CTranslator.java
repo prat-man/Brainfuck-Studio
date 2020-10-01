@@ -17,14 +17,27 @@ public class CTranslator extends Translator {
     @Override
     public void doTranslate(NotificationManager.Notification notification, BufferedWriter bw) throws IOException {
         bw.write("#include<stdio.h>\n");
-        bw.write("#include<string.h>\n\n");
+        bw.write("#include<wchar.h>\n");
+        bw.write("#include<string.h>\n");
+        bw.write("#include<locale.h>\n\n");
+        bw.write("#ifdef _WIN32\n#include<stdlib.h>\n#endif\n\n");
         bw.write("#define MEMORY_SIZE " + Constants.MEMORY_SIZE + "\n\n");
-        bw.write("unsigned char memory[MEMORY_SIZE];\n");
+
+        if (this.cellSize == 8) {
+            bw.write("unsigned char memory[MEMORY_SIZE];\n");
+        }
+        else if (this.cellSize == 16) {
+            bw.write("wchar_t memory[MEMORY_SIZE];\n");
+        }
+
         bw.write("int pointer = 0;\n\n");
         bw.write("static inline int findZeroLeft(int position) {\n\tfor (int i = position; i >= 0; i--) {\n\t\tif (memory[i] == 0) {\n\t\t\treturn i;\n\t\t}\n\t}\n\tfor (int i = MEMORY_SIZE - 1; i > position; i--) {\n\t\tif (memory[i] == 0) {\n\t\t\treturn i;\n\t\t}\n\t}\n\treturn -1;\n}\n\n");
         bw.write("static inline int findZeroRight(int position) {\n\tfor (int i = position; i < MEMORY_SIZE; i++) {\n\t\tif (memory[i] == 0) {\n\t\t\treturn i;\n\t\t}\n\t}\n\tfor (int i = 0; i < position; i++) {\n\t\tif (memory[i] == 0) {\n\t\t\treturn i;\n\t\t}\n\t}\n\treturn -1;\n}\n\n");
         bw.write("int main() {\n");
+        bw.write("#ifdef _WIN32\n\tsystem(\"chcp 1252 > nul\");\n#endif\n");
+        bw.write("\tsetlocale(LC_ALL, \"\");\n\n");
         bw.write("\tmemset(memory, 0, MEMORY_SIZE);\n\n");
+        bw.write("\twchar_t ch;\n\n");
 
         String indent = "\t";
 
@@ -53,12 +66,13 @@ public class CTranslator extends Translator {
             }
             // handle output (.)
             else if (ch == '.') {
-                bw.write(indent + "printf(\"%c\", memory[pointer]);\n");
+                bw.write(indent + "printf(\"%lc\", memory[pointer]);\n");
                 bw.write(indent + "fflush(stdout);\n");
             }
             // handle input (,)
             else if (ch == ',') {
-                bw.write(indent + "memory[pointer] = getchar();\n");
+                bw.write(indent + "scanf(\"%lc\", &ch);\n");
+                bw.write(indent + "memory[pointer] = ch;\n");
             }
             // handle [-]
             else if (ch == SET_ZERO) {
