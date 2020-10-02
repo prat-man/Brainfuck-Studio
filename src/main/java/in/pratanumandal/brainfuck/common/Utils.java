@@ -4,12 +4,10 @@ import in.pratanumandal.brainfuck.gui.Main;
 import in.pratanumandal.brainfuck.gui.NotificationManager;
 import javafx.application.Platform;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
+import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 import java.util.stream.Collectors;
 
@@ -31,6 +29,29 @@ public class Utils {
 
     public static NotificationManager.Notification addNotificationWithProgress(String text) {
         return notificationManager.addNotificationWithProgress(text);
+    }
+
+    public static void showTips() {
+        if (Configuration.getShowTips()) {
+            Random random = new Random();
+            int choice = Configuration.isFirstRun() ? 0 : random.nextInt(3);
+            switch (choice) {
+                case 0:
+                    // show tilde notification
+                    Utils.addNotificationWithDelay("Tip:\nYou can use ~ (tilde symbol)\nas breakpoints for debugging", 30000);
+                    break;
+
+                case 1:
+                    // show tilde notification
+                    Utils.addNotificationWithDelay("Tip:\nYou can switch between 8 bit cells and 16 bit cells from settings", 30000);
+                    break;
+
+                case 2:
+                    // show tilde notification
+                    Utils.addNotificationWithDelay("Tip:\nYou can change the size of interpreter memory from settings", 30000);
+                    break;
+            }
+        }
     }
 
     public static void browseURL(String url) {

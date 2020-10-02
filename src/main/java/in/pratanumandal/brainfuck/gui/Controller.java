@@ -81,8 +81,8 @@ public class Controller {
         // initialize notification manager
         Utils.initializeNotificationManager(notificationPane);
 
-        // show tilde notification
-        Utils.addNotificationWithDelay("Tip:\nYou can use ~ (tilde symbol)\nas breakpoints for debugging", 30000);
+        // show tips at startup
+        Utils.showTips();
 
         // add a new untitled tab in the beginning
         TabData tabData = addUntitledTab();
@@ -992,7 +992,7 @@ public class Controller {
         VBox vBox = new VBox();
         vBox.getStyleClass().add("settings");
         vBox.setAlignment(Pos.CENTER_LEFT);
-        vBox.setSpacing(20);
+        vBox.setSpacing(15);
 
         TitledPane interpreter = new TitledPane();
         interpreter.setText("Interpreter");
@@ -1026,18 +1026,22 @@ public class Controller {
         memorySize.setText(String.valueOf(Configuration.getMemorySize()));
         memorySizeBox.getChildren().add(memorySize);
 
-        TitledPane editing = new TitledPane();
-        editing.setText("Code editing");
-        editing.setCollapsible(false);
-        vBox.getChildren().add(editing);
+        TitledPane miscellaneous = new TitledPane();
+        miscellaneous.setText("Miscellaneous");
+        miscellaneous.setCollapsible(false);
+        vBox.getChildren().add(miscellaneous);
 
         VBox vBox2 = new VBox();
-        vBox2.setSpacing(20);
-        editing.setContent(vBox2);
+        vBox2.setSpacing(10);
+        miscellaneous.setContent(vBox2);
 
         CheckBox wrapText = new CheckBox("Wrap text in code area");
         wrapText.setSelected(Configuration.getWrapText());
         vBox2.getChildren().add(wrapText);
+
+        CheckBox showTips = new CheckBox("Show tips at startup");
+        showTips.setSelected(Configuration.getShowTips());
+        vBox2.getChildren().add(showTips);
 
         alert.getDialogPane().setContent(vBox);
 
@@ -1072,6 +1076,7 @@ public class Controller {
             else Configuration.setCellSize(8);
             Configuration.setMemorySize(Integer.valueOf(memorySize.getText()));
             Configuration.setWrapText(wrapText.isSelected());
+            Configuration.setShowTips(showTips.isSelected());
 
             try {
                 Configuration.flush();

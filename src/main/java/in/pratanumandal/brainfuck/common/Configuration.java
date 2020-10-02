@@ -12,19 +12,26 @@ import java.util.List;
 
 public class Configuration {
 
+    public static final String CONFIG_FILE = "config.properties";
+
     private static Configuration instance;
     private static final List<Integer> FONT_SIZES = Arrays.asList(new Integer[] {10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40});
+    private static Boolean firstRun = false;
 
     private Integer cellSize;
     private Integer memorySize;
     private Integer fontSize;
     private Boolean wrapText;
+    private Boolean showTips;
 
     private Configuration() {
         Configurations configs = new Configurations();
         try {
-            File file = new File("config.properties");
-            if (!file.exists()) file.createNewFile();
+            File file = new File(CONFIG_FILE);
+            if (!file.exists()) {
+                firstRun = true;
+                file.createNewFile();
+            }
 
             PropertiesConfiguration config = configs.properties(file);
 
@@ -32,6 +39,7 @@ public class Configuration {
             this.memorySize = config.getInteger("memorySize", 30000);
             this.fontSize = config.getInteger("fontSize", 16);
             this.wrapText = config.getBoolean("wrapText", false);
+            this.showTips = config.getBoolean("showTips", true);
         }
         catch (ConfigurationException | IOException e) {
             e.printStackTrace();
@@ -40,6 +48,7 @@ public class Configuration {
             this.memorySize = 30000;
             this.fontSize = 16;
             this.wrapText = false;
+            this.showTips = true;
         }
     }
 
@@ -54,6 +63,7 @@ public class Configuration {
         if (instance.memorySize == null || (instance.memorySize < 1000 || instance.memorySize > 50000)) instance.memorySize = 30000;
         if (instance.fontSize == null || (!FONT_SIZES.contains(instance.fontSize))) instance.fontSize = 16;
         if (instance.wrapText == null) instance.wrapText = false;
+        if (instance.showTips == null) instance.showTips = true;
 
         if (!exists) {
             try {
@@ -84,6 +94,11 @@ public class Configuration {
         return instance.wrapText;
     }
 
+    public static Boolean getShowTips() {
+        sanitize();
+        return instance.showTips;
+    }
+
     public static void setCellSize(Integer cellSize) {
         sanitize();
         instance.cellSize = cellSize;
@@ -104,6 +119,15 @@ public class Configuration {
         instance.wrapText = wrapText;
     }
 
+    public static void setShowTips(Boolean showTips) {
+        sanitize();
+        instance.showTips = showTips;
+    }
+
+    public static Boolean isFirstRun() {
+        return firstRun;
+    }
+
     public static void flush() throws ConfigurationException, IOException {
         flush(true);
     }
@@ -111,7 +135,7 @@ public class Configuration {
     private static void flush(boolean sanitize) throws ConfigurationException, IOException {
         if (sanitize) sanitize();
 
-        File file = new File("config.properties");
+        File file = new File(CONFIG_FILE);
         if (file.exists()) file.delete();
         file.createNewFile();
 
@@ -123,6 +147,7 @@ public class Configuration {
         config.addProperty("memorySize", instance.memorySize);
         config.addProperty("fontSize", instance.fontSize);
         config.addProperty("wrapText", instance.wrapText);
+        config.addProperty("showTips", instance.showTips);
 
         builder.save();
     }
