@@ -3,10 +3,12 @@ package in.pratanumandal.brainfuck.engine.processor.translator;
 import in.pratanumandal.brainfuck.common.Configuration;
 import in.pratanumandal.brainfuck.common.Constants;
 import in.pratanumandal.brainfuck.common.Utils;
+import in.pratanumandal.brainfuck.engine.UnmatchedBracketException;
 import in.pratanumandal.brainfuck.engine.processor.Processor;
 import in.pratanumandal.brainfuck.gui.NotificationManager;
 import in.pratanumandal.brainfuck.gui.TabData;
 import javafx.application.Platform;
+import javafx.scene.control.Alert;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -28,7 +30,20 @@ public abstract class Translator extends Processor {
         String outputFilePath = tabData.getFilePath().substring(0, tabData.getFilePath().length() - 2) + this.getExtension();
         this.outputFile = new File(outputFilePath);
         this.cellSize = Configuration.getCellSize();
-        super.start();
+
+        try {
+            super.start();
+        } catch (UnmatchedBracketException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle(Constants.APPLICATION_NAME);
+            alert.setHeaderText("Error");
+            alert.setContentText(e.getMessage() + "\n\n");
+
+            alert.initOwner(tabData.getTab().getTabPane().getScene().getWindow());
+            alert.showAndWait();
+
+            return;
+        }
     }
 
     @Override

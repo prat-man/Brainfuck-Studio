@@ -3,8 +3,10 @@ package in.pratanumandal.brainfuck.engine.processor.interpreter;
 import in.pratanumandal.brainfuck.common.Configuration;
 import in.pratanumandal.brainfuck.common.Constants;
 import in.pratanumandal.brainfuck.common.Utils;
+import in.pratanumandal.brainfuck.engine.UnmatchedBracketException;
 import in.pratanumandal.brainfuck.gui.TabData;
 import javafx.application.Platform;
+import javafx.scene.control.Alert;
 
 import java.util.Arrays;
 
@@ -25,12 +27,19 @@ public class Interpreter16 extends Interpreter {
 
         Arrays.fill(this.memory, (short) 0);
 
-        /*for (int i = 0; i < memory.length; i++) {
-            tabData.getMemory().get(i).setData(Short.toUnsignedInt(memory[i]));
-        }
-        Platform.runLater(() -> tabData.getTableView().refresh());*/
+        try {
+            super.start();
+        } catch (UnmatchedBracketException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle(Constants.APPLICATION_NAME);
+            alert.setHeaderText("Error");
+            alert.setContentText(e.getMessage() + "\n\n");
 
-        super.start();
+            alert.initOwner(tabData.getTab().getTabPane().getScene().getWindow());
+            alert.showAndWait();
+
+            return;
+        }
 
         this.tabData.getInterpretStopButton().setDisable(false);
         this.tabData.getInterpretCloseButton().setDisable(true);

@@ -278,11 +278,8 @@
     -fx-padding: 4 0 4 0;
 }
 
-.about-dialog, .settings-dialog {
+.about-dialog {
     -fx-background-color: #3A3F48;
-}
-.settings-dialog {
-    -fx-pref-width: 350px;
 }
 .about {
     -fx-padding: 30px 60px 10px 60px;
@@ -325,6 +322,10 @@
     -fx-text-fill: gray;
 }
 
+.settings-dialog {
+    -fx-pref-width: 350px;
+}
+
 .check-box {
     -fx-text-fill: white;
 }
@@ -339,7 +340,7 @@
 }
 
 .titled-pane > .title {
-    -fx-background-color: #444952;
+    -fx-background-color: #3A3F48;
 }
 .titled-pane > .title > .text {
     -fx-fill: white;

@@ -1,7 +1,7 @@
 package in.pratanumandal.brainfuck.engine.processor;
 
 import in.pratanumandal.brainfuck.common.Utils;
-import in.pratanumandal.brainfuck.engine.UnmatchedLoopException;
+import in.pratanumandal.brainfuck.engine.UnmatchedBracketException;
 import in.pratanumandal.brainfuck.gui.TabData;
 import in.pratanumandal.brainfuck.common.Constants;
 import javafx.scene.control.Alert;
@@ -54,19 +54,7 @@ public abstract class Processor implements Runnable {
             this.kill.set(false);
         }
 
-        try {
-            this.initializeJumps();
-        } catch (UnmatchedLoopException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle(Constants.APPLICATION_NAME);
-            alert.setHeaderText("Debug Error");
-            alert.setContentText(e.getMessage() + "\n\n");
-
-            alert.initOwner(tabData.getTab().getTabPane().getScene().getWindow());
-            alert.showAndWait();
-
-            return;
-        }
+        this.initializeJumps();
 
         thread = new Thread(this);
         thread.start();
@@ -105,6 +93,8 @@ public abstract class Processor implements Runnable {
                 }
             }
             else if (ch == ']') {
+                if (stack.isEmpty()) throw new UnmatchedBracketException("Unmatched bracket at position " + (i + 1));
+
                 // pop opening bracket and swap indexes in jump table
                 int x = stack.pop();
                 jumps[x] = index;
@@ -183,6 +173,8 @@ public abstract class Processor implements Runnable {
                 index--;
             }
         }
+
+        if (!stack.isEmpty()) throw new UnmatchedBracketException("Unmatched bracket at position " + (stack.pop() + 1));
 
         // strip ending null characters
         processed = new String(processed).trim().toCharArray();

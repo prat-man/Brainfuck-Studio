@@ -339,21 +339,23 @@ public class Controller {
         debugTools.setAlignment(Pos.CENTER_LEFT);
         debug.getChildren().add(debugTools);
 
-        Button resumeButton = generateDebugButton("run", "Resume");
-        resumeButton.setOnAction(event -> tabData.getDebugger().resume());
-        tabData.setDebugResumeButton(resumeButton);
-        debugTools.getChildren().add(resumeButton);
-        resumeButton.setDisable(true);
+        Button debugResumeButton = generateDebugButton("run", "Resume");
+        debugResumeButton.setOnAction(event -> tabData.getDebugger().resume());
+        tabData.setDebugResumeButton(debugResumeButton);
+        debugTools.getChildren().add(debugResumeButton);
+        debugResumeButton.setDisable(true);
 
-        Button pauseButton = generateDebugButton("pause", "Pause");
-        pauseButton.setOnAction(event -> tabData.getDebugger().pause());
-        tabData.setDebugPauseButton(pauseButton);
-        debugTools.getChildren().add(pauseButton);
+        Button debugPauseButton = generateDebugButton("pause", "Pause");
+        debugPauseButton.setOnAction(event -> tabData.getDebugger().pause());
+        tabData.setDebugPauseButton(debugPauseButton);
+        debugTools.getChildren().add(debugPauseButton);
+        debugPauseButton.setDisable(true);
 
-        Button stepButton = generateDebugButton("step", "Step");
-        stepButton.setOnAction(event -> tabData.getDebugger().step());
-        tabData.setDebugStepButton(stepButton);
-        debugTools.getChildren().add(stepButton);
+        Button debugStepButton = generateDebugButton("step", "Step");
+        debugStepButton.setOnAction(event -> tabData.getDebugger().step());
+        tabData.setDebugStepButton(debugStepButton);
+        debugTools.getChildren().add(debugStepButton);
+        debugStepButton.setDisable(true);
 
         // add spacer
         Pane spacer = new Pane();
@@ -364,6 +366,7 @@ public class Controller {
         debugStopButton.setOnAction(event -> tabData.getDebugger().stop());
         tabData.setDebugStopButton(debugStopButton);
         debugTools.getChildren().add(debugStopButton);
+        debugStopButton.setDisable(true);
 
         Button debugCloseButton = generateDebugButton("close", "Close");
         debugCloseButton.setOnAction(event -> {
@@ -373,6 +376,7 @@ public class Controller {
         tabData.setDebugCloseButton(debugCloseButton);
         debugTools.getChildren().add(debugCloseButton);
         debugCloseButton.setDisable(true);
+        debugCloseButton.setDisable(false);
 
         // debug speed controls
         HBox debugSpeedControls = new HBox();
@@ -470,6 +474,7 @@ public class Controller {
         interpreterStopButton.setGraphic(stopImageView);
         interpreterStopButton.getStyleClass().add("secondary");
         interpreterTerminalControls.getChildren().add(interpreterStopButton);
+        interpreterStopButton.setDisable(true);
 
         // set stop button tooltip
         Tooltip stopTooltip = new Tooltip("Stop");
@@ -485,8 +490,8 @@ public class Controller {
         ImageView closeImageView = new ImageView(closeImage);
         interpreterCloseButton.setGraphic(closeImageView);
         interpreterCloseButton.getStyleClass().add("secondary");
-        interpreterCloseButton.setDisable(true);
         interpreterTerminalControls.getChildren().add(interpreterCloseButton);
+        interpreterCloseButton.setDisable(false);
 
         // set interpreter close button
         tabData.setInterpretCloseButton(interpreterCloseButton);
@@ -964,7 +969,7 @@ public class Controller {
         alert.setHeaderText("Settings");
 
         StackPane imagePane = new StackPane();
-        imagePane.setPadding(new Insets(5));
+        imagePane.setPadding(new Insets(8));
         ImageView imageView = new ImageView();
         Image image = new Image(getClass().getClassLoader().getResourceAsStream("images/settings-medium.png"));
         imageView.setImage(image);

@@ -1,7 +1,7 @@
 package in.pratanumandal.brainfuck.engine.debugger;
 
 import in.pratanumandal.brainfuck.common.Configuration;
-import in.pratanumandal.brainfuck.engine.UnmatchedLoopException;
+import in.pratanumandal.brainfuck.engine.UnmatchedBracketException;
 import in.pratanumandal.brainfuck.gui.TabData;
 import in.pratanumandal.brainfuck.common.Constants;
 import javafx.event.Event;
@@ -58,7 +58,7 @@ public abstract class Debugger implements Runnable {
 
         try {
             this.initializeBrackets();
-        } catch (UnmatchedLoopException e) {
+        } catch (UnmatchedBracketException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle(Constants.APPLICATION_NAME);
             alert.setHeaderText("Debug Error");
@@ -98,14 +98,14 @@ public abstract class Debugger implements Runnable {
 
             if (i == -1 && j == -1) {
                 if (stack.isEmpty()) break;
-                else throw new UnmatchedLoopException("Unmatched loop at position " + (stack.pop() + 1));
+                else throw new UnmatchedBracketException("Unmatched bracket at position " + (stack.pop() + 1));
             }
             else if (i != -1 && (i < j || j == -1)) {
                 stack.push(i);
                 index = i + 1;
             }
             else if (j != -1) {
-                if (stack.isEmpty()) throw new UnmatchedLoopException("Unmatched loop at position " + (j + 1));
+                if (stack.isEmpty()) throw new UnmatchedBracketException("Unmatched bracket at position " + (j + 1));
 
                 int k = stack.pop();
                 brackets.put(k, j);
@@ -114,7 +114,7 @@ public abstract class Debugger implements Runnable {
             }
         }
 
-        if (!stack.isEmpty()) throw new UnmatchedLoopException("Unmatched loop at position " + (stack.pop() + 1));
+        if (!stack.isEmpty()) throw new UnmatchedBracketException("Unmatched bracket at position " + (stack.pop() + 1));
     }
 
     public void pause() {
