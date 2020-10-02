@@ -22,6 +22,8 @@ public class FXTerminal extends TextArea {
     private final StringBuilder writeBuffer;
     private final ScheduledFuture<?> future;
 
+    private final Object flushLock;
+
     public FXTerminal() {
         this(new String());
     }
@@ -38,6 +40,8 @@ public class FXTerminal extends TextArea {
 
         this.readLock = new AtomicBoolean(false);
         this.autoScroll = new AtomicBoolean(true);
+
+        this.flushLock = new Object();
 
         this.getStyleClass().add("terminal");
 
@@ -116,6 +120,9 @@ public class FXTerminal extends TextArea {
                         this.positionCaret(caretPos);
                         this.selectRange(selection.getStart(), selection.getEnd());
                     }
+                }
+                synchronized (this.flushLock) {
+                    this.flushLock.notifyAll();
                 }
             }
         }, 0, 100, TimeUnit.MILLISECONDS);
@@ -200,7 +207,13 @@ public class FXTerminal extends TextArea {
     }
 
     public void flush() {
-        this.readBuffer = new String();
+        synchronized (this.flushLock) {
+            try {
+                this.flushLock.wait();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public void release() {

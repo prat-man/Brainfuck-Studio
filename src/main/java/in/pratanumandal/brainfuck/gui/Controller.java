@@ -1,5 +1,6 @@
 package in.pratanumandal.brainfuck.gui;
 
+import in.pratanumandal.brainfuck.common.Configuration;
 import in.pratanumandal.brainfuck.engine.processor.translator.CTranslator;
 import in.pratanumandal.brainfuck.engine.processor.translator.JavaTranslator;
 import in.pratanumandal.brainfuck.engine.Memory;
@@ -27,6 +28,7 @@ import javafx.scene.layout.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.fxmisc.flowless.VirtualizedScrollPane;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.LineNumberFactory;
@@ -50,7 +52,7 @@ public class Controller {
 
     private TabData currentTab;
 
-    private String fontSize = "16px";
+    private String fontSize;
 
     private Stage stage;
 
@@ -58,7 +60,7 @@ public class Controller {
 
     @FXML private TabPane tabPane;
 
-    @FXML private ChoiceBox<String> fontSizeChooser;
+    @FXML private ComboBox<String> fontSizeChooser;
 
     @FXML private ToggleButton searchButton;
     @FXML private HBox findAndReplace;
@@ -89,10 +91,25 @@ public class Controller {
         fontSizeChooser.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends String> observableValue, String oldVal, String newVal) -> {
             fontSize = newVal;
 
+            Configuration.setFontSize(Integer.valueOf(newVal.substring(0, newVal.length() - 2)));
+            try {
+                Configuration.flush();
+            } catch (ConfigurationException | IOException e) {
+                // DO NOTHING HERE
+                e.printStackTrace();
+            }
+
             for (TabData td : tabDataList) {
                 td.getCodeArea().setStyle("-fx-font-size: " + fontSize);
             }
         });
+
+        // select current font
+        fontSize = Configuration.getFontSize() + "px";
+        fontSizeChooser.getSelectionModel().select(fontSize);
+        for (TabData td : tabDataList) {
+            td.getCodeArea().setStyle("-fx-font-size: " + fontSize);
+        }
 
         // toggle search
         searchButton.selectedProperty().addListener((observableValue, oldVal, newVal) -> {
@@ -180,7 +197,7 @@ public class Controller {
         codeArea.setParagraphGraphicFactory(LineNumberFactory.get(codeArea));
 
         // enable text wrapping
-        //codeArea.setWrapText(true);
+        codeArea.setWrapText(Configuration.getWrapText());
 
         // highlight brackets
         BracketHighlighter bracketHighlighter = new BracketHighlighter(codeArea);
@@ -391,11 +408,11 @@ public class Controller {
         // initialize the tableview columns
         TableColumn<Memory, Integer> column1 = new TableColumn<>("Address");
         column1.setCellValueFactory(new PropertyValueFactory<>("address"));
-        String format1 = "%0" + (int) (Math.log10(Constants.MEMORY_SIZE) + 1) + "d";
         column1.setCellFactory(column -> {
             TableCell<Memory, Integer> cell = new TableCell<>() {
                 @Override
                 protected void updateItem(Integer item, boolean empty) {
+                    String format1 = "%0" + (int) (Math.log10(tableView.getItems().size()) + 1) + "d";
                     super.updateItem(item, empty);
                     if(empty) setText(null);
                     else setText(String.format(format1, item));
@@ -428,12 +445,8 @@ public class Controller {
         column3.setSortable(false);
         tableView.getColumns().add(column3);
 
-        // initialize the memory
-        ObservableList<Memory> memory = tabData.getMemory();
-        for (int i = 0; i < Constants.MEMORY_SIZE; i++) {
-            memory.add(i, new Memory(i + 1, 0, (char) 0));
-        }
-        tableView.setItems(memory);
+        // set the items from the observable memory list
+        tableView.setItems(tabData.getMemory());
 
         // create toolbar for interpreter terminal
         HBox interpreterTerminalControls = new HBox();
@@ -940,7 +953,120 @@ public class Controller {
 
     @FXML
     private void settings() {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION, null, ButtonType.APPLY, ButtonType.CANCEL);
 
+        alert.getDialogPane().getScene().getRoot().getStyleClass().add("settings-dialog");
+
+        Button apply = (Button) alert.getDialogPane().lookupButton(ButtonType.APPLY);
+        apply.setDefaultButton(true);
+
+        alert.setTitle(Constants.APPLICATION_NAME);
+        alert.setHeaderText("Settings");
+
+        StackPane imagePane = new StackPane();
+        imagePane.setPadding(new Insets(5));
+        ImageView imageView = new ImageView();
+        Image image = new Image(getClass().getClassLoader().getResourceAsStream("images/settings-medium.png"));
+        imageView.setImage(image);
+        imagePane.getChildren().add(imageView);
+        alert.setGraphic(imagePane);
+
+        VBox vBox = new VBox();
+        vBox.getStyleClass().add("settings");
+        vBox.setAlignment(Pos.CENTER_LEFT);
+        vBox.setSpacing(20);
+
+        TitledPane interpreter = new TitledPane();
+        interpreter.setText("Interpreter");
+        interpreter.setCollapsible(false);
+        vBox.getChildren().add(interpreter);
+
+        VBox vBox1 = new VBox();
+        vBox1.setSpacing(20);
+        interpreter.setContent(vBox1);
+
+        CheckBox cellSize = new CheckBox("Use 16 bit cells (values range 0 - 65535)");
+        cellSize.setSelected(Configuration.getCellSize() == 16);
+        vBox1.getChildren().add(cellSize);
+
+        HBox memorySizeBox = new HBox();
+        memorySizeBox.setSpacing(10);
+        memorySizeBox.setAlignment(Pos.CENTER);
+        vBox1.getChildren().add(memorySizeBox);
+
+        Label label = new Label("Memory size");
+        memorySizeBox.getChildren().add(label);
+
+        TextField memorySize = new TextField();
+        memorySize.setPromptText("In range 1000 to 50000");
+        HBox.setHgrow(memorySize, Priority.ALWAYS);
+        memorySize.textProperty().addListener((obs, oldVal, newVal) -> {
+            if (!newVal.matches("\\d*")) {
+                memorySize.setText(newVal.replaceAll("[^\\d]", ""));
+            }
+        });
+        memorySize.setText(String.valueOf(Configuration.getMemorySize()));
+        memorySizeBox.getChildren().add(memorySize);
+
+        TitledPane editing = new TitledPane();
+        editing.setText("Code editing");
+        editing.setCollapsible(false);
+        vBox.getChildren().add(editing);
+
+        VBox vBox2 = new VBox();
+        vBox2.setSpacing(20);
+        editing.setContent(vBox2);
+
+        CheckBox wrapText = new CheckBox("Wrap text in code area");
+        wrapText.setSelected(Configuration.getWrapText());
+        vBox2.getChildren().add(wrapText);
+
+        alert.getDialogPane().setContent(vBox);
+
+        alert.initOwner(tabPane.getScene().getWindow());
+
+        boolean valid = false;
+
+        do {
+            alert.setResult(null);
+            alert.showAndWait();
+
+            ButtonType buttonType = alert.getResult();
+            if (buttonType == ButtonType.APPLY) {
+                try {
+                    Integer memory = Integer.valueOf(memorySize.getText());
+                    if (memory < 1000 || memory > 50000) throw new NumberFormatException("Invalid memory size");
+                    valid = true;
+                }
+                catch (NumberFormatException e) {
+                    Alert error = new Alert(Alert.AlertType.ERROR, "Memory size must be in range 1000 to 50000");
+                    error.initOwner(tabPane.getScene().getWindow());
+                    error.showAndWait();
+                    valid = false;
+                }
+            }
+            else break;
+        }
+        while (!valid);
+
+        if (valid) {
+            if (cellSize.isSelected()) Configuration.setCellSize(16);
+            else Configuration.setCellSize(8);
+            Configuration.setMemorySize(Integer.valueOf(memorySize.getText()));
+            Configuration.setWrapText(wrapText.isSelected());
+
+            try {
+                Configuration.flush();
+
+                for (TabData tabData : tabDataList) {
+                    tabData.getCodeArea().setWrapText(Configuration.getWrapText());
+                }
+            } catch (ConfigurationException | IOException e) {
+                Alert error = new Alert(Alert.AlertType.ERROR, "Failed to save configuration!");
+                error.initOwner(tabPane.getScene().getWindow());
+                error.showAndWait();
+            }
+        }
     }
 
     @FXML

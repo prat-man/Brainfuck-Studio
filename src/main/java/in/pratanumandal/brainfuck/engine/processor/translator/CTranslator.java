@@ -1,5 +1,6 @@
 package in.pratanumandal.brainfuck.engine.processor.translator;
 
+import in.pratanumandal.brainfuck.common.Configuration;
 import in.pratanumandal.brainfuck.common.Constants;
 import in.pratanumandal.brainfuck.common.Utils;
 import in.pratanumandal.brainfuck.gui.NotificationManager;
@@ -21,7 +22,7 @@ public class CTranslator extends Translator {
         bw.write("#include<string.h>\n");
         bw.write("#include<locale.h>\n\n");
         bw.write("#ifdef _WIN32\n#include<stdlib.h>\n#endif\n\n");
-        bw.write("#define MEMORY_SIZE " + Constants.MEMORY_SIZE + "\n\n");
+        bw.write("#define MEMORY_SIZE " + Configuration.getMemorySize() + "\n\n");
 
         if (this.cellSize == 8) {
             bw.write("unsigned char memory[MEMORY_SIZE];\n");

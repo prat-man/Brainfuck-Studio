@@ -1,5 +1,6 @@
 package in.pratanumandal.brainfuck.gui;
 
+import in.pratanumandal.brainfuck.common.Configuration;
 import in.pratanumandal.brainfuck.common.Constants;
 import in.pratanumandal.brainfuck.engine.debugger.Debugger;
 import in.pratanumandal.brainfuck.engine.Memory;
@@ -26,7 +27,6 @@ public class TabData {
     private final Tab tab;
     private final SplitPane splitPane;
     private final CustomCodeArea codeArea;
-    //private Terminal terminal;
 
     private Button debugResumeButton;
     private Button debugPauseButton;
@@ -212,6 +212,15 @@ public class TabData {
 
     public void initializeDebugger() {
         this.debugger = Debugger.getDebugger(this);
+
+        // initialize the memory
+        if (memory.isEmpty() || memory.size() != Configuration.getMemorySize()) {
+            ObservableList<Memory> memory = this.getMemory();
+            memory.clear();
+            for (int i = 0; i < Configuration.getMemorySize(); i++) {
+                memory.add(i, new Memory(i + 1, 0, (char) 0));
+            }
+        }
     }
 
     public Debugger getDebugger() {

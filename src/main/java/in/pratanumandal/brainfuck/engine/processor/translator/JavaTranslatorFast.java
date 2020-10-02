@@ -1,5 +1,6 @@
 package in.pratanumandal.brainfuck.engine.processor.translator;
 
+import in.pratanumandal.brainfuck.common.Configuration;
 import in.pratanumandal.brainfuck.common.Constants;
 import in.pratanumandal.brainfuck.common.Utils;
 import in.pratanumandal.brainfuck.gui.NotificationManager;
@@ -21,7 +22,7 @@ public class JavaTranslatorFast extends Translator {
                     "\n" +
                     "public class " + this.getFileNameWithoutExtension() + " {\n" +
                     "\n" +
-                    "\tpublic static final int MEMORY_SIZE = " + Constants.MEMORY_SIZE + ";\n" +
+                    "\tpublic static final int MEMORY_SIZE = " + Configuration.getMemorySize() + ";\n" +
                     "\n" +
                     "\tpublic static final Integer NO_JUMP = 0;\n" +
                     "\tpublic static final Character SET_ZERO = '!';\n" +
@@ -128,7 +129,7 @@ public class JavaTranslatorFast extends Translator {
                     "\n" +
                     "public class " + this.getFileNameWithoutExtension() + " {\n" +
                     "\n" +
-                    "\tpublic static final int MEMORY_SIZE = " + Constants.MEMORY_SIZE + ";\n" +
+                    "\tpublic static final int MEMORY_SIZE = " + Configuration.getMemorySize() + ";\n" +
                     "\n" +
                     "\tpublic static final Integer NO_JUMP = 0;\n" +
                     "\tpublic static final Character SET_ZERO = '!';\n" +

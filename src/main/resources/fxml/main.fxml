@@ -104,9 +104,10 @@
                             <Image url="@../images/font-size.png" />
                          </image>
                       </ImageView>
-                      <ChoiceBox fx:id="fontSizeChooser" value="16px">
+                      <ComboBox fx:id="fontSizeChooser" value="16px">
                           <items>
                               <FXCollections fx:factory="observableArrayList">
+                                  <String fx:value="10px" />
                                   <String fx:value="12px" />
                                   <String fx:value="14px" />
                                   <String fx:value="16px" />
@@ -114,9 +115,17 @@
                                   <String fx:value="20px" />
                                   <String fx:value="22px" />
                                   <String fx:value="24px" />
+                                  <String fx:value="26px" />
+                                  <String fx:value="28px" />
+                                  <String fx:value="30px" />
+                                  <String fx:value="32px" />
+                                  <String fx:value="34px" />
+                                  <String fx:value="36px" />
+                                  <String fx:value="38px" />
+                                  <String fx:value="40px" />
                               </FXCollections>
                           </items>
-                      </ChoiceBox>
+                      </ComboBox>
                    </children>
                 </HBox>
                 <Separator layoutX="177.0" layoutY="10.0" />

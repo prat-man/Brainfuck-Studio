@@ -1,5 +1,6 @@
 package in.pratanumandal.brainfuck.engine.debugger;
 
+import in.pratanumandal.brainfuck.common.Configuration;
 import in.pratanumandal.brainfuck.common.Constants;
 import in.pratanumandal.brainfuck.common.Utils;
 import in.pratanumandal.brainfuck.engine.Memory;
@@ -17,7 +18,7 @@ public class Debugger8 extends Debugger {
     public Debugger8(TabData tabData) {
         super(tabData);
 
-        this.memory = new Byte[Constants.MEMORY_SIZE];
+        this.memory = new Byte[Configuration.getMemorySize()];
     }
 
     @Override
@@ -61,7 +62,7 @@ public class Debugger8 extends Debugger {
                 this.pause();
             } else if (ch == '>') {
                 dataPointer++;
-                if (dataPointer >= Constants.MEMORY_SIZE) {
+                if (dataPointer >= this.memory.length) {
                     tabData.getDebugTerminal().write("\nError: Memory index out of bounds " + dataPointer + "\n");
                     this.stop(false);
                 }

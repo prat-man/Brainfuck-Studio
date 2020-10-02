@@ -1,5 +1,6 @@
 package in.pratanumandal.brainfuck.engine.processor.translator;
 
+import in.pratanumandal.brainfuck.common.Configuration;
 import in.pratanumandal.brainfuck.common.Constants;
 import in.pratanumandal.brainfuck.common.Utils;
 import in.pratanumandal.brainfuck.gui.NotificationManager;
@@ -19,7 +20,7 @@ public class PythonTranslator extends Translator {
         bw.write("import sys\n");
         bw.write("import numpy as np\n\n");
         bw.write("np.seterr(over='ignore')\n\n");
-        bw.write("MEMORY_SIZE = " + Constants.MEMORY_SIZE + "\n\n");
+        bw.write("MEMORY_SIZE = " + Configuration.getMemorySize() + "\n\n");
 
         if (this.cellSize == 8) {
             bw.write("memory = np.zeros((MEMORY_SIZE), dtype=np.ubyte)\n");

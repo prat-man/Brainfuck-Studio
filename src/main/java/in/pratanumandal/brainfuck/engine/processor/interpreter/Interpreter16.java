@@ -1,5 +1,6 @@
 package in.pratanumandal.brainfuck.engine.processor.interpreter;
 
+import in.pratanumandal.brainfuck.common.Configuration;
 import in.pratanumandal.brainfuck.common.Constants;
 import in.pratanumandal.brainfuck.common.Utils;
 import in.pratanumandal.brainfuck.gui.TabData;
@@ -14,7 +15,7 @@ public class Interpreter16 extends Interpreter {
     public Interpreter16(TabData tabData) {
         super(tabData);
 
-        this.memory = new Short[Constants.MEMORY_SIZE];
+        this.memory = new Short[Configuration.getMemorySize()];
     }
 
     @Override
@@ -24,10 +25,10 @@ public class Interpreter16 extends Interpreter {
 
         Arrays.fill(this.memory, (short) 0);
 
-        for (int i = 0; i < memory.length; i++) {
+        /*for (int i = 0; i < memory.length; i++) {
             tabData.getMemory().get(i).setData(Short.toUnsignedInt(memory[i]));
         }
-        Platform.runLater(() -> tabData.getTableView().refresh());
+        Platform.runLater(() -> tabData.getTableView().refresh());*/
 
         super.start();
 
@@ -41,7 +42,8 @@ public class Interpreter16 extends Interpreter {
             this.kill.set(true);
         }
 
-        tabData.getInterpretTerminal().release();
+        this.tabData.getInterpretTerminal().release();
+        this.tabData.getInterpretTerminal().flush();
 
         super.stop(join);
 

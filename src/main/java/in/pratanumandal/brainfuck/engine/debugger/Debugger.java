@@ -1,5 +1,6 @@
 package in.pratanumandal.brainfuck.engine.debugger;
 
+import in.pratanumandal.brainfuck.common.Configuration;
 import in.pratanumandal.brainfuck.engine.UnmatchedLoopException;
 import in.pratanumandal.brainfuck.gui.TabData;
 import in.pratanumandal.brainfuck.common.Constants;
@@ -159,7 +160,8 @@ public abstract class Debugger implements Runnable {
             this.pause.notify();
         }
 
-        tabData.getDebugTerminal().release();
+        this.tabData.getDebugTerminal().release();
+        this.tabData.getDebugTerminal().flush();
 
         if (join && this.thread != null && this.thread.isAlive()) {
             try {
@@ -185,7 +187,7 @@ public abstract class Debugger implements Runnable {
     }
 
     public static Debugger getDebugger(TabData tabData) {
-        Integer cellSize = Constants.CELL_SIZE;
+        Integer cellSize = Configuration.getCellSize();
 
         if (cellSize == 8) {
             return new Debugger8(tabData);

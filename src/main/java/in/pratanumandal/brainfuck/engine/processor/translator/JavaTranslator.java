@@ -1,5 +1,6 @@
 package in.pratanumandal.brainfuck.engine.processor.translator;
 
+import in.pratanumandal.brainfuck.common.Configuration;
 import in.pratanumandal.brainfuck.common.Constants;
 import in.pratanumandal.brainfuck.common.Utils;
 import in.pratanumandal.brainfuck.gui.NotificationManager;
@@ -18,7 +19,7 @@ public class JavaTranslator extends Translator {
     public void doTranslate(NotificationManager.Notification notification, BufferedWriter bw) throws IOException {
         bw.write("import java.io.*;\n\n");
         bw.write("public class " + this.getFileNameWithoutExtension() + " {\n\n");
-        bw.write("\tpublic static final int MEMORY_SIZE = " + Constants.MEMORY_SIZE + ";\n\n");
+        bw.write("\tpublic static final int MEMORY_SIZE = " + Configuration.getMemorySize() + ";\n\n");
         bw.write("\tpublic static final Reader CR = System.console().reader();\n\n");
 
         if (this.cellSize == 8) {

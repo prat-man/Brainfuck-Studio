@@ -1,5 +1,6 @@
 package in.pratanumandal.brainfuck.engine.processor.translator;
 
+import in.pratanumandal.brainfuck.common.Configuration;
 import in.pratanumandal.brainfuck.common.Constants;
 import in.pratanumandal.brainfuck.common.Utils;
 import in.pratanumandal.brainfuck.engine.processor.Processor;
@@ -26,7 +27,7 @@ public abstract class Translator extends Processor {
     public void start() {
         String outputFilePath = tabData.getFilePath().substring(0, tabData.getFilePath().length() - 2) + this.getExtension();
         this.outputFile = new File(outputFilePath);
-        this.cellSize = Constants.CELL_SIZE;
+        this.cellSize = Configuration.getCellSize();
         super.start();
     }
 
