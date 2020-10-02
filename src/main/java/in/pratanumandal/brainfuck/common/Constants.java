@@ -7,25 +7,45 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class Constants {
 
-    public static final String BASIC_INFO = String.join("\n", new String[] {
-            "> \tincrement the data pointer (to point to the next cell to the right).\n" +
-                    "< \tdecrement the data pointer (to point to the next cell to the left).\n" +
-                    "+ \tincrement (increase by one) the byte at the data pointer.\n" +
-                    "- \tdecrement (decrease by one) the byte at the data pointer.\n" +
-                    ". \toutput the byte at the data pointer.\n" +
-                    ", \taccept one byte of input, storing its value in the byte at the data pointer.\n" +
-                    "[ \tif the byte at the data pointer is zero, then instead of moving the instruction pointer forward to the next command, jump it forward to the command after the matching ] command.\n" +
-                    "] \tif the byte at the data pointer is nonzero, then instead of moving the instruction pointer forward to the next command, jump it back to the command after the matching [ command.\n"
-    });
+    public static final String WELCOME_FILE = "welcome.bf";
 
-    // unique application ID
-    public static final String APP_ID = "in.pratanumandal.brainguck-hQnxoK-20201003-#z.9";
+    public static final String WELCOME_TEXT = "WELCOME TO BRAINFUCK IDE\n" +
+            "========================\n" +
+            "\n" +
+            "[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[\n" +
+            "\n" +
+            "    >    increment the data pointer (to point to the next cell to the right).\n" +
+            "    <    decrement the data pointer (to point to the next cell to the left).\n" +
+            "    +    increment (increase by one) the byte at the data pointer.\n" +
+            "    -    decrement (decrease by one) the byte at the data pointer.\n" +
+            "    .    output the byte at the data pointer.\n" +
+            "    ,    accept one byte of input, storing its value in the byte at the data pointer.\n" +
+            "    [    if the byte at the data pointer is zero, then instead of moving the instruction pointer forward to the next command, jump it forward to the command after the matching ] command.\n" +
+            "    ]    if the byte at the data pointer is nonzero, then instead of moving the instruction pointer forward to the next command, jump it back to the command after the matching [ command.\n" +
+            "\n" +
+            "]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]\n" +
+            "\n" +
+            "+[--->++<]>+.++[->++++<]>+.+++++++.---------.+++++\n" +
+            "+++++++.--.--------.--[--->+<]>-.---[->++++<]>.---\n" +
+            "--.[--->+<]>-----.+[->++<]>.---[----->+<]>-.+++[->\n" +
+            "+++<]>++.++++++++.+++++.--------.-[--->+<]>--.+[->\n" +
+            "+++<]>+.++++++++.-[++>---<]>+.++++[->++<]>+.-----.\n" +
+            "+.[--->++<]>.>++++++++++..++[->++++++<]>.-[--->+<]\n" +
+            ">++.+.-----------.--[--->+<]>-.--[->++++<]>+.-----\n" +
+            "-----.++++++.-[---->+<]>+++.+[->+++<]>++.+++++++++\n" +
+            ".----.+++++.++++++++++.-[---->+<]>++.---[->++++<]>\n" +
+            "+.--.----------.+++++.-------.-[--->+<]>--.-[--->+\n" +
+            "+<]>-.+++++++++++.[++>---<]>.++[--->++<]>.+[->++<]\n" +
+            ">+.+[-->+++<]>++.---..+++++++++++++.+.+[-->+++++<]\n" +
+            ">-.[--->+<]>-..[->+++<]>++................--[-->++\n" +
+            "+<]>.[--->++<]>++.[-->+++++<]>.[--->+<]>++.+++[->+\n" +
+            "++<]>++.--[--->+<]>-.+[->+++<]>++.+++++++++++++.++\n" +
+            "+++++.-[---->+<]>+++.++++++[->++<]>+.-[------>+<]>\n" +
+            "-.+++++++++++++.----------.---.+++++++++++.\n";
 
     public static final String APPLICATION_NAME = "Brainfuck IDE";
 
     public static final String APPLICATION_VERSION = "1.0";
-
-    public static final String INTERPRETER_COMPILER_VERSION = "1.2";
 
     public static final AtomicReference<File> BROWSE_DIRECTORY = new AtomicReference<>(new File(System.getProperty("user.home")));
 

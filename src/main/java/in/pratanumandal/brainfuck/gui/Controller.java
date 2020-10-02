@@ -84,8 +84,31 @@ public class Controller {
         // show tips at startup
         Utils.showTips();
 
+        // show basic info for first run
+        if (Configuration.isFirstRun()) {
+            try {
+                Files.writeString(Path.of(Constants.WELCOME_FILE), Constants.WELCOME_TEXT);
+
+                TabData tabData = createTab(Constants.WELCOME_FILE);
+
+                Tab tab = tabData.getTab();
+
+                ObservableList<Tab> tabs = tabPane.getTabs();
+                tabs.add(tabs.size(), tab);
+                tabPane.getSelectionModel().select(tab);
+
+                tabData.getCodeArea().moveTo(0);
+                tabData.getCodeArea().scrollYToPixel(0);
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+                addUntitledTab();
+            }
+        }
         // add a new untitled tab in the beginning
-        TabData tabData = addUntitledTab();
+        else {
+            addUntitledTab();
+        }
 
         // allow reordering of tabs
         tabPane.setTabDragPolicy(TabPane.TabDragPolicy.REORDER);

@@ -4,7 +4,6 @@ import in.pratanumandal.brainfuck.common.Constants;
 import in.pratanumandal.brainfuck.common.Utils;
 import javafx.application.Application;
 import javafx.application.HostServices;
-import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -15,12 +14,6 @@ import javafx.scene.control.DialogPane;
 import javafx.scene.image.Image;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-import tk.pratanumandal.unique4j.Unique4j;
-import tk.pratanumandal.unique4j.Unique4jList;
-import tk.pratanumandal.unique4j.exception.Unique4jException;
-
-import java.util.Arrays;
-import java.util.List;
 
 public class Main extends Application {
 
@@ -87,45 +80,6 @@ public class Main extends Application {
     }
 
     public static void main(String[] args) {
-        // create unique instance
-        Unique4j unique = new Unique4jList(Constants.APP_ID) {
-            @Override
-            protected void receiveMessageList(List<String> messageList) {
-                // get the array of command line arguments from the list
-                String[] stringArgs = messageList.toArray(new String[0]);
-
-                // bring super stage to the front
-                Platform.runLater(() -> {
-                    Utils.bringToFront(superStage);
-                });
-            }
-
-            @Override
-            protected List<String> sendMessageList() {
-                // send the command line arguments as a list
-                return Arrays.asList(args);
-            }
-        };
-
-        // try to obtain lock
-        boolean lockFlag = false;
-        try {
-            lockFlag = unique.acquireLock();
-        } catch (Unique4jException e) {
-            e.printStackTrace();
-        }
-
-        // free lock before JVM exit
-        if (lockFlag) {
-            Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-                try {
-                    unique.freeLock();
-                } catch (Unique4jException e) {
-                    e.printStackTrace();
-                }
-            }));
-        }
-
         // load fonts before preloader
         loadFonts();
 

@@ -3,8 +3,6 @@ package in.pratanumandal.brainfuck.engine.processor;
 import in.pratanumandal.brainfuck.common.Utils;
 import in.pratanumandal.brainfuck.engine.UnmatchedBracketException;
 import in.pratanumandal.brainfuck.gui.TabData;
-import in.pratanumandal.brainfuck.common.Constants;
-import javafx.scene.control.Alert;
 import org.fxmisc.richtext.CodeArea;
 
 import java.util.Stack;
