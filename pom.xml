@@ -218,13 +218,5 @@
             </plugin>
         </plugins>
     </build>
-
-    <repositories>
-        <repository>
-            <id>bintray-jetbrains-pty4j</id>
-            <name>bintray</name>
-            <url>https://jetbrains.bintray.com/pty4j</url>
-        </repository>
-    </repositories>
     
 </project>
