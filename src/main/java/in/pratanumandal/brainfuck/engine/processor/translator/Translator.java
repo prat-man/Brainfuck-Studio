@@ -9,6 +9,7 @@ import in.pratanumandal.brainfuck.gui.NotificationManager;
 import in.pratanumandal.brainfuck.gui.TabData;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
+import javafx.stage.FileChooser;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -29,6 +30,21 @@ public abstract class Translator extends Processor {
     public void start() {
         String outputFilePath = tabData.getFilePath().substring(0, tabData.getFilePath().length() - 2) + this.getExtension();
         this.outputFile = new File(outputFilePath);
+
+        FileChooser fileChooser = new FileChooser();
+
+        fileChooser.setTitle(Constants.APPLICATION_NAME);
+
+        fileChooser.setInitialDirectory(this.outputFile.getParentFile());
+        fileChooser.setInitialFileName(outputFile.getName());
+
+        fileChooser.getExtensionFilters().add(this.getExtensionFilter());
+
+        File file = fileChooser.showSaveDialog(tabData.getTab().getTabPane().getScene().getWindow());
+
+        if (file == null) return;
+        else this.outputFile = file;
+
         this.cellSize = Configuration.getCellSize();
 
         try {
@@ -90,5 +106,7 @@ public abstract class Translator extends Processor {
     public abstract String getLanguage();
 
     public abstract String getExtension();
+
+    public abstract FileChooser.ExtensionFilter getExtensionFilter();
 
 }

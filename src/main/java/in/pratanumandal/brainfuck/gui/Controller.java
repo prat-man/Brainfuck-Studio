@@ -81,6 +81,9 @@ public class Controller {
         // initialize notification manager
         Utils.initializeNotificationManager(notificationPane);
 
+        // show tilde notification
+        Utils.addNotificationWithDelay("Tip:\nYou can use ~ (tilde symbol)\nas breakpoints for debugging", 30000);
+
         // add a new untitled tab in the beginning
         TabData tabData = addUntitledTab();
 

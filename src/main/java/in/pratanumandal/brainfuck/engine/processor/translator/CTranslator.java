@@ -5,6 +5,7 @@ import in.pratanumandal.brainfuck.common.Constants;
 import in.pratanumandal.brainfuck.common.Utils;
 import in.pratanumandal.brainfuck.gui.NotificationManager;
 import in.pratanumandal.brainfuck.gui.TabData;
+import javafx.stage.FileChooser;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -110,6 +111,11 @@ public class CTranslator extends Translator {
     @Override
     public String getExtension() {
         return "c";
+    }
+
+    @Override
+    public FileChooser.ExtensionFilter getExtensionFilter() {
+        return new FileChooser.ExtensionFilter("C files (*.c)", "*.c");
     }
 
 }

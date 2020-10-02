@@ -25,6 +25,10 @@ public class Utils {
         return notificationManager.addNotification(text);
     }
 
+    public static NotificationManager.Notification addNotificationWithDelay(String text, Integer delay) {
+        return notificationManager.addNotification(text, delay);
+    }
+
     public static NotificationManager.Notification addNotificationWithProgress(String text) {
         return notificationManager.addNotificationWithProgress(text);
     }
