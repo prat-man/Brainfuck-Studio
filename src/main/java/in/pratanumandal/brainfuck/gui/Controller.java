@@ -551,11 +551,11 @@ public class Controller {
             tabDataList.remove(tabData);
 
             if (tabData.getFilePath() != null) {
-                if (tabData.getDebugger().isAlive()) {
+                if (tabData.getDebugger() != null && tabData.getDebugger().isAlive()) {
                     tabData.getDebugger().stop();
                     tabData.getDebug().setVisible(false);
                     tabData.getDebugTerminal().setVisible(false);
-                } else if (tabData.getInterpreter().isAlive()) {
+                } else if (tabData.getInterpreter() != null && tabData.getInterpreter().isAlive()) {
                     tabData.getInterpreter().stop();
                     tabData.getInterpretTerminal().setVisible(false);
                 }
