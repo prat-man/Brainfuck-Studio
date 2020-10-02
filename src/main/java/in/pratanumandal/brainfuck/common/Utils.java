@@ -4,7 +4,14 @@ import in.pratanumandal.brainfuck.gui.Main;
 import in.pratanumandal.brainfuck.gui.NotificationManager;
 import javafx.application.Platform;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
+import org.apache.commons.lang3.SystemUtils;
 
+import javax.swing.*;
+import java.awt.*;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.Random;
@@ -120,6 +127,31 @@ public class Utils {
 
     public static String join(int[] arr) {
         return Arrays.stream(arr).mapToObj(e -> String.valueOf(e)).collect(Collectors.joining(", "));
+    }
+
+    public static void bringToFront(Stage primaryStage) {
+        primaryStage.setIconified(false);
+        primaryStage.setAlwaysOnTop(true);
+        primaryStage.setAlwaysOnTop(false);
+        primaryStage.requestFocus();
+    }
+
+    public static void setDockIconIfMac() {
+        if (SystemUtils.IS_OS_MAC) {
+            try {
+                Class clazz = Utils.class.getClassLoader().loadClass("com.apple.eawt.Application");
+                Method getApplication = clazz.getMethod("getApplication");
+                Object object = getApplication.invoke(null);
+                Method setDockImage = clazz.cast(object).getClass().getMethod("setDockIconImage", Image.class);
+
+                URL iconURL = Utils.class.getClassLoader().getResource("images/icon-large.png");
+                Image image = new ImageIcon(iconURL).getImage();
+
+                setDockImage.invoke(object, image);
+            } catch (NoSuchMethodException | ClassNotFoundException | IllegalAccessException | InvocationTargetException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 }
