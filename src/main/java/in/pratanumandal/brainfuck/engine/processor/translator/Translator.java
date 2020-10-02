@@ -36,7 +36,7 @@ public abstract class Translator extends Processor {
         } catch (UnmatchedBracketException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle(Constants.APPLICATION_NAME);
-            alert.setHeaderText("Error");
+            alert.setHeaderText("Translator Error");
             alert.setContentText(e.getMessage() + "\n\n");
 
             alert.initOwner(tabData.getTab().getTabPane().getScene().getWindow());

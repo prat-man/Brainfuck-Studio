@@ -32,7 +32,7 @@ public class Interpreter16 extends Interpreter {
         } catch (UnmatchedBracketException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle(Constants.APPLICATION_NAME);
-            alert.setHeaderText("Error");
+            alert.setHeaderText("Interpreter Error");
             alert.setContentText(e.getMessage() + "\n\n");
 
             alert.initOwner(tabData.getTab().getTabPane().getScene().getWindow());

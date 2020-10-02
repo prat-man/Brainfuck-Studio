@@ -118,6 +118,16 @@ public class Controller {
 
         // bind managed property with visible property find and replace
         findAndReplace.managedProperty().bind(findAndReplace.visibleProperty());
+
+        // automatically put find text
+        findAndReplace.visibleProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal) {
+                String selected = currentTab.getCodeArea().getSelectedText();
+                if (!selected.isEmpty()) {
+                    findField.setText(selected);
+                }
+            }
+        });
     }
 
     public void setStage(Stage stage) {

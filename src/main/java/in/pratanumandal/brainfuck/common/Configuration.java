@@ -44,11 +44,24 @@ public class Configuration {
     }
 
     private static void sanitize() {
-        if (instance == null) instance = new Configuration();
+        boolean exists = true;
+        if (instance == null) {
+            instance = new Configuration();
+            exists = false;
+        }
+
         if (instance.cellSize == null || (instance.cellSize != 8 && instance.cellSize != 16)) instance.cellSize = 8;
         if (instance.memorySize == null || (instance.memorySize < 1000 || instance.memorySize > 50000)) instance.memorySize = 30000;
         if (instance.fontSize == null || (!FONT_SIZES.contains(instance.fontSize))) instance.fontSize = 16;
         if (instance.wrapText == null) instance.wrapText = false;
+
+        if (!exists) {
+            try {
+                flush(false);
+            } catch (ConfigurationException | IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public static Integer getCellSize() {
@@ -92,7 +105,11 @@ public class Configuration {
     }
 
     public static void flush() throws ConfigurationException, IOException {
-        sanitize();
+        flush(true);
+    }
+
+    private static void flush(boolean sanitize) throws ConfigurationException, IOException {
+        if (sanitize) sanitize();
 
         File file = new File("config.properties");
         if (file.exists()) file.delete();
