@@ -1000,7 +1000,7 @@ public class Controller {
         vBox.getChildren().add(interpreter);
 
         VBox vBox1 = new VBox();
-        vBox1.setSpacing(20);
+        vBox1.setSpacing(15);
         interpreter.setContent(vBox1);
 
         CheckBox cellSize = new CheckBox("Use 16 bit cells (values range 0 - 65535)");
@@ -1156,18 +1156,10 @@ public class Controller {
         hBox.setAlignment(Pos.CENTER);
         vBox.getChildren().add(hBox);
 
-        Label label5 = new Label("Interpreter/Compiler: ");
-        label5.getStyleClass().add("subheading4");
-        hBox.getChildren().add(label5);
-
-        Label label6 = new Label(Constants.INTERPRETER_COMPILER_VERSION);
-        label6.getStyleClass().add("subheading5");
-        hBox.getChildren().add(label6);
-
-        Hyperlink hyperlink3 = new Hyperlink("https://github.com/prat-man/Brainfuck");
-        hyperlink3.getStyleClass().add("hyperlink-sm");
+        Hyperlink hyperlink3 = new Hyperlink("Licensed under GPL v3.0");
+        hyperlink3.getStyleClass().add("subheading4");
         hyperlink3.setOnAction(event -> {
-            Utils.browseURL("https://github.com/prat-man/Brainfuck");
+            Utils.browseURL("https://github.com/prat-man/Brainfuck-IDE/blob/master/LICENSE");
         });
         vBox.getChildren().add(hyperlink3);
 
