@@ -16,6 +16,8 @@ import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.concurrent.CountDownLatch;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class Utils {
@@ -152,6 +154,24 @@ public class Utils {
                 e.printStackTrace();
             }
         }
+    }
+
+    public static int countNewlines(String text) {
+        Matcher m = Pattern.compile("\r\n|\r|\n").matcher(text);
+        int lines = 1;
+        while (m.find()) {
+            lines++;
+        }
+        return lines;
+    }
+
+    public static int calculateColumn(String text) {
+        Matcher m = Pattern.compile(".*(\r\n|\r|\n)").matcher(text);
+        int lineEnd = 0;
+        while (m.find()) {
+            lineEnd = m.end();
+        }
+        return text.length() - lineEnd;
     }
 
 }

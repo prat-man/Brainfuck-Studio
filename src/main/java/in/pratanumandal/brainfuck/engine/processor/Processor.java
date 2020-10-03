@@ -3,6 +3,7 @@ package in.pratanumandal.brainfuck.engine.processor;
 import in.pratanumandal.brainfuck.common.Utils;
 import in.pratanumandal.brainfuck.engine.UnmatchedBracketException;
 import in.pratanumandal.brainfuck.gui.TabData;
+import javafx.util.Pair;
 import org.fxmisc.richtext.CodeArea;
 
 import java.util.Stack;
@@ -59,11 +60,13 @@ public abstract class Processor implements Runnable {
     }
 
     private void initializeJumps() {
-        Stack<Integer> stack = new Stack<>();
+        Stack<Pair<Integer, Integer>> stack = new Stack<>();
 
         for (int i = 0, index = 0; i < this.code.length(); i++, index++) {
             // get one character
             Character ch = this.code.charAt(i);
+
+            System.out.println(ch == ']');
 
             // create jumps for opening and closing square brackets [ and ]
             if (ch == '[') {
@@ -87,14 +90,20 @@ public abstract class Processor implements Runnable {
                 else {
                     // push opening bracket [ to stack
                     processed[index] = ch;
-                    stack.push(index);
+                    stack.push(new Pair<>(index, i));
                 }
             }
             else if (ch == ']') {
-                if (stack.isEmpty()) throw new UnmatchedBracketException("Unmatched bracket at position " + (i + 1));
+                if (stack.isEmpty()) {
+                    int pos = i + 1;
+                    String codeSlice = code.substring(0, pos - 1);
+                    int row = Utils.countNewlines(codeSlice);
+                    int col = Utils.calculateColumn(codeSlice) + 1;
+                    throw new UnmatchedBracketException("Unmatched bracket at position " + pos + " [" + row + " : " + col + "]");
+                }
 
                 // pop opening bracket and swap indexes in jump table
-                int x = stack.pop();
+                int x = stack.pop().getKey();
                 jumps[x] = index;
                 jumps[index] = x;
                 processed[index] = ch;
@@ -172,7 +181,13 @@ public abstract class Processor implements Runnable {
             }
         }
 
-        if (!stack.isEmpty()) throw new UnmatchedBracketException("Unmatched bracket at position " + (stack.pop() + 1));
+        if (!stack.isEmpty()) {
+            int pos = stack.pop().getValue() + 1;
+            String codeSlice = code.substring(0, pos - 1);
+            int row = Utils.countNewlines(codeSlice);
+            int col = Utils.calculateColumn(codeSlice) + 1;
+            throw new UnmatchedBracketException("Unmatched bracket at position " + pos + " [" + row + " : " + col + "]");
+        }
 
         // strip ending null characters
         processed = new String(processed).trim().toCharArray();

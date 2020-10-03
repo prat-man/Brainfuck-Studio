@@ -1,6 +1,7 @@
 package in.pratanumandal.brainfuck.engine.debugger;
 
 import in.pratanumandal.brainfuck.common.Configuration;
+import in.pratanumandal.brainfuck.common.Utils;
 import in.pratanumandal.brainfuck.engine.UnmatchedBracketException;
 import in.pratanumandal.brainfuck.gui.TabData;
 import in.pratanumandal.brainfuck.common.Constants;
@@ -98,14 +99,26 @@ public abstract class Debugger implements Runnable {
 
             if (i == -1 && j == -1) {
                 if (stack.isEmpty()) break;
-                else throw new UnmatchedBracketException("Unmatched bracket at position " + (stack.pop() + 1));
+                else {
+                    int pos = stack.pop() + 1;
+                    String codeSlice = code.substring(0, pos - 1);
+                    int row = Utils.countNewlines(codeSlice);
+                    int col = Utils.calculateColumn(codeSlice) + 1;
+                    throw new UnmatchedBracketException("Unmatched bracket at position " + pos + " [" + row + " : " + col + "]");
+                }
             }
             else if (i != -1 && (i < j || j == -1)) {
                 stack.push(i);
                 index = i + 1;
             }
             else if (j != -1) {
-                if (stack.isEmpty()) throw new UnmatchedBracketException("Unmatched bracket at position " + (j + 1));
+                if (stack.isEmpty()) {
+                    int pos = j + 1;
+                    String codeSlice = code.substring(0, pos - 1);
+                    int row = Utils.countNewlines(codeSlice);
+                    int col = Utils.calculateColumn(codeSlice) + 1;
+                    throw new UnmatchedBracketException("Unmatched bracket at position " + pos + " [" + row + " : " + col + "]");
+                }
 
                 int k = stack.pop();
                 brackets.put(k, j);
@@ -114,7 +127,13 @@ public abstract class Debugger implements Runnable {
             }
         }
 
-        if (!stack.isEmpty()) throw new UnmatchedBracketException("Unmatched bracket at position " + (stack.pop() + 1));
+        if (!stack.isEmpty()) {
+            int pos = stack.pop() + 1;
+            String codeSlice = code.substring(0, pos - 1);
+            int row = Utils.countNewlines(codeSlice);
+            int col = Utils.calculateColumn(codeSlice) + 1;
+            throw new UnmatchedBracketException("Unmatched bracket at position " + pos + " [" + row + " : " + col + "]");
+        }
     }
 
     public void pause() {

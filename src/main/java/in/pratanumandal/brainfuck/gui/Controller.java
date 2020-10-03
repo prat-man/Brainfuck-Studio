@@ -1307,7 +1307,7 @@ public class Controller {
         String charsStr = NumberFormat.getNumberInstance(Locale.US).format(chars);
         charCount.setText(charsStr + " characters");
 
-        int lines = countNewlines(currentTabText);
+        int lines = Utils.countNewlines(currentTabText);
         String linesStr = NumberFormat.getNumberInstance(Locale.US).format(lines);
         lineCount.setText(linesStr + " lines");
     }
@@ -1317,7 +1317,7 @@ public class Controller {
         CodeArea codeArea = currentTab.getCodeArea();
 
         int pos = codeArea.getCaretPosition() + 1;
-        int row = countNewlines(currentTabText.substring(0, pos - 1));
+        int row = Utils.countNewlines(currentTabText.substring(0, pos - 1));
         int col = codeArea.getCaretColumn() + 1;
 
         String posStr = NumberFormat.getNumberInstance(Locale.US).format(pos);
@@ -1327,15 +1327,6 @@ public class Controller {
         caretPosition.setText("Position: " + posStr);
         caretRow.setText("Line: " + rowStr);
         caretColumn.setText("Column: " + colStr);
-    }
-
-    private int countNewlines(String text) {
-        Matcher m = Pattern.compile("\r\n|\r|\n").matcher(text);
-        int lines = 1;
-        while (m.find()) {
-            lines ++;
-        }
-        return lines;
     }
 
 }
