@@ -1306,23 +1306,22 @@ public class Controller {
     }
 
     private void updateTextStatus() {
-        String currentTabText = currentTab.getFileText();
+        CodeArea codeArea = currentTab.getCodeArea();
 
-        int chars = currentTabText.length();
+        int chars = codeArea.getText().length();
         String charsStr = NumberFormat.getNumberInstance(Locale.US).format(chars);
         charCount.setText(charsStr + " characters");
 
-        int lines = Utils.countNewlines(currentTabText);
+        int lines = codeArea.getParagraphs().size();
         String linesStr = NumberFormat.getNumberInstance(Locale.US).format(lines);
         lineCount.setText(linesStr + " lines");
     }
 
     private void updateCaretStatus() {
-        String currentTabText = currentTab.getFileText();
         CodeArea codeArea = currentTab.getCodeArea();
 
         int pos = codeArea.getCaretPosition() + 1;
-        int row = Utils.countNewlines(currentTabText.substring(0, pos - 1));
+        int row = codeArea.getCurrentParagraph() + 1;
         int col = codeArea.getCaretColumn() + 1;
 
         String posStr = NumberFormat.getNumberInstance(Locale.US).format(pos);
@@ -1335,12 +1334,10 @@ public class Controller {
     }
 
     private void goToLine() {
-        TabData tabData = currentTab;
+        CodeArea codeArea = currentTab.getCodeArea();
 
-        int lineCount = Utils.countNewlines(tabData.getFileText());
-
-        int pos = tabData.getCodeArea().getCaretPosition() + 1;
-        int currentLine = Utils.countNewlines(tabData.getCodeArea().getText().substring(0, pos - 1));
+        int lineCount = codeArea.getParagraphs().size();
+        int currentLine = codeArea.getCurrentParagraph() + 1;
 
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION, null, ButtonType.OK, ButtonType.CANCEL);
 
@@ -1392,8 +1389,8 @@ public class Controller {
             try {
                 Integer line = Integer.valueOf(lineNumber.getText());
                 if (line < 1 || line > lineCount) throw new NumberFormatException("Invalid line number");
-                tabData.getCodeArea().moveTo(line - 1, 0);
-                tabData.getCodeArea().requestFollowCaret();
+                codeArea.moveTo(line - 1, 0);
+                codeArea.requestFollowCaret();
             }
             catch (NumberFormatException e) {
                 Alert error = new Alert(Alert.AlertType.ERROR, "Line number must be in range 1 to " + lineCount);

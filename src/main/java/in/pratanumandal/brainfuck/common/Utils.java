@@ -157,7 +157,7 @@ public class Utils {
         }
     }
 
-    public static int countNewlines(String text) {
+    private static int countNewlines(String text) {
         Matcher m = Pattern.compile("\r\n|\r|\n").matcher(text);
         int lines = 1;
         while (m.find()) {
@@ -166,7 +166,7 @@ public class Utils {
         return lines;
     }
 
-    public static int calculateColumn(String text) {
+    private static int calculateColumn(String text) {
         Matcher m = Pattern.compile(".*(\r\n|\r|\n)").matcher(text);
         int lineEnd = 0;
         while (m.find()) {
