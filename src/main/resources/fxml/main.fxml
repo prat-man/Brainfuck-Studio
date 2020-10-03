@@ -138,15 +138,18 @@
                         </ImageView>
                     </graphic>
                 </Button>
-                <Button layoutX="192.0" layoutY="10.0" mnemonicParsing="false" onAction="#about" text="About">
-                   <graphic>
+               <SplitMenuButton mnemonicParsing="false" onAction="#about" text="About">
+                 <items>
+                   <MenuItem mnemonicParsing="false" onAction="#keymapReference" text="Keymap Reference" />
+                 </items>
+                  <graphic>
                       <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                          <image>
                             <Image url="@../images/about.png" />
                          </image>
                       </ImageView>
-                   </graphic>
-                </Button>
+                  </graphic>
+               </SplitMenuButton>
             </items>
              <padding>
                 <Insets bottom="9.0" left="7.0" right="7.0" top="8.0" />
@@ -169,6 +172,18 @@
                         <Tooltip showDelay="300ms" text="Regex" />
                     </tooltip>
                 </ToggleButton>
+               <ToggleButton contentDisplay="RIGHT" layoutX="475.0" layoutY="18.0" mnemonicParsing="false" onAction="#toggleCaseSensitive">
+                  <graphic>
+                     <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                        <image>
+                           <Image url="@../images/case-sensitive.png" />
+                        </image>
+                     </ImageView>
+                  </graphic>
+                  <tooltip>
+                     <Tooltip showDelay="300ms" text="Case Sensitive" />
+                  </tooltip>
+               </ToggleButton>
                 <Button contentDisplay="RIGHT" mnemonicParsing="false" onAction="#findNext">
                     <graphic>
                         <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">

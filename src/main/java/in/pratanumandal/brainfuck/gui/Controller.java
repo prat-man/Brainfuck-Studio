@@ -57,6 +57,9 @@ public class Controller {
     private Stage stage;
 
     private boolean regex;
+    private boolean caseSensitive;
+
+    private int wrapSearch;
 
     @FXML private TabPane tabPane;
 
@@ -167,6 +170,8 @@ public class Controller {
         final KeyCombination keyComb5 = new KeyCodeCombination(KeyCode.F, KeyCombination.CONTROL_DOWN);
         final KeyCombination keyComb6 = new KeyCodeCombination(KeyCode.R, KeyCombination.CONTROL_DOWN);
         final KeyCombination keyComb7 = new KeyCodeCombination(KeyCode.L, KeyCombination.CONTROL_DOWN);
+        final KeyCombination keyComb8 = new KeyCodeCombination(KeyCode.F3);
+        final KeyCombination keyComb9 = new KeyCodeCombination(KeyCode.F3, KeyCombination.SHIFT_DOWN);
 
         // handle key events
         stage.addEventHandler(KeyEvent.KEY_RELEASED, event -> {
@@ -187,6 +192,12 @@ public class Controller {
             }
             else if (keyComb7.match(event)) {
                 goToLine();
+            }
+            else if (keyComb8.match(event)) {
+                findNext();
+            }
+            else if (keyComb9.match(event)) {
+                findPrevious();
             }
         });
     }
@@ -814,6 +825,11 @@ public class Controller {
     }
 
     @FXML
+    private void toggleCaseSensitive() {
+        this.caseSensitive = !this.caseSensitive;
+    }
+
+    @FXML
     private void findNext() {
         this.findNext(true);
     }
@@ -822,10 +838,19 @@ public class Controller {
         TabData tabData = currentTab;
 
         CodeArea codeArea = tabData.getCodeArea();
+
+        if (wrapSearch == +1) codeArea.moveTo(0);
+        wrapSearch = 0;
+
         int anchor = codeArea.getCaretPosition();
 
         String text = tabData.getFileText().substring(anchor);
         String search = findField.getText();
+
+        if (!caseSensitive) {
+            text = text.toLowerCase();
+            search = search.toLowerCase();
+        }
 
         int start = -1;
         int end = -1;
@@ -847,11 +872,11 @@ public class Controller {
             codeArea.selectRange(anchor + start, anchor + end);
 
             // scroll to selection
-            //codeArea.scrollXToPixel(0);
+            codeArea.scrollXToPixel(0);
             codeArea.requestFollowCaret();
         }
         else {
-            codeArea.moveTo(0);
+            wrapSearch = +1;
 
             if (showAlert) {
                 Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -874,11 +899,19 @@ public class Controller {
 
         CodeArea codeArea = tabData.getCodeArea();
 
+        if (wrapSearch == -1) codeArea.moveTo(codeArea.getText().length());
+        wrapSearch = 0;
+
         IndexRange range = codeArea.getSelection();
         int anchor = range.getLength() > 0 ? Math.min(range.getStart(), range.getEnd()) : codeArea.getCaretPosition();
 
         String text = tabData.getFileText().substring(0, anchor);
         String search = findField.getText();
+
+        if (!caseSensitive) {
+            text = text.toLowerCase();
+            search = search.toLowerCase();
+        }
 
         int start = -1;
         int end = -1;
@@ -900,11 +933,11 @@ public class Controller {
             codeArea.selectRange(start, end);
 
             // scroll to selection
-            //codeArea.scrollXToPixel(0);
+            codeArea.scrollXToPixel(0);
             codeArea.requestFollowCaret();
         }
         else {
-            codeArea.moveTo(codeArea.getText().length());
+            wrapSearch = -1;
 
             if (showAlert) {
                 Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -928,7 +961,10 @@ public class Controller {
 
         IndexRange range = codeArea.getSelection();
         String selectedText = codeArea.getSelectedText();
-        if (range.getLength() == 0 || !selectedText.equalsIgnoreCase(search)) {
+        if (range.getLength() == 0 ||
+                ((caseSensitive && !selectedText.equals(search)) ||
+                        (!caseSensitive && !selectedText.equalsIgnoreCase(search)))) {
+
             findNext(false);
 
             range = codeArea.getSelection();
@@ -954,7 +990,6 @@ public class Controller {
 
         CodeArea codeArea = tabData.getCodeArea();
 
-        String search = findField.getText();
         String replace = replaceField.getText();
 
         int count = 0;
@@ -1195,6 +1230,11 @@ public class Controller {
 
         alert.initOwner(tabPane.getScene().getWindow());
         alert.showAndWait();
+    }
+
+    @FXML
+    private void keymapReference() {
+        Utils.browseURL("https://github.com/prat-man/Brainfuck-IDE/blob/master/keymap_reference.pdf");
     }
 
     @FXML
