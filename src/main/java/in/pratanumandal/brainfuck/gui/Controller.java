@@ -32,6 +32,7 @@ import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.fxmisc.flowless.VirtualizedScrollPane;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.LineNumberFactory;
+import org.fxmisc.richtext.MultiChangeBuilder;
 import org.reactfx.Subscription;
 
 import java.io.File;
@@ -994,18 +995,28 @@ public class Controller {
 
         int count = 0;
 
+        int caretPos = codeArea.getCaretPosition();
         codeArea.moveTo(0);
+
+        MultiChangeBuilder builder = codeArea.createMultiChange();
 
         findNext(false);
         IndexRange range = codeArea.getSelection();
 
         while (range.getLength() > 0) {
             count++;
-            codeArea.replaceText(range, replace);
+
+            codeArea.moveTo(range.getEnd());
+            builder.replaceText(range.getStart(), range.getEnd(), replace);
 
             findNext(false);
             range = codeArea.getSelection();
         }
+
+        builder.commit();
+
+        codeArea.moveTo(caretPos);
+        codeArea.requestFollowCaret();
 
         if (count == 0) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -1022,6 +1033,8 @@ public class Controller {
 
             alert.initOwner(tabPane.getScene().getWindow());
             alert.showAndWait();
+
+            codeArea.requestFocus();
         }
     }
 
