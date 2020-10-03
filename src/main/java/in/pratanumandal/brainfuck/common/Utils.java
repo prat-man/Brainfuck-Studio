@@ -1,5 +1,6 @@
 package in.pratanumandal.brainfuck.common;
 
+import in.pratanumandal.brainfuck.engine.UnmatchedBracketException;
 import in.pratanumandal.brainfuck.gui.Main;
 import in.pratanumandal.brainfuck.gui.NotificationManager;
 import javafx.application.Platform;
@@ -172,6 +173,13 @@ public class Utils {
             lineEnd = m.end();
         }
         return text.length() - lineEnd;
+    }
+
+    public static void throwUnmatchedBracketException(String code, int pos) {
+        String codeSlice = code.substring(0, pos - 1);
+        int row = Utils.countNewlines(codeSlice);
+        int col = Utils.calculateColumn(codeSlice) + 1;
+        throw new UnmatchedBracketException("Unmatched bracket at position " + pos + " [" + row + " : " + col + "]");
     }
 
 }

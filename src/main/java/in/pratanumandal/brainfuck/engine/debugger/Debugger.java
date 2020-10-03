@@ -100,11 +100,7 @@ public abstract class Debugger implements Runnable {
             if (i == -1 && j == -1) {
                 if (stack.isEmpty()) break;
                 else {
-                    int pos = stack.pop() + 1;
-                    String codeSlice = code.substring(0, pos - 1);
-                    int row = Utils.countNewlines(codeSlice);
-                    int col = Utils.calculateColumn(codeSlice) + 1;
-                    throw new UnmatchedBracketException("Unmatched bracket at position " + pos + " [" + row + " : " + col + "]");
+                    Utils.throwUnmatchedBracketException(code, stack.pop() + 1);
                 }
             }
             else if (i != -1 && (i < j || j == -1)) {
@@ -113,11 +109,7 @@ public abstract class Debugger implements Runnable {
             }
             else if (j != -1) {
                 if (stack.isEmpty()) {
-                    int pos = j + 1;
-                    String codeSlice = code.substring(0, pos - 1);
-                    int row = Utils.countNewlines(codeSlice);
-                    int col = Utils.calculateColumn(codeSlice) + 1;
-                    throw new UnmatchedBracketException("Unmatched bracket at position " + pos + " [" + row + " : " + col + "]");
+                    Utils.throwUnmatchedBracketException(code, j + 1);
                 }
 
                 int k = stack.pop();
@@ -128,11 +120,7 @@ public abstract class Debugger implements Runnable {
         }
 
         if (!stack.isEmpty()) {
-            int pos = stack.pop() + 1;
-            String codeSlice = code.substring(0, pos - 1);
-            int row = Utils.countNewlines(codeSlice);
-            int col = Utils.calculateColumn(codeSlice) + 1;
-            throw new UnmatchedBracketException("Unmatched bracket at position " + pos + " [" + row + " : " + col + "]");
+            Utils.throwUnmatchedBracketException(code, stack.pop() + 1);
         }
     }
 

@@ -95,11 +95,7 @@ public abstract class Processor implements Runnable {
             }
             else if (ch == ']') {
                 if (stack.isEmpty()) {
-                    int pos = i + 1;
-                    String codeSlice = code.substring(0, pos - 1);
-                    int row = Utils.countNewlines(codeSlice);
-                    int col = Utils.calculateColumn(codeSlice) + 1;
-                    throw new UnmatchedBracketException("Unmatched bracket at position " + pos + " [" + row + " : " + col + "]");
+                    Utils.throwUnmatchedBracketException(code, i + 1);
                 }
 
                 // pop opening bracket and swap indexes in jump table
@@ -182,11 +178,7 @@ public abstract class Processor implements Runnable {
         }
 
         if (!stack.isEmpty()) {
-            int pos = stack.pop().getValue() + 1;
-            String codeSlice = code.substring(0, pos - 1);
-            int row = Utils.countNewlines(codeSlice);
-            int col = Utils.calculateColumn(codeSlice) + 1;
-            throw new UnmatchedBracketException("Unmatched bracket at position " + pos + " [" + row + " : " + col + "]");
+            Utils.throwUnmatchedBracketException(code, stack.pop().getValue() + 1);
         }
 
         // strip ending null characters
