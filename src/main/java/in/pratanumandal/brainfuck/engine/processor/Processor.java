@@ -66,8 +66,6 @@ public abstract class Processor implements Runnable {
             // get one character
             Character ch = this.code.charAt(i);
 
-            System.out.println(ch == ']');
-
             // create jumps for opening and closing square brackets [ and ]
             if (ch == '[') {
                 Character ch2 = (i + 1) < this.code.length() ? this.code.charAt(i + 1) : 0;
