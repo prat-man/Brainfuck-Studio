@@ -13,6 +13,10 @@ The IDE is Java based and requires Java 11+. It supports Windows, OSX, and Linux
 * Supports custom memory size
 <br><br>
 
+### Screenshot
+![Brainfuck IDE screeshot](/screenshot.png)
+<br><br>
+
 ### Information
 
 Brainfuck IDE is written in Java 11 and uses JavaFX for its user interface.<br>
