@@ -87,9 +87,9 @@ public class Controller {
         // show basic info for first run
         if (Configuration.isFirstRun()) {
             try {
-                Files.writeString(Path.of(Constants.WELCOME_FILE), Constants.WELCOME_TEXT);
+                Path path = Files.writeString(Path.of(Constants.WELCOME_FILE), Constants.WELCOME_TEXT);
 
-                TabData tabData = createTab(Constants.WELCOME_FILE);
+                TabData tabData = createTab(path.toFile().getAbsolutePath());
 
                 Tab tab = tabData.getTab();
 
