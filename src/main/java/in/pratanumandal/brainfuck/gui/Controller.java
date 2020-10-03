@@ -1316,8 +1316,8 @@ public class Controller {
         String currentTabText = currentTab.getFileText();
         CodeArea codeArea = currentTab.getCodeArea();
 
-        int pos = codeArea.getCaretPosition();
-        int row = countNewlines(currentTabText.substring(0, pos));
+        int pos = codeArea.getCaretPosition() + 1;
+        int row = countNewlines(currentTabText.substring(0, pos - 1));
         int col = codeArea.getCaretColumn() + 1;
 
         String posStr = NumberFormat.getNumberInstance(Locale.US).format(pos);

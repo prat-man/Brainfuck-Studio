@@ -67,8 +67,8 @@ public abstract class Processor implements Runnable {
 
             // create jumps for opening and closing square brackets [ and ]
             if (ch == '[') {
-                Character ch2 = (i + 1) < this.code.length() ? this.code.charAt(i + 1) : null;
-                Character ch3 = (i + 2) < this.code.length() ? this.code.charAt(i + 2) : null;
+                Character ch2 = (i + 1) < this.code.length() ? this.code.charAt(i + 1) : 0;
+                Character ch3 = (i + 2) < this.code.length() ? this.code.charAt(i + 2) : 0;
                 if (ch2 == '-' && ch3 == ']') {
                     // optimize [-] to set(0)
                     processed[index] = SET_ZERO;
