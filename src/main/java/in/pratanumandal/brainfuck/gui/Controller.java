@@ -165,6 +165,8 @@ public class Controller {
         final KeyCombination keyComb3 = new KeyCodeCombination(KeyCode.O, KeyCombination.CONTROL_DOWN);
         final KeyCombination keyComb4 = new KeyCodeCombination(KeyCode.N, KeyCombination.CONTROL_DOWN);
         final KeyCombination keyComb5 = new KeyCodeCombination(KeyCode.F, KeyCombination.CONTROL_DOWN);
+        final KeyCombination keyComb6 = new KeyCodeCombination(KeyCode.R, KeyCombination.CONTROL_DOWN);
+        final KeyCombination keyComb7 = new KeyCodeCombination(KeyCode.L, KeyCombination.CONTROL_DOWN);
 
         // handle key events
         stage.addEventHandler(KeyEvent.KEY_RELEASED, event -> {
@@ -180,8 +182,11 @@ public class Controller {
             else if (keyComb4.match(event)) {
                 addNewFile();
             }
-            else if (keyComb5.match(event)) {
+            else if (keyComb5.match(event) || keyComb6.match(event)) {
                 toggleSearch();
+            }
+            else if (keyComb7.match(event)) {
+                goToLine();
             }
         });
     }
@@ -1327,6 +1332,75 @@ public class Controller {
         caretPosition.setText("Position: " + posStr);
         caretRow.setText("Line: " + rowStr);
         caretColumn.setText("Column: " + colStr);
+    }
+
+    private void goToLine() {
+        TabData tabData = currentTab;
+
+        int lineCount = Utils.countNewlines(tabData.getFileText());
+
+        int pos = tabData.getCodeArea().getCaretPosition() + 1;
+        int currentLine = Utils.countNewlines(tabData.getCodeArea().getText().substring(0, pos - 1));
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, null, ButtonType.OK, ButtonType.CANCEL);
+
+        alert.getDialogPane().getScene().getRoot().getStyleClass().add("settings-dialog");
+
+        Button apply = (Button) alert.getDialogPane().lookupButton(ButtonType.OK);
+        apply.setDefaultButton(true);
+
+        alert.setTitle(Constants.APPLICATION_NAME);
+        alert.setHeaderText("Go to line");
+
+        VBox vBox = new VBox();
+        vBox.getStyleClass().add("settings");
+        vBox.setAlignment(Pos.CENTER_LEFT);
+        vBox.setSpacing(15);
+
+        HBox lineNumberBox = new HBox();
+        lineNumberBox.setSpacing(10);
+        lineNumberBox.setAlignment(Pos.CENTER);
+        vBox.getChildren().add(lineNumberBox);
+
+        Label label = new Label("Line number");
+        lineNumberBox.getChildren().add(label);
+
+        TextField lineNumber = new TextField();
+        lineNumber.setPromptText("In range 1 to " + lineCount);
+        HBox.setHgrow(lineNumber, Priority.ALWAYS);
+        lineNumber.textProperty().addListener((obs, oldVal, newVal) -> {
+            if (!newVal.matches("\\d*")) {
+                lineNumber.setText(newVal.replaceAll("[^\\d]", ""));
+            }
+        });
+        lineNumber.setText(String.valueOf(currentLine));
+        lineNumberBox.getChildren().add(lineNumber);
+
+        alert.getDialogPane().setContent(vBox);
+
+        alert.initOwner(tabPane.getScene().getWindow());
+
+        alert.setOnShown(event -> Platform.runLater(() -> {
+            lineNumber.requestFocus();
+            lineNumber.selectAll();
+        }));
+
+        alert.showAndWait();
+
+        ButtonType buttonType = alert.getResult();
+        if (buttonType == ButtonType.OK) {
+            try {
+                Integer line = Integer.valueOf(lineNumber.getText());
+                if (line < 1 || line > lineCount) throw new NumberFormatException("Invalid line number");
+                tabData.getCodeArea().moveTo(line - 1, 0);
+                tabData.getCodeArea().requestFollowCaret();
+            }
+            catch (NumberFormatException e) {
+                Alert error = new Alert(Alert.AlertType.ERROR, "Line number must be in range 1 to " + lineCount);
+                error.initOwner(tabPane.getScene().getWindow());
+                error.showAndWait();
+            }
+        }
     }
 
 }
