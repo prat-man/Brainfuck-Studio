@@ -98,27 +98,31 @@ public class FXTerminal extends TextArea {
                     this.existingText += sanitizedText;
 
                     if (this.autoScroll.get()) {
-                        // set the text
-                        this.setText(this.existingText);
+                        Platform.runLater(() -> {
+                            // set the text
+                            this.setText(this.existingText);
 
-                        // reset properties
-                        this.setScrollTop(Double.MAX_VALUE);
-                        this.positionCaret(this.getLength());
+                            // reset properties
+                            this.setScrollTop(Double.MAX_VALUE);
+                            this.positionCaret(this.getLength());
+                        });
                     } else {
-                        // get current properties
-                        double scrollLeft = this.getScrollLeft();
-                        double scrollTop = this.getScrollTop();
-                        int caretPos = this.getCaretPosition();
-                        IndexRange selection = this.getSelection();
+                        Platform.runLater(() -> {
+                            // get current properties
+                            double scrollLeft = this.getScrollLeft();
+                            double scrollTop = this.getScrollTop();
+                            int caretPos = this.getCaretPosition();
+                            IndexRange selection = this.getSelection();
 
-                        // set the text
-                        this.setText(this.existingText);
+                            // set the text
+                            this.setText(this.existingText);
 
-                        // reset properties
-                        this.setScrollLeft(scrollLeft);
-                        this.setScrollTop(scrollTop);
-                        this.positionCaret(caretPos);
-                        this.selectRange(selection.getStart(), selection.getEnd());
+                            // reset properties
+                            this.setScrollLeft(scrollLeft);
+                            this.setScrollTop(scrollTop);
+                            this.positionCaret(caretPos);
+                            this.selectRange(selection.getStart(), selection.getEnd());
+                        });
                     }
                 }
                 synchronized (this.flushLock) {
