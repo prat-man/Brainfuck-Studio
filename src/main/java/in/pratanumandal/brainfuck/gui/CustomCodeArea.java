@@ -1,5 +1,10 @@
 package in.pratanumandal.brainfuck.gui;
 
+import in.pratanumandal.brainfuck.common.Utils;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.model.EditableStyledDocument;
 import org.fxmisc.richtext.model.PlainTextChange;
@@ -72,6 +77,21 @@ public class CustomCodeArea extends CodeArea {
             changes.add(change);
             Highlighter.computeHighlighting(changes, tabData);
         }
+    }
+
+    @Override
+    public void setContextMenu(ContextMenu menu) {
+        MenuItem goToLine = new MenuItem("Go to line");
+        goToLine.setOnAction(event -> Utils.goToLine(this.tabData));
+        menu.getItems().add(goToLine);
+
+        this.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
+            if (event.isControlDown() && event.getCode() == KeyCode.L) {
+                Utils.goToLine(tabData);
+            }
+        });
+
+        super.setContextMenu(menu);
     }
 
 }

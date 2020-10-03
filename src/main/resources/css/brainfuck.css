@@ -325,6 +325,9 @@
 .settings-dialog {
     -fx-pref-width: 350px;
 }
+.gotoline-dialog {
+    -fx-pref-width: 300px;
+}
 
 .check-box {
     -fx-text-fill: white;

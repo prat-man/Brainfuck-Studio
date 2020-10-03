@@ -3,10 +3,18 @@ package in.pratanumandal.brainfuck.common;
 import in.pratanumandal.brainfuck.engine.UnmatchedBracketException;
 import in.pratanumandal.brainfuck.gui.Main;
 import in.pratanumandal.brainfuck.gui.NotificationManager;
+import in.pratanumandal.brainfuck.gui.TabData;
 import javafx.application.Platform;
+import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.apache.commons.lang3.SystemUtils;
+import org.fxmisc.richtext.CodeArea;
 
 import javax.swing.*;
 import java.awt.*;
@@ -180,6 +188,84 @@ public class Utils {
         int row = Utils.countNewlines(codeSlice);
         int col = Utils.calculateColumn(codeSlice) + 1;
         throw new UnmatchedBracketException("Unmatched bracket at position " + pos + " [" + row + " : " + col + "]");
+    }
+
+    public static void goToLine(TabData currentTab) {
+        CodeArea codeArea = currentTab.getCodeArea();
+
+        int lineCount = codeArea.getParagraphs().size();
+        int currentLine = codeArea.getCurrentParagraph() + 1;
+        int currentColumn = codeArea.getCaretColumn() + 1;
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, null, ButtonType.OK, ButtonType.CANCEL);
+
+        alert.getDialogPane().getScene().getRoot().getStyleClass().add("gotoline-dialog");
+
+        javafx.scene.control.Button apply = (javafx.scene.control.Button) alert.getDialogPane().lookupButton(ButtonType.OK);
+        apply.setDefaultButton(true);
+
+        alert.setTitle(Constants.APPLICATION_NAME);
+        alert.setHeaderText("Go to line");
+
+        VBox vBox = new VBox();
+        vBox.setAlignment(Pos.CENTER_LEFT);
+        vBox.setSpacing(15);
+
+        HBox lineNumberBox = new HBox();
+        lineNumberBox.setSpacing(10);
+        lineNumberBox.setAlignment(Pos.CENTER);
+        vBox.getChildren().add(lineNumberBox);
+
+        javafx.scene.control.Label label = new javafx.scene.control.Label("Line [ : column ]");
+        lineNumberBox.getChildren().add(label);
+
+        javafx.scene.control.TextField lineNumber = new TextField();
+        lineNumber.setPromptText("Enter line number");
+        HBox.setHgrow(lineNumber, Priority.ALWAYS);
+        lineNumber.setText(currentLine + " : " + currentColumn);
+        lineNumberBox.getChildren().add(lineNumber);
+
+        alert.getDialogPane().setContent(vBox);
+
+        alert.initOwner(currentTab.getTab().getTabPane().getScene().getWindow());
+
+        alert.setOnShown(event -> Platform.runLater(() -> {
+            lineNumber.requestFocus();
+            lineNumber.selectAll();
+        }));
+
+        while (true) {
+            alert.setResult(null);
+            alert.showAndWait();
+
+            ButtonType buttonType = alert.getResult();
+            if (buttonType == ButtonType.OK) {
+                try {
+                    String[] data = lineNumber.getText().split(":");
+                    if (data.length > 2) continue;
+
+                    Integer line = Integer.valueOf(data[0].trim());
+                    Integer column = data.length > 1 ? Integer.valueOf(data[1].trim()) : 0;
+
+                    if (line < 1 || column < 0) continue;
+
+                    if (line > lineCount) line = lineCount;
+
+                    if (column == 0) column = 1;
+                    else {
+                        int columnCount = codeArea.getParagraphLength(line - 1);
+                        if (column > columnCount + 1) column = columnCount + 1;
+                    }
+
+                    codeArea.moveTo(line - 1, column - 1);
+                    codeArea.requestFollowCaret();
+
+                    break;
+                }
+                catch (NumberFormatException e) { }
+            }
+            else break;
+        }
     }
 
 }
