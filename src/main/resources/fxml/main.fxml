@@ -296,5 +296,5 @@
           </GridPane>
        </children>
     </VBox>
-   <VBox fx:id="notificationPane" alignment="BOTTOM_RIGHT" spacing="10.0" AnchorPane.bottomAnchor="40.0" AnchorPane.rightAnchor="10.0" />
+   <VBox fx:id="notificationPane" alignment="BOTTOM_RIGHT" spacing="10.0" AnchorPane.bottomAnchor="50.0" AnchorPane.rightAnchor="20.0" />
 </AnchorPane>

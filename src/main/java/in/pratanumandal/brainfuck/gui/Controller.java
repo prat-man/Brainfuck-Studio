@@ -159,10 +159,10 @@ public class Controller {
                 }
                 findField.requestFocus();
                 findField.selectAll();
-                AnchorPane.setBottomAnchor(notificationPane, 82.0);
+                AnchorPane.setBottomAnchor(notificationPane, 92.0);
             }
             else {
-                AnchorPane.setBottomAnchor(notificationPane, 40.0);
+                AnchorPane.setBottomAnchor(notificationPane, 50.0);
             }
         });
     }
