@@ -157,6 +157,8 @@ public class Controller {
                 if (!selected.isEmpty()) {
                     findField.setText(selected);
                 }
+                findField.requestFocus();
+                findField.selectAll();
                 AnchorPane.setBottomAnchor(notificationPane, 82.0);
             }
             else {
@@ -175,8 +177,9 @@ public class Controller {
         final KeyCombination keyComb4 = new KeyCodeCombination(KeyCode.N, KeyCombination.CONTROL_DOWN);
         final KeyCombination keyComb5 = new KeyCodeCombination(KeyCode.F, KeyCombination.CONTROL_DOWN);
         final KeyCombination keyComb6 = new KeyCodeCombination(KeyCode.R, KeyCombination.CONTROL_DOWN);
-        final KeyCombination keyComb7 = new KeyCodeCombination(KeyCode.F3);
-        final KeyCombination keyComb8 = new KeyCodeCombination(KeyCode.F3, KeyCombination.SHIFT_DOWN);
+        final KeyCombination keyComb7 = new KeyCodeCombination(KeyCode.H, KeyCombination.CONTROL_DOWN);
+        final KeyCombination keyComb8 = new KeyCodeCombination(KeyCode.F3);
+        final KeyCombination keyComb9 = new KeyCodeCombination(KeyCode.F3, KeyCombination.SHIFT_DOWN);
 
         // handle key events
         stage.addEventHandler(KeyEvent.KEY_RELEASED, event -> {
@@ -192,13 +195,13 @@ public class Controller {
             else if (keyComb4.match(event)) {
                 addNewFile();
             }
-            else if (keyComb5.match(event) || keyComb6.match(event)) {
+            else if (keyComb5.match(event) || keyComb6.match(event) || keyComb7.match(event)) {
                 toggleSearch();
             }
-            else if (keyComb7.match(event)) {
+            else if (keyComb8.match(event)) {
                 findNext();
             }
-            else if (keyComb8.match(event)) {
+            else if (keyComb9.match(event)) {
                 findPrevious();
             }
         });
@@ -863,8 +866,17 @@ public class Controller {
             try {
                 Matcher matcher = Pattern.compile(search).matcher(text);
                 if (matcher.find()) {
-                    start = matcher.start();
-                    end = matcher.end();
+                    boolean found = true;
+                    while (matcher.group().isEmpty()) {
+                        if (!matcher.find()) {
+                            found = false;
+                            break;
+                        }
+                    }
+                    if (found) {
+                        start = matcher.start();
+                        end = matcher.end();
+                    }
                 }
             }
             catch (PatternSyntaxException e) {
@@ -931,8 +943,17 @@ public class Controller {
             try {
                 Matcher matcher = Pattern.compile(search).matcher(text);
                 while (matcher.find()) {
-                    start = matcher.start();
-                    end = matcher.end();
+                    boolean found = true;
+                    while (matcher.group().isEmpty()) {
+                        if (!matcher.find()) {
+                            found = false;
+                            break;
+                        }
+                    }
+                    if (found) {
+                        start = matcher.start();
+                        end = matcher.end();
+                    }
                 }
             }
             catch (PatternSyntaxException e) {
@@ -991,6 +1012,9 @@ public class Controller {
         if (range.getLength() == 0 ||
                 ((caseSensitive && !selectedText.equals(search)) ||
                         (!caseSensitive && !selectedText.equalsIgnoreCase(search)))) {
+
+            IndexRange selection = codeArea.getSelection();
+            codeArea.moveTo(selection.getStart());
 
             findNext(false);
 
@@ -1471,10 +1495,6 @@ public class Controller {
         caretPosition.setText("Position: " + posStr);
         caretRow.setText("Line: " + rowStr);
         caretColumn.setText("Column: " + colStr);
-    }
-
-    private void goToLine() {
-        Utils.goToLine(currentTab);
     }
 
 }

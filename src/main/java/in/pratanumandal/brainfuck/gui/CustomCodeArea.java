@@ -10,9 +10,7 @@ import org.fxmisc.richtext.model.EditableStyledDocument;
 import org.fxmisc.richtext.model.PlainTextChange;
 import org.fxmisc.richtext.model.StyledDocument;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class CustomCodeArea extends CodeArea {
@@ -85,13 +83,23 @@ public class CustomCodeArea extends CodeArea {
         goToLine.setOnAction(event -> Utils.goToLine(this.tabData));
         menu.getItems().add(goToLine);
 
+        super.setContextMenu(menu);
+
+        this.registerShortcuts();
+    }
+
+    private void registerShortcuts() {
         this.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
             if (event.isControlDown() && event.getCode() == KeyCode.L) {
                 Utils.goToLine(tabData);
             }
         });
 
-        super.setContextMenu(menu);
+        this.addEventHandler(KeyEvent.KEY_RELEASED, event -> {
+            if (event.isControlDown() && (event.getCode() == KeyCode.Z || event.getCode() == KeyCode.Y)) {
+                Highlighter.refreshHighlighting(tabData);
+            }
+        });
     }
 
 }

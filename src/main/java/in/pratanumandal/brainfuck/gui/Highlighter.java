@@ -49,76 +49,91 @@ public class Highlighter {
                 int length = change.getInserted().replace("\r\n", "\n").length();
                 int end = start + length;
 
-                CodeArea codeArea = tabData.getCodeArea();
-
-                String text = codeArea.getText().substring(start, end);
-                String[] splitText = text.split("(?<=\\G.{500})");
-
-                if (splitText.length >= 10) {
-                    tabData.setLargeFile(true);
-                }
-
-                if (tabData.isLargeFile()) {
-                    return;
-                }
-                else if (splitText.length >= 5) {
-                    Tab tab = tabData.getTab();
-
-                    Node node = tab.getContent();
-
-                    ProgressBar progressBar = new ProgressBar();
-                    progressBar.setProgress(0);
-
-                    StackPane stackPane = new StackPane();
-                    stackPane.getChildren().add(progressBar);
-                    stackPane.getStyleClass().add("dark-tab-background");
-
-                    Platform.runLater(() -> {
-                        tab.setContent(stackPane);
-                    });
-
-                    for (int i = 0; i < splitText.length; i++) {
-                        StyleSpans<Collection<String>> styleSpans = computeHighlighting(splitText[i]);
-                        int from = i * 500;
-
-                        Platform.runLater(() -> {
-                            try {
-                                codeArea.setStyleSpans(from + start, styleSpans);
-                            } catch (IndexOutOfBoundsException e) {
-                            }
-                            tabData.getBracketHighlighter().highlightBracket();
-                        });
-
-                        double progress = i / (double) splitText.length;
-                        progressBar.setProgress(progress);
-
-                        try {
-                            Thread.sleep(1000);
-                        } catch (InterruptedException e) { }
-                    }
-
-                    Platform.runLater(() -> tab.setContent(node));
-                } else {
-                    for (int i = 0; i < splitText.length; i++) {
-                        StyleSpans<Collection<String>> styleSpans = computeHighlighting(splitText[i]);
-                        int from = i * 500;
-
-                        Platform.runLater(() -> {
-                            try {
-                                codeArea.setStyleSpans(from + start, styleSpans);
-                            } catch (IndexOutOfBoundsException e) {
-                            }
-                            tabData.getBracketHighlighter().highlightBracket();
-                        });
-
-                        try {
-                            Thread.sleep(1000);
-                        } catch (InterruptedException e) { }
-                    }
-                }
+                doUpdate(tabData, start, end, length);
             }
         });
         thread.start();
+    }
+
+    public static void refreshHighlighting(TabData tabData) {
+        Thread thread = new Thread(() -> {
+            int start = 0;
+            int length = tabData.getFileText().length();
+            int end = start + length;
+
+            doUpdate(tabData, start, end, length);
+        });
+        thread.start();
+    }
+
+    private static void doUpdate(TabData tabData, int start, int end, int length) {
+        CodeArea codeArea = tabData.getCodeArea();
+
+        String text = codeArea.getText().substring(start, end);
+        String[] splitText = text.split("(?<=\\G.{500})");
+
+        if (splitText.length >= 10) {
+            tabData.setLargeFile(true);
+        }
+
+        if (tabData.isLargeFile()) {
+            return;
+        }
+        else if (splitText.length >= 5) {
+            Tab tab = tabData.getTab();
+
+            Node node = tab.getContent();
+
+            ProgressBar progressBar = new ProgressBar();
+            progressBar.setProgress(0);
+
+            StackPane stackPane = new StackPane();
+            stackPane.getChildren().add(progressBar);
+            stackPane.getStyleClass().add("dark-tab-background");
+
+            Platform.runLater(() -> {
+                tab.setContent(stackPane);
+            });
+
+            for (int i = 0; i < splitText.length; i++) {
+                StyleSpans<Collection<String>> styleSpans = computeHighlighting(splitText[i]);
+                int from = i * 500;
+
+                Platform.runLater(() -> {
+                    try {
+                        codeArea.setStyleSpans(from + start, styleSpans);
+                    } catch (IndexOutOfBoundsException e) {
+                    }
+                    tabData.getBracketHighlighter().highlightBracket();
+                });
+
+                double progress = i / (double) splitText.length;
+                progressBar.setProgress(progress);
+
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) { }
+            }
+
+            Platform.runLater(() -> tab.setContent(node));
+        } else {
+            for (int i = 0; i < splitText.length; i++) {
+                StyleSpans<Collection<String>> styleSpans = computeHighlighting(splitText[i]);
+                int from = i * 500;
+
+                Platform.runLater(() -> {
+                    try {
+                        codeArea.setStyleSpans(from + start, styleSpans);
+                    } catch (IndexOutOfBoundsException e) {
+                    }
+                    tabData.getBracketHighlighter().highlightBracket();
+                });
+
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) { }
+            }
+        }
     }
 
     private static StyleSpans<Collection<String>> computeHighlighting(String text) {

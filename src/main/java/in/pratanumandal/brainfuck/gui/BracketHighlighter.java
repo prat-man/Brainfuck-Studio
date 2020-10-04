@@ -34,6 +34,7 @@ public class BracketHighlighter {
         this.codeArea.addTextInsertionListener((start, end, text) -> clearBracket());
         this.codeArea.textProperty().addListener((obs, oldVal, newVal) -> initializeBrackets(newVal));
         this.codeArea.caretPositionProperty().addListener((obs, oldVal, newVal) -> Platform.runLater(() -> highlightBracket(newVal)));
+        this.codeArea.selectionProperty().addListener((obs, oldVal, newVal) -> Platform.runLater(() -> highlightBracket()));
     }
 
     /**
@@ -77,6 +78,9 @@ public class BracketHighlighter {
     private void highlightBracket(int newVal) {
         // first clear existing bracket highlights
         this.clearBracket();
+
+        // do not highlight brackets when text is selected
+        if (codeArea.getSelectedText().length() > 0) return;
 
         // detect caret position both before and after bracket
         String prevChar = (newVal > 0 && newVal <= codeArea.getLength()) ? codeArea.getText(newVal - 1, newVal) : "";
