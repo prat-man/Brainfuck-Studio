@@ -445,7 +445,7 @@ public class Controller {
         Label debugSpeedLabel = new Label("Speed");
         debugSpeedControls.getChildren().add(debugSpeedLabel);
 
-        Slider debugSpeed = new Slider(0, 450, 350);
+        Slider debugSpeed = new Slider(0, 475, 350);
         debugSpeed.setMajorTickUnit(25);
         debugSpeed.setMinorTickCount(0);
         debugSpeed.setSnapToTicks(true);
