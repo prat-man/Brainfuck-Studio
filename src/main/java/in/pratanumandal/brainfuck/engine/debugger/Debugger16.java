@@ -134,7 +134,7 @@ public class Debugger16 extends Debugger {
             }
 
             try {
-                int delay =  (int) (debugSpeed.getMax() - debugSpeed.getValue() + debugSpeed.getMajorTickUnit());
+                int delay = (int) (debugSpeed.getMax() - debugSpeed.getValue() + debugSpeed.getMajorTickUnit());
                 Thread.sleep(delay);
             } catch (InterruptedException e) {
                 e.printStackTrace();

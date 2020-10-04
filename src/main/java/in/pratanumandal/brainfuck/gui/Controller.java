@@ -446,7 +446,7 @@ public class Controller {
         debugSpeedControls.getChildren().add(debugSpeedLabel);
 
         Slider debugSpeed = new Slider(0, 450, 350);
-        debugSpeed.setMajorTickUnit(50);
+        debugSpeed.setMajorTickUnit(25);
         debugSpeed.setMinorTickCount(0);
         debugSpeed.setSnapToTicks(true);
         HBox.setHgrow(debugSpeed, Priority.ALWAYS);
