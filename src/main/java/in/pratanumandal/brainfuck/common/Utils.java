@@ -55,17 +55,17 @@ public class Utils {
             int choice = Configuration.isFirstRun() ? 0 : random.nextInt(3);
             switch (choice) {
                 case 0:
-                    // show tilde notification
+                    // show breakpoints notification
                     Utils.addNotificationWithDelay("Tip:\nYou can use ~ (tilde symbol)\nas breakpoints for debugging", 30000);
                     break;
 
                 case 1:
-                    // show tilde notification
+                    // show cell size notification
                     Utils.addNotificationWithDelay("Tip:\nYou can switch between 8 bit cells and 16 bit cells from settings", 30000);
                     break;
 
                 case 2:
-                    // show tilde notification
+                    // show memory size notification
                     Utils.addNotificationWithDelay("Tip:\nYou can change the size of interpreter memory from settings", 30000);
                     break;
             }

@@ -328,7 +328,7 @@ public class TabData {
 
     private void registerAutoSave() {
         this.saveFuture = Constants.EXECUTOR_SERVICE.scheduleAtFixedRate(() -> {
-            if (this.filePath != null) {
+            if (this.filePath != null && modified && Configuration.getAutoSave()) {
                 String filePath = this.filePath;
                 String fileText = this.getFileText();
 

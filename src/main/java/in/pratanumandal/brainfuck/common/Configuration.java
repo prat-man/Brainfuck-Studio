@@ -22,6 +22,7 @@ public class Configuration {
     private Integer memorySize;
     private Integer fontSize;
     private Boolean wrapText;
+    private Boolean autoSave;
     private Boolean showTips;
 
     private Configuration() {
@@ -39,6 +40,7 @@ public class Configuration {
             this.memorySize = config.getInteger("memorySize", 30000);
             this.fontSize = config.getInteger("fontSize", 16);
             this.wrapText = config.getBoolean("wrapText", false);
+            this.autoSave = config.getBoolean("autoSave", true);
             this.showTips = config.getBoolean("showTips", true);
         }
         catch (ConfigurationException | IOException e) {
@@ -48,6 +50,7 @@ public class Configuration {
             this.memorySize = 30000;
             this.fontSize = 16;
             this.wrapText = false;
+            this.autoSave = true;
             this.showTips = true;
         }
     }
@@ -63,6 +66,7 @@ public class Configuration {
         if (instance.memorySize == null || (instance.memorySize < 1000 || instance.memorySize > 50000)) instance.memorySize = 30000;
         if (instance.fontSize == null || (!FONT_SIZES.contains(instance.fontSize))) instance.fontSize = 16;
         if (instance.wrapText == null) instance.wrapText = false;
+        if (instance.autoSave == null) instance.autoSave = true;
         if (instance.showTips == null) instance.showTips = true;
 
         if (!exists) {
@@ -94,6 +98,11 @@ public class Configuration {
         return instance.wrapText;
     }
 
+    public static Boolean getAutoSave() {
+        sanitize();
+        return instance.autoSave;
+    }
+
     public static Boolean getShowTips() {
         sanitize();
         return instance.showTips;
@@ -117,6 +126,11 @@ public class Configuration {
     public static void setWrapText(Boolean wrapText) {
         sanitize();
         instance.wrapText = wrapText;
+    }
+
+    public static void setAutoSave(Boolean autoSave) {
+        sanitize();
+        instance.autoSave = autoSave;
     }
 
     public static void setShowTips(Boolean showTips) {
@@ -147,6 +161,7 @@ public class Configuration {
         config.addProperty("memorySize", instance.memorySize);
         config.addProperty("fontSize", instance.fontSize);
         config.addProperty("wrapText", instance.wrapText);
+        config.addProperty("autoSave", instance.autoSave);
         config.addProperty("showTips", instance.showTips);
 
         builder.save();

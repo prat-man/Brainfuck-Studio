@@ -1226,6 +1226,10 @@ public class Controller {
         wrapText.setSelected(Configuration.getWrapText());
         vBox2.getChildren().add(wrapText);
 
+        CheckBox autoSave = new CheckBox("Automatically save files every few seconds");
+        autoSave.setSelected(Configuration.getAutoSave());
+        vBox2.getChildren().add(autoSave);
+
         CheckBox showTips = new CheckBox("Show tips at startup");
         showTips.setSelected(Configuration.getShowTips());
         vBox2.getChildren().add(showTips);
@@ -1263,6 +1267,7 @@ public class Controller {
             else Configuration.setCellSize(8);
             Configuration.setMemorySize(Integer.valueOf(memorySize.getText()));
             Configuration.setWrapText(wrapText.isSelected());
+            Configuration.setAutoSave(autoSave.isSelected());
             Configuration.setShowTips(showTips.isSelected());
 
             try {
