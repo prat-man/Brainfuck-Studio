@@ -844,15 +844,20 @@ public class Controller {
 
         CodeArea codeArea = tabData.getCodeArea();
 
-        if (wrapSearch == +1) codeArea.moveTo(0);
-        wrapSearch = 0;
-
         int anchor = codeArea.getCaretPosition();
 
         String text = tabData.getFileText().substring(anchor);
 
         String search = findField.getText();
         String originalSearch = findField.getText();
+
+        if (search.isEmpty()) {
+            Platform.runLater(() -> Utils.addNotification("Find text field cannot be empty"));
+            return;
+        }
+
+        if (wrapSearch == +1) codeArea.moveTo(0);
+        wrapSearch = 0;
 
         if (!caseSensitive) {
             text = text.toLowerCase();
@@ -920,9 +925,6 @@ public class Controller {
 
         CodeArea codeArea = tabData.getCodeArea();
 
-        if (wrapSearch == -1) codeArea.moveTo(codeArea.getText().length());
-        wrapSearch = 0;
-
         IndexRange range = codeArea.getSelection();
         int anchor = range.getLength() > 0 ? Math.min(range.getStart(), range.getEnd()) : codeArea.getCaretPosition();
 
@@ -930,6 +932,14 @@ public class Controller {
 
         String search = findField.getText();
         String originalSearch = findField.getText();
+
+        if (search.isEmpty()) {
+            Platform.runLater(() -> Utils.addNotification("Find text field cannot be empty"));
+            return;
+        }
+
+        if (wrapSearch == -1) codeArea.moveTo(codeArea.getText().length());
+        wrapSearch = 0;
 
         if (!caseSensitive) {
             text = text.toLowerCase();
@@ -998,6 +1008,11 @@ public class Controller {
         String search = findField.getText();
         String replace = replaceField.getText();
 
+        if (search.isEmpty()) {
+            Platform.runLater(() -> Utils.addNotification("Find text field cannot be empty"));
+            return;
+        }
+
         try {
             Pattern.compile(search);
         }
@@ -1043,6 +1058,20 @@ public class Controller {
         EventHandler<ContextMenuEvent> consumeAllContextMenu = Event::consume;
 
         Thread thread = new Thread(() -> {
+
+            String originalText = tabData.getFileText();
+            String text = tabData.getFileText();
+
+            String originalSearch = findField.getText();
+            String search = findField.getText();
+
+            String replace = replaceField.getText();
+
+            if (search.isEmpty()) {
+                Platform.runLater(() -> Utils.addNotification("Find text field cannot be empty"));
+                return;
+            }
+
             codeArea.setEditable(false);
             codeArea.addEventFilter(ContextMenuEvent.CONTEXT_MENU_REQUESTED, consumeAllContextMenu);
 
@@ -1055,15 +1084,7 @@ public class Controller {
                 kill.set(true);
             });
 
-            String replace = replaceField.getText();
-
             int count = 0;
-
-            String originalText = tabData.getFileText();
-            String text = tabData.getFileText();
-
-            String originalSearch = findField.getText();
-            String search = findField.getText();
 
             if (!caseSensitive) {
                 text = text.toLowerCase();

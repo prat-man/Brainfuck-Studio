@@ -34,6 +34,8 @@ public class Debugger16 extends Debugger {
     @Override
     public void run() {
 
+        Platform.runLater(() -> Utils.addNotification("File " + tabData.getTab().getText() + " debugging started"));
+
         Slider debugSpeed = tabData.getDebugSpeed();
         TableViewExtra<Memory> tvX = new TableViewExtra<>(tabData.getTableView());
 
@@ -143,7 +145,7 @@ public class Debugger16 extends Debugger {
             Platform.runLater(() -> Utils.addNotification("File " + tabData.getTab().getText() + " debugging terminated"));
         }
         else {
-            Platform.runLater(() -> Utils.addNotification("File " + tabData.getTab().getText() + " finished debugging"));
+            Platform.runLater(() -> Utils.addNotification("File " + tabData.getTab().getText() + " debugging finished"));
         }
 
         this.stop(false);

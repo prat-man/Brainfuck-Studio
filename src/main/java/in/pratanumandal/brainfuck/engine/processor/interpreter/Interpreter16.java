@@ -63,6 +63,8 @@ public class Interpreter16 extends Interpreter {
     @Override
     public void run() {
 
+        Platform.runLater(() -> Utils.addNotification("File " + tabData.getTab().getText() + " execution started"));
+
         // start time
         long startTime = System.nanoTime();
 
@@ -140,7 +142,7 @@ public class Interpreter16 extends Interpreter {
         }
         else {
             tabData.getInterpretTerminal().write("Execution completed in " + durationStr + "\n");
-            Platform.runLater(() -> Utils.addNotification("File " + tabData.getTab().getText() + " finished execution"));
+            Platform.runLater(() -> Utils.addNotification("File " + tabData.getTab().getText() + " execution finished"));
         }
 
         this.stop(false);
