@@ -12,6 +12,8 @@ import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
+import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
@@ -20,10 +22,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyCodeCombination;
-import javafx.scene.input.KeyCombination;
-import javafx.scene.input.KeyEvent;
+import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -32,7 +31,6 @@ import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.fxmisc.flowless.VirtualizedScrollPane;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.LineNumberFactory;
-import org.fxmisc.richtext.MultiChangeBuilder;
 import org.reactfx.Subscription;
 
 import java.io.File;
@@ -41,8 +39,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.NumberFormat;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 public class Controller {
 
@@ -156,6 +157,10 @@ public class Controller {
                 if (!selected.isEmpty()) {
                     findField.setText(selected);
                 }
+                AnchorPane.setBottomAnchor(notificationPane, 82.0);
+            }
+            else {
+                AnchorPane.setBottomAnchor(notificationPane, 40.0);
             }
         });
     }
@@ -302,7 +307,7 @@ public class Controller {
                 .multiPlainChanges()
 
                 // do not emit an event until 500 ms have passed since the last emission of previous stream
-                //.successionEnds(Duration.ofMillis(100))
+                //.successionEnds(java.time.Duration.ofMillis(500))
 
                 // run the following code block when previous stream emits an event
                 //.subscribe(ignore -> codeArea.setStyleSpans(0, computeHighlighting(codeArea.getText())));
@@ -842,7 +847,9 @@ public class Controller {
         int anchor = codeArea.getCaretPosition();
 
         String text = tabData.getFileText().substring(anchor);
+
         String search = findField.getText();
+        String originalSearch = findField.getText();
 
         if (!caseSensitive) {
             text = text.toLowerCase();
@@ -853,10 +860,20 @@ public class Controller {
         int end = -1;
 
         if (this.regex) {
-            Matcher matcher = Pattern.compile(search).matcher(text);
-            if (matcher.find()) {
-                start = matcher.start();
-                end = matcher.end();
+            try {
+                Matcher matcher = Pattern.compile(search).matcher(text);
+                if (matcher.find()) {
+                    start = matcher.start();
+                    end = matcher.end();
+                }
+            }
+            catch (PatternSyntaxException e) {
+                if (showAlert) {
+                    codeArea.setEditable(true);
+                    Platform.runLater(() -> Utils.addNotification("Bad regex pattern: " + originalSearch));
+                    return;
+                }
+                else throw e;
             }
         }
         else {
@@ -876,12 +893,7 @@ public class Controller {
             wrapSearch = +1;
 
             if (showAlert) {
-                Alert alert = new Alert(Alert.AlertType.WARNING);
-                alert.setTitle(Constants.APPLICATION_NAME);
-                alert.setContentText("Reached end of file, text not found.\n\n");
-
-                alert.initOwner(tabPane.getScene().getWindow());
-                alert.showAndWait();
+                Platform.runLater(() -> Utils.addNotification("Reached end of file, text not found"));
             }
         }
     }
@@ -903,7 +915,9 @@ public class Controller {
         int anchor = range.getLength() > 0 ? Math.min(range.getStart(), range.getEnd()) : codeArea.getCaretPosition();
 
         String text = tabData.getFileText().substring(0, anchor);
+
         String search = findField.getText();
+        String originalSearch = findField.getText();
 
         if (!caseSensitive) {
             text = text.toLowerCase();
@@ -914,10 +928,17 @@ public class Controller {
         int end = -1;
 
         if (this.regex) {
-            Matcher matcher = Pattern.compile(search).matcher(text);
-            while (matcher.find()) {
-                start = matcher.start();
-                end = matcher.end();
+            try {
+                Matcher matcher = Pattern.compile(search).matcher(text);
+                while (matcher.find()) {
+                    start = matcher.start();
+                    end = matcher.end();
+                }
+            }
+            catch (PatternSyntaxException e) {
+                codeArea.setEditable(true);
+                Platform.runLater(() -> Utils.addNotification("Bad regex pattern: " + originalSearch));
+                return;
             }
         }
         else {
@@ -937,12 +958,7 @@ public class Controller {
             wrapSearch = -1;
 
             if (showAlert) {
-                Alert alert = new Alert(Alert.AlertType.WARNING);
-                alert.setTitle(Constants.APPLICATION_NAME);
-                alert.setContentText("Reached beginning of file, text not found.\n\n");
-
-                alert.initOwner(tabPane.getScene().getWindow());
-                alert.showAndWait();
+                Platform.runLater(() -> Utils.addNotification("Reached beginning of file, text not found"));
             }
         }
     }
@@ -953,8 +969,22 @@ public class Controller {
 
         CodeArea codeArea = tabData.getCodeArea();
 
+        if (!codeArea.isEditable()) {
+            Utils.addNotification("Text replacement is disabled on this tab at the moment");
+            return;
+        }
+
         String search = findField.getText();
         String replace = replaceField.getText();
+
+        try {
+            Pattern.compile(search);
+        }
+        catch (PatternSyntaxException e) {
+            codeArea.setEditable(true);
+            Platform.runLater(() -> Utils.addNotification("Bad regex pattern: " + search));
+            return;
+        }
 
         IndexRange range = codeArea.getSelection();
         String selectedText = codeArea.getSelectedText();
@@ -966,13 +996,7 @@ public class Controller {
 
             range = codeArea.getSelection();
             if (range.getLength() == 0) {
-                Alert alert = new Alert(Alert.AlertType.WARNING);
-                alert.setTitle(Constants.APPLICATION_NAME);
-                alert.setContentText("Reached end of file, text not found.\n\n");
-
-                alert.initOwner(tabPane.getScene().getWindow());
-                alert.showAndWait();
-
+                Platform.runLater(() -> Utils.addNotification("Reached end of file, text not found"));
                 return;
             }
         }
@@ -987,51 +1011,119 @@ public class Controller {
 
         CodeArea codeArea = tabData.getCodeArea();
 
-        String replace = replaceField.getText();
-
-        int count = 0;
-
-        int caretPos = codeArea.getCaretPosition();
-        codeArea.moveTo(0);
-
-        MultiChangeBuilder builder = codeArea.createMultiChange();
-
-        findNext(false);
-        IndexRange range = codeArea.getSelection();
-
-        while (range.getLength() > 0) {
-            count++;
-
-            codeArea.moveTo(range.getEnd());
-            builder.replaceText(range.getStart(), range.getEnd(), replace);
-
-            findNext(false);
-            range = codeArea.getSelection();
+        if (!codeArea.isEditable()) {
+            Utils.addNotification("Text replacement is disabled on this tab at the moment");
+            return;
         }
 
-        builder.commit();
+        EventHandler<ContextMenuEvent> consumeAllContextMenu = Event::consume;
 
-        codeArea.moveTo(caretPos);
-        codeArea.requestFollowCaret();
+        Thread thread = new Thread(() -> {
+            codeArea.setEditable(false);
+            codeArea.addEventFilter(ContextMenuEvent.CONTEXT_MENU_REQUESTED, consumeAllContextMenu);
 
-        if (count == 0) {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle(Constants.APPLICATION_NAME);
-            alert.setContentText("Reached end of file, text not found.\n\n");
+            AtomicReference<NotificationManager.Notification> notificationAtomicReference = new AtomicReference<>();
+            Utils.runAndWait(() -> notificationAtomicReference.set(Utils.addNotificationWithProgress("Performing text replacement")));
+            NotificationManager.Notification notification = notificationAtomicReference.get();
 
-            alert.initOwner(tabPane.getScene().getWindow());
-            alert.showAndWait();
-        }
-        else {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle(Constants.APPLICATION_NAME);
-            alert.setContentText(count + " occurrence of the text was replaced.\n\n");
+            AtomicBoolean kill = new AtomicBoolean(false);
+            notification.addListener(() -> {
+                kill.set(true);
+            });
 
-            alert.initOwner(tabPane.getScene().getWindow());
-            alert.showAndWait();
+            String replace = replaceField.getText();
 
-            codeArea.requestFocus();
-        }
+            int count = 0;
+
+            String originalText = tabData.getFileText();
+            String text = tabData.getFileText();
+
+            String originalSearch = findField.getText();
+            String search = findField.getText();
+
+            if (!caseSensitive) {
+                text = text.toLowerCase();
+                search = search.toLowerCase();
+            }
+
+            StringBuilder builder = new StringBuilder(originalText);
+
+            if (this.regex) {
+                try {
+                    int adjust = 0;
+                    Matcher matcher = Pattern.compile(search).matcher(text);
+                    while (matcher.find()) {
+                        if (kill.get()) {
+                            codeArea.setEditable(true);
+                            codeArea.removeEventFilter(ContextMenuEvent.CONTEXT_MENU_REQUESTED, consumeAllContextMenu);
+                            Platform.runLater(() -> Utils.addNotification("Text replacement aborted"));
+                            return;
+                        }
+
+                        int start = matcher.start();
+                        int end = matcher.end();
+
+                        count++;
+                        builder.replace(start + adjust, end + adjust, replace);
+                        adjust += replace.length() - (end - start);
+                    }
+                }
+                catch (PatternSyntaxException e) {
+                    codeArea.setEditable(true);
+                    codeArea.removeEventFilter(ContextMenuEvent.CONTEXT_MENU_REQUESTED, consumeAllContextMenu);
+                    Platform.runLater(() -> {
+                        notification.close();
+                        Utils.addNotification("Bad regex pattern: " + originalSearch);
+                    });
+                    return;
+                }
+            } else {
+                int adjust = 0;
+
+                int start = builder.indexOf(search);
+                int end = start + search.length();
+
+                while (start != -1) {
+                    if (kill.get()) {
+                        codeArea.setEditable(true);
+                        codeArea.removeEventFilter(ContextMenuEvent.CONTEXT_MENU_REQUESTED, consumeAllContextMenu);
+                        Platform.runLater(() -> Utils.addNotification("Text replacement aborted"));
+                        return;
+                    }
+
+                    count++;
+                    builder.replace(start + adjust, end + adjust, replace);
+                    adjust += replace.length() - (end - start);
+
+                    start = builder.indexOf(search, end);
+                    end = start + search.length();
+                }
+            }
+
+            if (count == 0) {
+                Platform.runLater(() -> {
+                    notification.close();
+                    Utils.addNotification("Reached end of file, text not found");
+                });
+            }
+            else {
+                int finalCount = count;
+                Platform.runLater(() -> {
+                    codeArea.replaceText(0, codeArea.getLength(), builder.toString());
+                    notification.close();
+                    if (finalCount == 1) {
+                        Utils.addNotification(finalCount + " occurrence of the text was replaced");
+                    }
+                    else {
+                        Utils.addNotification(finalCount + " occurrences of the text was replaced");
+                    }
+                });
+            }
+
+            codeArea.setEditable(true);
+            codeArea.removeEventFilter(ContextMenuEvent.CONTEXT_MENU_REQUESTED, consumeAllContextMenu);
+        });
+        thread.start();
     }
 
     @FXML

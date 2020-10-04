@@ -10,9 +10,13 @@ import org.fxmisc.richtext.model.PlainTextChange;
 import org.fxmisc.richtext.model.StyleSpans;
 import org.fxmisc.richtext.model.StyleSpansBuilder;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -80,7 +84,8 @@ public class Highlighter {
                         Platform.runLater(() -> {
                             try {
                                 codeArea.setStyleSpans(from + start, styleSpans);
-                            } catch (IndexOutOfBoundsException e) {}
+                            } catch (IndexOutOfBoundsException e) {
+                            }
                             tabData.getBracketHighlighter().highlightBracket();
                         });
 
@@ -89,13 +94,10 @@ public class Highlighter {
 
                         try {
                             Thread.sleep(1000);
-                        } catch (InterruptedException e) {
-                        }
+                        } catch (InterruptedException e) { }
                     }
 
-                    Platform.runLater(() -> {
-                        tab.setContent(node);
-                    });
+                    Platform.runLater(() -> tab.setContent(node));
                 } else {
                     for (int i = 0; i < splitText.length; i++) {
                         StyleSpans<Collection<String>> styleSpans = computeHighlighting(splitText[i]);
@@ -104,14 +106,14 @@ public class Highlighter {
                         Platform.runLater(() -> {
                             try {
                                 codeArea.setStyleSpans(from + start, styleSpans);
-                            } catch (IndexOutOfBoundsException e) {}
+                            } catch (IndexOutOfBoundsException e) {
+                            }
                             tabData.getBracketHighlighter().highlightBracket();
                         });
 
                         try {
                             Thread.sleep(1000);
-                        } catch (InterruptedException e) {
-                        }
+                        } catch (InterruptedException e) { }
                     }
                 }
             }
