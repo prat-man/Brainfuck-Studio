@@ -376,7 +376,7 @@ public class Controller {
 
         // create a debug side pane
         VBox debug = new VBox();
-        debug.setMinWidth(220);
+        debug.setMinWidth(235);
         debug.setMaxWidth(300);
 
         debug.setVisible(false);
@@ -413,6 +413,15 @@ public class Controller {
         tabData.setDebugStepButton(debugStepButton);
         debugTools.getChildren().add(debugStepButton);
         debugStepButton.setDisable(true);
+
+        ToggleButton debugBreakpointButton = generateDebugToggleButton("breakpoint",
+                "breakpoint-disabled",
+                "Toggle Breakpoints",
+                "Breakpoints enabled for this tab",
+                "Breakpoints disabled for this tab",
+                true);
+        tabData.setDebugBreakpointButton(debugBreakpointButton);
+        debugTools.getChildren().add(debugBreakpointButton);
 
         // add spacer
         Pane spacer = new Pane();
@@ -684,9 +693,37 @@ public class Controller {
         Button button = new Button();
         button.getStyleClass().add("secondary");
 
-        Image stopImage = new Image(getClass().getClassLoader().getResourceAsStream("images/" + imageStr + ".png"));
-        ImageView stopImageView = new ImageView(stopImage);
-        button.setGraphic(stopImageView);
+        Image image = new Image(getClass().getClassLoader().getResourceAsStream("images/" + imageStr + ".png"));
+        ImageView imageView = new ImageView(image);
+        button.setGraphic(imageView);
+
+        Tooltip tooltip = new Tooltip(tooltipStr);
+        tooltip.setShowDelay(Duration.millis(300));
+        button.setTooltip(tooltip);
+
+        return button;
+    }
+
+    private ToggleButton generateDebugToggleButton(String imageStr, String imageStrDisabled, String tooltipStr, String enabledNotif, String disabledNotif, boolean selected) {
+        ToggleButton button = new ToggleButton();
+        button.getStyleClass().add("secondary");
+        button.setSelected(true);
+
+        Image image = new Image(getClass().getClassLoader().getResourceAsStream("images/" + imageStr + ".png"));
+        Image imageDisabled = new Image(getClass().getClassLoader().getResourceAsStream("images/" + imageStrDisabled + ".png"));
+        ImageView imageView = new ImageView(image);
+        button.setGraphic(imageView);
+
+        button.selectedProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal) {
+                imageView.setImage(image);
+                Utils.addNotification(enabledNotif);
+            }
+            else {
+                imageView.setImage(imageDisabled);
+                Utils.addNotification(disabledNotif);
+            }
+        });
 
         Tooltip tooltip = new Tooltip(tooltipStr);
         tooltip.setShowDelay(Duration.millis(300));

@@ -250,12 +250,16 @@
     -fx-background-color: #585D66;
 }
 .button.secondary,
-.button.secondary:focused {
+.toggle-button.secondary,
+.button.secondary:focused,
+.toggle-button:focused {
     -fx-min-height: 25px;
     -fx-background-color: #585D66;
 }
 .button.secondary:hover,
-.button.secondary:focused:hover {
+.toggle-button.secondary:hover,
+.button.secondary:focused:hover,
+.toggle-button.secondary:focused:hover {
     -fx-background-color: #6C717A;
 }
 

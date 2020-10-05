@@ -60,7 +60,7 @@ public class Debugger8 extends Debugger {
 
             char ch = code.charAt(i);
 
-            if (ch == '~') {
+            if (ch == '~' && tabData.getDebugBreakpointButton().isSelected()) {
                 this.pause();
             } else if (ch == '>') {
                 dataPointer++;

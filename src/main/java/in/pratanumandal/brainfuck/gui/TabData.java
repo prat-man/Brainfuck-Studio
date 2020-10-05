@@ -31,6 +31,7 @@ public class TabData {
     private Button debugResumeButton;
     private Button debugPauseButton;
     private Button debugStepButton;
+    private ToggleButton debugBreakpointButton;
     private Button debugStopButton;
     private Button debugCloseButton;
     private Slider debugSpeed;
@@ -148,6 +149,14 @@ public class TabData {
 
     public void setDebugStepButton(Button debugStepButton) {
         this.debugStepButton = debugStepButton;
+    }
+
+    public ToggleButton getDebugBreakpointButton() {
+        return debugBreakpointButton;
+    }
+
+    public void setDebugBreakpointButton(ToggleButton debugBreakpointButton) {
+        this.debugBreakpointButton = debugBreakpointButton;
     }
 
     public Button getDebugStopButton() {
