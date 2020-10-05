@@ -4,11 +4,13 @@ import in.pratanumandal.brainfuck.common.Configuration;
 import in.pratanumandal.brainfuck.common.Constants;
 import in.pratanumandal.brainfuck.common.Utils;
 import in.pratanumandal.brainfuck.engine.UnmatchedBracketException;
+import in.pratanumandal.brainfuck.gui.NotificationManager;
 import in.pratanumandal.brainfuck.gui.TabData;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 
 import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class Interpreter8 extends Interpreter {
 
@@ -63,7 +65,9 @@ public class Interpreter8 extends Interpreter {
     @Override
     public void run() {
 
-        Platform.runLater(() -> Utils.addNotification("File " + tabData.getTab().getText() + " execution started"));
+        AtomicReference<NotificationManager.Notification> notificationAtomicReference = new AtomicReference<>();
+        Utils.runAndWait(() -> notificationAtomicReference.set(Utils.addNotification("File " + tabData.getTab().getText() + " execution started")));
+        NotificationManager.Notification notification = notificationAtomicReference.get();
 
         // start time
         long startTime = System.nanoTime();
@@ -135,6 +139,8 @@ public class Interpreter8 extends Interpreter {
         // print the execution time
         tabData.getInterpretTerminal().write("\n\n");
         tabData.getInterpretTerminal().write("--------------------------------------------------------------------------------\n");
+
+        Platform.runLater(() -> notification.close());
 
         if (this.kill.get()) {
             tabData.getInterpretTerminal().write("Execution terminated; Runtime " + durationStr + "\n");

@@ -4,12 +4,14 @@ import in.pratanumandal.brainfuck.common.Configuration;
 import in.pratanumandal.brainfuck.common.Constants;
 import in.pratanumandal.brainfuck.common.Utils;
 import in.pratanumandal.brainfuck.engine.Memory;
+import in.pratanumandal.brainfuck.gui.NotificationManager;
 import in.pratanumandal.brainfuck.gui.TabData;
 import in.pratanumandal.brainfuck.gui.TableViewExtra;
 import javafx.application.Platform;
 import javafx.scene.control.Slider;
 
 import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class Debugger8 extends Debugger {
 
@@ -34,7 +36,9 @@ public class Debugger8 extends Debugger {
     @Override
     public void run() {
 
-        Platform.runLater(() -> Utils.addNotification("File " + tabData.getTab().getText() + " debugging started"));
+        AtomicReference<NotificationManager.Notification> notificationAtomicReference = new AtomicReference<>();
+        Utils.runAndWait(() -> notificationAtomicReference.set(Utils.addNotification("File " + tabData.getTab().getText() + " debugging started")));
+        NotificationManager.Notification notification = notificationAtomicReference.get();
 
         Slider debugSpeed = tabData.getDebugSpeed();
         TableViewExtra<Memory> tvX = new TableViewExtra<>(tabData.getTableView());
@@ -140,6 +144,8 @@ public class Debugger8 extends Debugger {
                 e.printStackTrace();
             }
         }
+
+        Platform.runLater(() -> notification.close());
 
         if (this.kill.get()) {
             Platform.runLater(() -> Utils.addNotification("File " + tabData.getTab().getText() + " debugging terminated"));
