@@ -42,6 +42,7 @@ public class TabData {
     private VBox debug;
     private ObservableList<Memory> memory;
     private TableView<Memory> tableView;
+    private TableViewExtra<Memory> tableViewExtra;
 
     private Debugger debugger;
     private FXTerminal debugTerminal;
@@ -219,8 +220,15 @@ public class TabData {
         return tableView;
     }
 
+    public TableViewExtra<Memory> getTableViewExtra() {
+        return tableViewExtra;
+    }
+
     public void initializeDebugger() {
         this.debugger = Debugger.getDebugger(this);
+
+        // reset table view extra rows
+        tableViewExtra.resetRows();
 
         // initialize the memory
         if (memory.isEmpty() || memory.size() != Configuration.getMemorySize()) {
@@ -250,6 +258,7 @@ public class TabData {
 
     public void setTableView(TableView<Memory> tableView) {
         this.tableView = tableView;
+        this.tableViewExtra = new TableViewExtra<>(tableView);
     }
 
     public VBox getDebug() {

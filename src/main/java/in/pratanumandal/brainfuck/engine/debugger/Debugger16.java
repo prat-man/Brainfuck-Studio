@@ -41,7 +41,6 @@ public class Debugger16 extends Debugger {
         NotificationManager.Notification notification = notificationAtomicReference.get();
 
         Slider debugSpeed = tabData.getDebugSpeed();
-        TableViewExtra<Memory> tvX = new TableViewExtra<>(tabData.getTableView());
 
         int dataPointer = 0;
 
@@ -75,11 +74,7 @@ public class Debugger16 extends Debugger {
                 else {
                     int finalDataPointer = dataPointer;
                     Platform.runLater(() -> {
-                        int firstVisRowIndex = tvX.getFirstVisibleIndex();
-                        int lastVisRowIndex = tvX.getLastVisibleIndex();
-                        if (firstVisRowIndex > finalDataPointer || lastVisRowIndex < finalDataPointer) {
-                            tabData.getTableView().scrollTo(finalDataPointer);
-                        }
+                        tabData.getTableViewExtra().scrollToIndex(finalDataPointer);
                         tabData.getTableView().getSelectionModel().select(finalDataPointer);
                     });
                 }
@@ -92,11 +87,7 @@ public class Debugger16 extends Debugger {
                 else {
                     int finalDataPointer = dataPointer;
                     Platform.runLater(() -> {
-                        int firstVisRowIndex = tvX.getFirstVisibleIndex();
-                        int lastVisRowIndex = tvX.getLastVisibleIndex();
-                        if (firstVisRowIndex > finalDataPointer || lastVisRowIndex < finalDataPointer) {
-                            tabData.getTableView().scrollTo(finalDataPointer);
-                        }
+                        tabData.getTableViewExtra().scrollToIndex(finalDataPointer);
                         tabData.getTableView().getSelectionModel().select(finalDataPointer);
                     });
                 }
