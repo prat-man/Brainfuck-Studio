@@ -269,38 +269,40 @@ public class Controller {
 
         // auto complete loops
         codeArea.setOnKeyTyped(keyEvent -> {
-            // clear bracket highlighting
-            bracketHighlighter.clearBracket();
+            if (Configuration.getAutoComplete()) {
+                // clear bracket highlighting
+                bracketHighlighter.clearBracket();
 
-            // get typed character
-            String character = keyEvent.getCharacter();
+                // get typed character
+                String character = keyEvent.getCharacter();
 
-            // add a ] if [ is typed
-            if (character.equals("[")) {
-                int position = codeArea.getCaretPosition();
-                codeArea.insert(position, "]", "loop");
-                codeArea.moveTo(position);
-            }
-            // remove next ] if ] is typed
-            else if (character.equals("]")) {
-                int position = codeArea.getCaretPosition();
-                if (position != codeArea.getLength()) {
-                    String nextChar = codeArea.getText(position, position + 1);
-                    if (nextChar.equals("]")) codeArea.deleteText(position, position + 1);
+                // add a ] if [ is typed
+                if (character.equals("[")) {
+                    int position = codeArea.getCaretPosition();
+                    codeArea.insert(position, "]", "loop");
+                    codeArea.moveTo(position);
                 }
-            }
-            // remove adjacent ] if [ is removed
-            else if (character.equals("\b")) {
-                int position = codeArea.getLastBracketDelete();
-                if (position != -1) {
-                    if (position < codeArea.getLength() && codeArea.getText(position, position + 1).equals("]")) {
-                        codeArea.deleteText(position, position + 1);
+                // remove next ] if ] is typed
+                else if (character.equals("]")) {
+                    int position = codeArea.getCaretPosition();
+                    if (position != codeArea.getLength()) {
+                        String nextChar = codeArea.getText(position, position + 1);
+                        if (nextChar.equals("]")) codeArea.deleteText(position, position + 1);
                     }
                 }
-            }
+                // remove adjacent ] if [ is removed
+                else if (character.equals("\b")) {
+                    int position = codeArea.getLastBracketDelete();
+                    if (position != -1) {
+                        if (position < codeArea.getLength() && codeArea.getText(position, position + 1).equals("]")) {
+                            codeArea.deleteText(position, position + 1);
+                        }
+                    }
+                }
 
-            // refresh bracket highlighting
-            bracketHighlighter.highlightBracket();
+                // refresh bracket highlighting
+                bracketHighlighter.highlightBracket();
+            }
         });
 
         // recompute the syntax highlighting 500 ms after user stops editing area
@@ -1286,6 +1288,10 @@ public class Controller {
         wrapText.setSelected(Configuration.getWrapText());
         vBox2.getChildren().add(wrapText);
 
+        CheckBox autoComplete = new CheckBox("Automatically complete brackets [ ]");
+        autoComplete.setSelected(Configuration.getAutoComplete());
+        vBox2.getChildren().add(autoComplete);
+
         CheckBox autoSave = new CheckBox("Automatically save files every few seconds");
         autoSave.setSelected(Configuration.getAutoSave());
         vBox2.getChildren().add(autoSave);
@@ -1327,6 +1333,7 @@ public class Controller {
             else Configuration.setCellSize(8);
             Configuration.setMemorySize(Integer.valueOf(memorySize.getText()));
             Configuration.setWrapText(wrapText.isSelected());
+            Configuration.setAutoComplete(autoComplete.isSelected());
             Configuration.setAutoSave(autoSave.isSelected());
             Configuration.setShowTips(showTips.isSelected());
 

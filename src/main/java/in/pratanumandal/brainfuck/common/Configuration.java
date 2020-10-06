@@ -22,6 +22,7 @@ public class Configuration {
     private Integer memorySize;
     private Integer fontSize;
     private Boolean wrapText;
+    private Boolean autoComplete;
     private Boolean autoSave;
     private Boolean showTips;
 
@@ -40,6 +41,7 @@ public class Configuration {
             this.memorySize = config.getInteger("memorySize", 30000);
             this.fontSize = config.getInteger("fontSize", 16);
             this.wrapText = config.getBoolean("wrapText", false);
+            this.autoComplete = config.getBoolean("autoComplete", true);
             this.autoSave = config.getBoolean("autoSave", true);
             this.showTips = config.getBoolean("showTips", true);
         }
@@ -50,6 +52,7 @@ public class Configuration {
             this.memorySize = 30000;
             this.fontSize = 16;
             this.wrapText = false;
+            this.autoComplete = true;
             this.autoSave = true;
             this.showTips = true;
         }
@@ -66,6 +69,7 @@ public class Configuration {
         if (instance.memorySize == null || (instance.memorySize < 1000 || instance.memorySize > 50000)) instance.memorySize = 30000;
         if (instance.fontSize == null || (!FONT_SIZES.contains(instance.fontSize))) instance.fontSize = 16;
         if (instance.wrapText == null) instance.wrapText = false;
+        if (instance.autoComplete == null) instance.autoComplete = true;
         if (instance.autoSave == null) instance.autoSave = true;
         if (instance.showTips == null) instance.showTips = true;
 
@@ -98,6 +102,11 @@ public class Configuration {
         return instance.wrapText;
     }
 
+    public static Boolean getAutoComplete() {
+        sanitize();
+        return instance.autoComplete;
+    }
+
     public static Boolean getAutoSave() {
         sanitize();
         return instance.autoSave;
@@ -126,6 +135,11 @@ public class Configuration {
     public static void setWrapText(Boolean wrapText) {
         sanitize();
         instance.wrapText = wrapText;
+    }
+
+    public static void setAutoComplete(Boolean autoComplete) {
+        sanitize();
+        instance.autoComplete = autoComplete;
     }
 
     public static void setAutoSave(Boolean autoSave) {
@@ -161,6 +175,7 @@ public class Configuration {
         config.addProperty("memorySize", instance.memorySize);
         config.addProperty("fontSize", instance.fontSize);
         config.addProperty("wrapText", instance.wrapText);
+        config.addProperty("autoComplete", instance.autoComplete);
         config.addProperty("autoSave", instance.autoSave);
         config.addProperty("showTips", instance.showTips);
 
