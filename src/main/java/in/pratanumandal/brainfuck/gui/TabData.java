@@ -324,6 +324,8 @@ public class TabData {
                 Platform.runLater(() -> {
                     codeArea.clearStyle(0, getFileText().length());
 
+                    tab.getTabPane().getSelectionModel().select(tab);
+
                     Alert alert = new Alert(Alert.AlertType.ERROR);
                     alert.setTitle(Constants.APPLICATION_NAME);
                     alert.setContentText("Highlighting has been disabled for this tab due to heavy load.\nThis is usually done for files that are very complex to process.\n\n");

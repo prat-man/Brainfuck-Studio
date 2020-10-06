@@ -1242,7 +1242,7 @@ public class Controller {
 
         VBox vBox = new VBox();
         vBox.setAlignment(Pos.CENTER_LEFT);
-        vBox.setSpacing(15);
+        vBox.setSpacing(10);
 
         TitledPane interpreter = new TitledPane();
         interpreter.setText("Interpreter");
@@ -1276,14 +1276,14 @@ public class Controller {
         memorySize.setText(String.valueOf(Configuration.getMemorySize()));
         memorySizeBox.getChildren().add(memorySize);
 
-        TitledPane miscellaneous = new TitledPane();
-        miscellaneous.setText("Miscellaneous");
-        miscellaneous.setCollapsible(false);
-        vBox.getChildren().add(miscellaneous);
+        TitledPane editing = new TitledPane();
+        editing.setText("Code Editing");
+        editing.setCollapsible(false);
+        vBox.getChildren().add(editing);
 
         VBox vBox2 = new VBox();
         vBox2.setSpacing(10);
-        miscellaneous.setContent(vBox2);
+        editing.setContent(vBox2);
 
         CheckBox wrapText = new CheckBox("Wrap text in code area");
         wrapText.setSelected(Configuration.getWrapText());
@@ -1293,13 +1293,30 @@ public class Controller {
         autoComplete.setSelected(Configuration.getAutoComplete());
         vBox2.getChildren().add(autoComplete);
 
+        CheckBox syntaxHighlighting = new CheckBox("Highlight brainfuck syntax");
+        syntaxHighlighting.setSelected(Configuration.getSyntaxHighlighting());
+        vBox2.getChildren().add(syntaxHighlighting);
+
+        CheckBox bracketHighlighting = new CheckBox("Highlight matching brackets");
+        bracketHighlighting.setSelected(Configuration.getBracketHighlighting());
+        vBox2.getChildren().add(bracketHighlighting);
+
+        TitledPane miscellaneous = new TitledPane();
+        miscellaneous.setText("Miscellaneous");
+        miscellaneous.setCollapsible(false);
+        vBox.getChildren().add(miscellaneous);
+
+        VBox vBox3 = new VBox();
+        vBox3.setSpacing(10);
+        miscellaneous.setContent(vBox3);
+
         CheckBox autoSave = new CheckBox("Automatically save files every few seconds");
         autoSave.setSelected(Configuration.getAutoSave());
-        vBox2.getChildren().add(autoSave);
+        vBox3.getChildren().add(autoSave);
 
         CheckBox showTips = new CheckBox("Show tips at startup");
         showTips.setSelected(Configuration.getShowTips());
-        vBox2.getChildren().add(showTips);
+        vBox3.getChildren().add(showTips);
 
         alert.getDialogPane().setContent(vBox);
 
@@ -1335,6 +1352,8 @@ public class Controller {
             Configuration.setMemorySize(Integer.valueOf(memorySize.getText()));
             Configuration.setWrapText(wrapText.isSelected());
             Configuration.setAutoComplete(autoComplete.isSelected());
+            Configuration.setSyntaxHighlighting(syntaxHighlighting.isSelected());
+            Configuration.setBracketHighlighting(bracketHighlighting.isSelected());
             Configuration.setAutoSave(autoSave.isSelected());
             Configuration.setShowTips(showTips.isSelected());
 
@@ -1343,6 +1362,12 @@ public class Controller {
 
                 for (TabData tabData : tabDataList) {
                     tabData.getCodeArea().setWrapText(Configuration.getWrapText());
+
+                    if (Configuration.getSyntaxHighlighting()) Highlighter.refreshHighlighting(tabData);
+                    else Highlighter.clearHighlighting(tabData);
+
+                    if (Configuration.getBracketHighlighting()) tabData.getBracketHighlighter().highlightBracket();
+                    else tabData.getBracketHighlighter().clearBracket();
                 }
             } catch (ConfigurationException | IOException e) {
                 Alert error = new Alert(Alert.AlertType.ERROR, "Failed to save configuration!");

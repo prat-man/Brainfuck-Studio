@@ -327,10 +327,10 @@
 }
 
 .settings-dialog {
-    -fx-pref-width: 350px;
+    -fx-min-width: 350px;
 }
 .gotoline-dialog {
-    -fx-pref-width: 300px;
+    -fx-min-width: 300px;
 }
 
 .check-box {

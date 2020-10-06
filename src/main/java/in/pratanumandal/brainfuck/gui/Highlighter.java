@@ -1,5 +1,7 @@
 package in.pratanumandal.brainfuck.gui;
 
+import in.pratanumandal.brainfuck.common.Configuration;
+import in.pratanumandal.brainfuck.common.Utils;
 import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.control.ProgressBar;
@@ -19,6 +21,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.IntStream;
 
 public class Highlighter {
 
@@ -43,46 +46,62 @@ public class Highlighter {
     );
 
     public static void computeHighlighting(List<PlainTextChange> changes, TabData tabData) {
+        if (!Configuration.getSyntaxHighlighting()) return;
+
         Thread thread = new Thread(() -> {
             for (PlainTextChange change : changes) {
                 int start = change.getPosition();
                 int length = change.getInserted().replace("\r\n", "\n").length();
                 int end = start + length;
 
-                doUpdate(tabData, start, end, length);
+                doUpdate(tabData, start, end);
             }
         });
         thread.start();
     }
 
     public static void refreshHighlighting(TabData tabData) {
+        if (!Configuration.getSyntaxHighlighting()) return;
+
         Thread thread = new Thread(() -> {
             int start = 0;
             int length = tabData.getFileText().length();
             int end = start + length;
 
-            doUpdate(tabData, start, end, length);
+            doUpdate(tabData, start, end);
         });
         thread.start();
     }
 
-    private static void doUpdate(TabData tabData, int start, int end, int length) {
+    public static void clearHighlighting(TabData tabData) {
+        int start = 0;
+        int length = tabData.getFileText().length();
+        int end = start + length;
+
+        Utils.runAndWait(() -> tabData.getCodeArea().setStyle(start, end, Collections.singleton("plain-text")));
+    }
+
+    private static void doUpdate(TabData tabData, int start, int end) {
         CodeArea codeArea = tabData.getCodeArea();
 
         String text = codeArea.getText().substring(start, end);
-        String[] splitText = text.split("(?<=\\G.{500})");
+        int chunkSize = 10000;
+        String[] splitText = IntStream
+                .iterate(0, i -> i + chunkSize)
+                .limit((int) Math.ceil(text.length() / (double) chunkSize))
+                .mapToObj(i -> text.substring(i, Math.min(i + chunkSize, text.length())))
+                .toArray(String[]::new);
 
         if (splitText.length >= 10) {
             tabData.setLargeFile(true);
         }
 
         if (tabData.isLargeFile()) {
+            Platform.runLater(() -> tabData.getBracketHighlighter().highlightBracket());
             return;
         }
         else if (splitText.length >= 5) {
             Tab tab = tabData.getTab();
-
-            Node node = tab.getContent();
 
             ProgressBar progressBar = new ProgressBar();
             progressBar.setProgress(0);
@@ -91,13 +110,11 @@ public class Highlighter {
             stackPane.getChildren().add(progressBar);
             stackPane.getStyleClass().add("dark-tab-background");
 
-            Platform.runLater(() -> {
-                tab.setContent(stackPane);
-            });
+            Platform.runLater(() -> tab.setContent(stackPane));
 
             for (int i = 0; i < splitText.length; i++) {
                 StyleSpans<Collection<String>> styleSpans = computeHighlighting(splitText[i]);
-                int from = i * 500;
+                int from = i * chunkSize;
 
                 Platform.runLater(() -> {
                     try {
@@ -111,15 +128,16 @@ public class Highlighter {
                 progressBar.setProgress(progress);
 
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(250);
                 } catch (InterruptedException e) { }
             }
 
-            Platform.runLater(() -> tab.setContent(node));
-        } else {
+            Platform.runLater(() -> tab.setContent(tabData.getSplitPane()));
+        }
+        else {
             for (int i = 0; i < splitText.length; i++) {
                 StyleSpans<Collection<String>> styleSpans = computeHighlighting(splitText[i]);
-                int from = i * 500;
+                int from = i * chunkSize;
 
                 Platform.runLater(() -> {
                     try {
@@ -130,7 +148,7 @@ public class Highlighter {
                 });
 
                 try {
-                    Thread.sleep(1000);
+                    Thread.sleep(250);
                 } catch (InterruptedException e) { }
             }
         }

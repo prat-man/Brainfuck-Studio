@@ -1,5 +1,6 @@
 package in.pratanumandal.brainfuck.gui;
 
+import in.pratanumandal.brainfuck.common.Configuration;
 import javafx.application.Platform;
 
 import java.util.*;
@@ -21,8 +22,8 @@ public class BracketHighlighter {
     /**
      * Style lists
      */
-    private static final List<String> NO_STYLE = Collections.emptyList();
-    private static final List<String> MATCH_NO_STYLE = Collections.singletonList("match");
+    private static final List<String> NO_STYLE = Collections.singletonList("plain-text");
+    private static final List<String> MATCH_NO_STYLE = Arrays.asList("plain-text", "match");
     private static final List<String> LOOP_STYLE = Collections.singletonList("loop");
     private static final List<String> MATCH_STYLE = Arrays.asList("match", "loop");
 
@@ -82,6 +83,8 @@ public class BracketHighlighter {
      * @param newVal the new caret position
      */
     private void highlightBracket(int newVal) {
+        if (!Configuration.getBracketHighlighting()) return;
+
         // first clear existing bracket highlights
         this.clearBracket();
 
@@ -100,7 +103,7 @@ public class BracketHighlighter {
             BracketPair pair = new BracketPair(newVal, other);
 
             // highlight pair
-            if (tabData.isLargeFile()) styleBrackets(pair, MATCH_NO_STYLE);
+            if (tabData.isLargeFile() || !Configuration.getSyntaxHighlighting()) styleBrackets(pair, MATCH_NO_STYLE);
             else styleBrackets(pair, MATCH_STYLE);
 
             // add bracket pair to list
@@ -128,7 +131,7 @@ public class BracketHighlighter {
             BracketPair pair = iterator.next();
 
             // clear pair
-            if (tabData.isLargeFile()) styleBrackets(pair, NO_STYLE);
+            if (tabData.isLargeFile() || !Configuration.getSyntaxHighlighting()) styleBrackets(pair, NO_STYLE);
             else styleBrackets(pair, LOOP_STYLE);
 
             // remove bracket pair from list
