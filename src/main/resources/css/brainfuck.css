@@ -43,7 +43,7 @@
 	-fx-fill: #E45FB8;
 	-fx-font-weight: bold;
 }
-.code-area .paragraph-box .text.loop.match {
+.code-area .paragraph-box .text.match {
     -rtfx-background-color: #00000055;
 }
 .code-area .paragraph-box .text.breakpoint {

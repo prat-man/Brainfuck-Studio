@@ -6,6 +6,9 @@ import java.util.*;
 
 public class BracketHighlighter {
 
+    // the tab data
+    private final TabData tabData;
+
     // the code area
     private final CustomCodeArea codeArea;
 
@@ -18,15 +21,18 @@ public class BracketHighlighter {
     /**
      * Style lists
      */
+    private static final List<String> NO_STYLE = Collections.emptyList();
+    private static final List<String> MATCH_NO_STYLE = Collections.singletonList("match");
     private static final List<String> LOOP_STYLE = Collections.singletonList("loop");
     private static final List<String> MATCH_STYLE = Arrays.asList("match", "loop");
 
     /**
      * Parameterized constructor
-     * @param codeArea the code area
+     * @param tabData the tab data
      */
-    public BracketHighlighter(CustomCodeArea codeArea) {
-        this.codeArea = codeArea;
+    public BracketHighlighter(TabData tabData) {
+        this.tabData = tabData;
+        this.codeArea = tabData.getCodeArea();
 
         this.brackets = new HashMap<>();
         this.bracketPairs = new ArrayList<>();
@@ -94,7 +100,8 @@ public class BracketHighlighter {
             BracketPair pair = new BracketPair(newVal, other);
 
             // highlight pair
-            styleBrackets(pair, MATCH_STYLE);
+            if (tabData.isLargeFile()) styleBrackets(pair, MATCH_NO_STYLE);
+            else styleBrackets(pair, MATCH_STYLE);
 
             // add bracket pair to list
             this.bracketPairs.add(pair);
@@ -121,7 +128,8 @@ public class BracketHighlighter {
             BracketPair pair = iterator.next();
 
             // clear pair
-            styleBrackets(pair, LOOP_STYLE);
+            if (tabData.isLargeFile()) styleBrackets(pair, NO_STYLE);
+            else styleBrackets(pair, LOOP_STYLE);
 
             // remove bracket pair from list
             iterator.remove();

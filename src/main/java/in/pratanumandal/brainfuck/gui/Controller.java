@@ -258,11 +258,12 @@ public class Controller {
         // enable text wrapping
         codeArea.setWrapText(Configuration.getWrapText());
 
-        // highlight brackets
-        BracketHighlighter bracketHighlighter = new BracketHighlighter(codeArea);
-
         // create new tab data
-        TabData tabData = new TabData(tab, splitPane, codeArea, bracketHighlighter, filePath);
+        TabData tabData = new TabData(tab, splitPane, codeArea, filePath);
+
+        // highlight brackets
+        BracketHighlighter bracketHighlighter = new BracketHighlighter(tabData);
+        tabData.setBracketHighlighter(bracketHighlighter);
 
         // set tab data of code area
         codeArea.setTabData(tabData);

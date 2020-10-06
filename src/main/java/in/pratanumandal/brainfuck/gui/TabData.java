@@ -50,7 +50,7 @@ public class TabData {
     private Interpreter interpreter;
     private FXTerminal interpretTerminal;
 
-    private final BracketHighlighter bracketHighlighter;
+    private BracketHighlighter bracketHighlighter;
 
     private String filePath;
     private boolean modified;
@@ -66,11 +66,10 @@ public class TabData {
     // untitled tab index
     private static int untitledTabIndex = 1;
 
-    public TabData(Tab tab, SplitPane splitPane, CustomCodeArea codeArea, BracketHighlighter bracketHighlighter, String filePath) throws IOException {
+    public TabData(Tab tab, SplitPane splitPane, CustomCodeArea codeArea, String filePath) throws IOException {
         this.tab = tab;
         this.splitPane = splitPane;
         this.codeArea = codeArea;
-        this.bracketHighlighter = bracketHighlighter;
         this.filePath = filePath;
         this.modified = false;
         this.dividerPosition = 0.5;
@@ -102,9 +101,6 @@ public class TabData {
             PlainTextChange change = new PlainTextChange(0, null, fileText);
             changes.add(change);
             Highlighter.computeHighlighting(changes, this);
-
-            // highlight brackets
-            bracketHighlighter.initializeBrackets(fileText);
         }
 
         codeArea.textProperty().addListener((observableValue, oldVal, newVal) -> {
@@ -254,6 +250,13 @@ public class TabData {
 
     public BracketHighlighter getBracketHighlighter() {
         return bracketHighlighter;
+    }
+
+    public void setBracketHighlighter(BracketHighlighter bracketHighlighter) {
+        this.bracketHighlighter = bracketHighlighter;
+
+        // highlight brackets
+        bracketHighlighter.initializeBrackets(this.getFileText());
     }
 
     public void setTableView(TableView<Memory> tableView) {
