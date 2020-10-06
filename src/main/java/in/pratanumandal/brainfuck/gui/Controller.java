@@ -63,6 +63,8 @@ public class Controller {
 
     private int wrapSearch;
 
+    private final Object processLock = new Object();
+
     @FXML private TabPane tabPane;
 
     @FXML private ComboBox<String> fontSizeChooser;
@@ -365,12 +367,12 @@ public class Controller {
         debugTerminal.managedProperty().bind(debugTerminal.visibleProperty());
         debugTerminal.visibleProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal) {
-                splitPane.getItems().add(debugTerminalToolbar);
+                Platform.runLater(() -> splitPane.getItems().add(debugTerminalToolbar));
                 splitPane.setDividerPositions(tabData.getDividerPosition());
             }
             else {
                 tabData.setDividerPosition(tabData.getSplitPane().getDividerPositions()[0]);
-                splitPane.getItems().remove(debugTerminalToolbar);
+                Platform.runLater(() -> splitPane.getItems().remove(debugTerminalToolbar));
             }
         });
 
@@ -382,8 +384,8 @@ public class Controller {
         debug.setVisible(false);
         debug.managedProperty().bind(debug.visibleProperty());
         debug.visibleProperty().addListener((obs, oldVal, newVal) -> {
-            if (newVal) horizontalSplitPane.getItems().add(debug);
-            else horizontalSplitPane.getItems().remove(debug);
+            if (newVal) Platform.runLater(() -> horizontalSplitPane.getItems().add(debug));
+            else Platform.runLater(() -> horizontalSplitPane.getItems().remove(debug));
         });
 
         // set the debug side pane
@@ -592,12 +594,12 @@ public class Controller {
         interpreterTerminal.managedProperty().bind(interpreterTerminal.visibleProperty());
         interpreterTerminal.visibleProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal) {
-                splitPane.getItems().add(interpreterTerminalToolbar);
+                Platform.runLater(() -> splitPane.getItems().add(interpreterTerminalToolbar));
                 splitPane.setDividerPositions(tabData.getDividerPosition());
             }
             else {
                 tabData.setDividerPosition(tabData.getSplitPane().getDividerPositions()[0]);
-                splitPane.getItems().remove(interpreterTerminalToolbar);
+                Platform.runLater(() -> splitPane.getItems().remove(interpreterTerminalToolbar));
             }
         });
 
@@ -1426,51 +1428,65 @@ public class Controller {
 
     @FXML
     private void debug() {
-        TabData tabData = currentTab;
-        saveFile();
-        if (tabData.getFilePath() != null) {
-            // stop and hide debugger
-            if (tabData.getDebugger() != null)
-                tabData.getDebugger().stop();
-            tabData.getDebug().setVisible(false);
-            tabData.getDebugTerminal().setVisible(false);
+        Thread thread = new Thread(() -> {
+            synchronized (processLock) {
+                TabData tabData = currentTab;
 
-            // stop and hide interpreter
-            if (tabData.getInterpreter() != null)
-                tabData.getInterpreter().stop();
-            tabData.getInterpretTerminal().setVisible(false);
+                Utils.runAndWait(() -> saveFile());
 
-            // show and start debugger
-            tabData.initializeDebugger();
-            tabData.getDebug().setVisible(true);
-            tabData.getDebugTerminal().setVisible(true);
-            tabData.getTableView().scrollTo(0);
-            tabData.getTableView().getSelectionModel().select(0);
-            tabData.getDebugger().start();
-        }
+                if (tabData.getFilePath() != null) {
+                    // stop and hide debugger
+                    if (tabData.getDebugger() != null)
+                        tabData.getDebugger().stop();
+                    tabData.getDebug().setVisible(false);
+                    tabData.getDebugTerminal().setVisible(false);
+
+                    // stop and hide interpreter
+                    if (tabData.getInterpreter() != null)
+                        tabData.getInterpreter().stop();
+                    tabData.getInterpretTerminal().setVisible(false);
+
+                    // show and start debugger
+                    tabData.initializeDebugger();
+                    tabData.getDebug().setVisible(true);
+                    tabData.getDebugTerminal().setVisible(true);
+                    tabData.getTableView().scrollTo(0);
+                    tabData.getTableView().getSelectionModel().select(0);
+                    tabData.getDebugger().start();
+                }
+            }
+        });
+        thread.start();
     }
 
     @FXML
     private void interpret() {
-        TabData tabData = currentTab;
-        saveFile();
-        if (tabData.getFilePath() != null) {
-            // stop and hide debugger
-            if (tabData.getDebugger() != null)
-                tabData.getDebugger().stop();
-            tabData.getDebug().setVisible(false);
-            tabData.getDebugTerminal().setVisible(false);
+        Thread thread = new Thread(() -> {
+            synchronized (processLock) {
+                TabData tabData = currentTab;
 
-            // stop and hide interpreter
-            if (tabData.getInterpreter() != null)
-                tabData.getInterpreter().stop();
-            tabData.getInterpretTerminal().setVisible(false);
+                Utils.runAndWait(() -> saveFile());
 
-            // show and start interpreter
-            tabData.initializeInterpreter();
-            tabData.getInterpretTerminal().setVisible(true);
-            tabData.getInterpreter().start();
-        }
+                if (tabData.getFilePath() != null) {
+                    // stop and hide debugger
+                    if (tabData.getDebugger() != null)
+                        tabData.getDebugger().stop();
+                    tabData.getDebug().setVisible(false);
+                    tabData.getDebugTerminal().setVisible(false);
+
+                    // stop and hide interpreter
+                    if (tabData.getInterpreter() != null)
+                        tabData.getInterpreter().stop();
+                    tabData.getInterpretTerminal().setVisible(false);
+
+                    // show and start interpreter
+                    tabData.initializeInterpreter();
+                    tabData.getInterpretTerminal().setVisible(true);
+                    tabData.getInterpreter().start();
+                }
+            }
+        });
+        thread.start();
     }
 
     @FXML

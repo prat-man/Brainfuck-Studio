@@ -25,7 +25,6 @@ public class Interpreter8 extends Interpreter {
     @Override
     public void start() {
         tabData.getInterpretTerminal().clear();
-        tabData.getInterpretTerminal().flush();
 
         Arrays.fill(this.memory, (byte) 0);
 
@@ -54,9 +53,10 @@ public class Interpreter8 extends Interpreter {
         }
 
         this.tabData.getInterpretTerminal().release();
-        this.tabData.getInterpretTerminal().flush();
 
         super.stop(join);
+
+        this.tabData.getInterpretTerminal().flush();
 
         this.tabData.getInterpretStopButton().setDisable(true);
         this.tabData.getInterpretCloseButton().setDisable(false);

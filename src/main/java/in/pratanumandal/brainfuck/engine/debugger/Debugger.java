@@ -49,7 +49,6 @@ public abstract class Debugger implements Runnable {
         this.code = tabData.getFileText();
 
         tabData.getDebugTerminal().clear();
-        tabData.getDebugTerminal().flush();
 
         synchronized (this.kill) {
             this.kill.set(false);
@@ -168,7 +167,6 @@ public abstract class Debugger implements Runnable {
         }
 
         this.tabData.getDebugTerminal().release();
-        this.tabData.getDebugTerminal().flush();
 
         if (join && this.thread != null && this.thread.isAlive()) {
             try {
@@ -177,6 +175,8 @@ public abstract class Debugger implements Runnable {
                 e.printStackTrace();
             }
         }
+
+        this.tabData.getDebugTerminal().flush();
 
         this.codeArea.setEditable(true);
 
