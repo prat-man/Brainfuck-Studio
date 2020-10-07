@@ -425,6 +425,14 @@ public class Controller {
                 "Breakpoints enabled for this tab",
                 "Breakpoints disabled for this tab",
                 true);
+        debugBreakpointButton.setOnAction(event -> {
+            if (debugBreakpointButton.isSelected()) {
+                codeArea.getStyleClass().remove("disable-breakpoint");
+            }
+            else {
+                codeArea.getStyleClass().add("disable-breakpoint");
+            }
+        });
         tabData.setDebugBreakpointButton(debugBreakpointButton);
         debugTools.getChildren().add(debugBreakpointButton);
 

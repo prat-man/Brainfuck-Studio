@@ -76,8 +76,8 @@ public class Highlighter {
 
             if (tabData.isLargeFile()) {
                 Platform.runLater(() -> tabData.getBracketHighlighter().highlightBracket());
-                return;
-            } else {
+            }
+            else {
                 try {
                     String text = codeArea.getText().substring(start, end);
                     StyleSpans<Collection<String>> styleSpans = computeHighlighting(text);
