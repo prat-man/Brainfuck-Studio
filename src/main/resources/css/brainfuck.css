@@ -252,7 +252,7 @@
 .button.secondary,
 .toggle-button.secondary,
 .button.secondary:focused,
-.toggle-button:focused {
+.toggle-button.secondary:focused {
     -fx-min-height: 25px;
     -fx-background-color: #585D66;
 }

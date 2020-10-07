@@ -314,12 +314,12 @@ public class Controller {
                 //   when making multiple changes (e.g. renaming a method at multiple parts in file)
                 .multiPlainChanges()
 
-                // do not emit an event until 500 ms have passed since the last emission of previous stream
-                //.successionEnds(java.time.Duration.ofMillis(500))
+                // do not emit an event until 100 ms have passed since the last emission of previous stream
+                .successionEnds(java.time.Duration.ofMillis(100))
 
                 // run the following code block when previous stream emits an event
                 //.subscribe(ignore -> codeArea.setStyleSpans(0, computeHighlighting(codeArea.getText())));
-                .subscribe(changes -> Highlighter.computeHighlighting(changes, tabData));
+                .subscribe(changes -> Highlighter.refreshHighlighting(tabData));
 
         // auto-indent: insert previous line's indents on enter
         final Pattern whiteSpace = Pattern.compile("^\\s+");

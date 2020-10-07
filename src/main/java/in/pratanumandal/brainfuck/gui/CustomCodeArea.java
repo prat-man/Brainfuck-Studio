@@ -7,7 +7,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.model.EditableStyledDocument;
-import org.fxmisc.richtext.model.PlainTextChange;
 import org.fxmisc.richtext.model.StyledDocument;
 
 import java.util.*;
@@ -70,10 +69,7 @@ public class CustomCodeArea extends CodeArea {
 
         // recompute highlighting
         if (start != end && tabData != null) {
-            List<PlainTextChange> changes = new ArrayList<>();
-            PlainTextChange change = new PlainTextChange(start, null, text);
-            changes.add(change);
-            Highlighter.computeHighlighting(changes, tabData);
+            Highlighter.refreshHighlighting(tabData);
         }
     }
 
@@ -92,12 +88,6 @@ public class CustomCodeArea extends CodeArea {
         this.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
             if (event.isControlDown() && event.getCode() == KeyCode.L) {
                 Utils.goToLine(tabData);
-            }
-        });
-
-        this.addEventHandler(KeyEvent.KEY_RELEASED, event -> {
-            if (event.isControlDown() && (event.getCode() == KeyCode.Z || event.getCode() == KeyCode.Y)) {
-                Highlighter.refreshHighlighting(tabData);
             }
         });
     }

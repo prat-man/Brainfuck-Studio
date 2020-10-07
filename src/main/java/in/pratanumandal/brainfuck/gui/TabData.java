@@ -11,14 +11,11 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
-import org.fxmisc.richtext.model.PlainTextChange;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -97,10 +94,7 @@ public class TabData {
             codeArea.getUndoManager().forgetHistory();
 
             // start highlighter
-            List<PlainTextChange> changes = new ArrayList<>();
-            PlainTextChange change = new PlainTextChange(0, null, fileText);
-            changes.add(change);
-            Highlighter.computeHighlighting(changes, this);
+            Highlighter.refreshHighlighting(this);
         }
 
         codeArea.textProperty().addListener((observableValue, oldVal, newVal) -> {
