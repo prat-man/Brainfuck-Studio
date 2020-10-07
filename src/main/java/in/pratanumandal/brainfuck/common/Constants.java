@@ -14,16 +14,24 @@ public class Constants {
             "\n" +
             "[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[\n" +
             "\n" +
+            "BRAINFUCK OPERATORS\n" +
+            "\n" +
             "    >    increment the data pointer (to point to the next cell to the right).\n" +
             "    <    decrement the data pointer (to point to the next cell to the left).\n" +
             "    +    increment (increase by one) the byte at the data pointer.\n" +
             "    -    decrement (decrease by one) the byte at the data pointer.\n" +
             "    .    output the byte at the data pointer.\n" +
-            "    ,    accept one byte of input, storing its value in the byte at the data pointer.\n" +
+            "    ,    accept one byte of input, storing its value in ~the byte at the data pointer.\n" +
             "    [    if the byte at the data pointer is zero, then instead of moving the instruction pointer forward to the next command, jump it forward to the command after the matching ] command.\n" +
             "    ]    if the byte at the data pointer is nonzero, then instead of moving the instruction pointer forward to the next command, jump it back to the command after the matching [ command.\n" +
             "\n" +
+            "\n" +
+            "IDE SPECIFIC OPERATORS\n" +
+            "\n" +
+            "    ~    breakpoint - while debugging pauses the execution when encountered. this is a non-standard feature specific to Brainfuck IDE.\n" +
+            "\n" +
             "]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]\n" +
+            "\n" +
             "\n" +
             "+++++++++[->+++++++++<]>++++++.<+++[->+++<]>+++++.+++++++.--\n" +
             "-------.<+++[->+++<]>+++.--.--------.<++++++++[->--------<]>\n" +
