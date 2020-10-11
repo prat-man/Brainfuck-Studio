@@ -59,10 +59,7 @@ public class Main extends Application {
             alert.setTitle(Constants.APPLICATION_NAME);
             alert.setContentText("Are you sure you want to exit Brainfuck IDE?\n\n");
 
-            DialogPane pane = alert.getDialogPane();
-            for (ButtonType t : alert.getButtonTypes()) {
-                ((Button) pane.lookupButton(t)).setDefaultButton(t == ButtonType.NO);
-            }
+            Utils.setDefaultButton(alert, ButtonType.NO);
 
             alert.initOwner(primaryStage);
             alert.showAndWait();

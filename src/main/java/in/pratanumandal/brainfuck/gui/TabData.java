@@ -2,6 +2,7 @@ package in.pratanumandal.brainfuck.gui;
 
 import in.pratanumandal.brainfuck.common.Configuration;
 import in.pratanumandal.brainfuck.common.Constants;
+import in.pratanumandal.brainfuck.common.Utils;
 import in.pratanumandal.brainfuck.engine.debugger.Debugger;
 import in.pratanumandal.brainfuck.engine.Memory;
 import in.pratanumandal.brainfuck.engine.processor.interpreter.Interpreter;
@@ -14,8 +15,7 @@ import javafx.util.Duration;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.nio.file.*;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -60,6 +60,9 @@ public class TabData {
 
     private ScheduledFuture<?> saveFuture;
 
+    private Thread fileSystemChangesThread;
+    private boolean pauseAutoSave;
+
     // untitled tab index
     private static int untitledTabIndex = 1;
 
@@ -95,6 +98,9 @@ public class TabData {
 
             // start highlighter
             Highlighter.refreshHighlighting(this);
+
+            // register file change listener
+            this.registerChangeListener();
         }
 
         codeArea.textProperty().addListener((observableValue, oldVal, newVal) -> {
@@ -103,7 +109,7 @@ public class TabData {
 
         tabHeader = tab.getText();
 
-        registerAutoSave();
+        this.registerAutoSave();
     }
 
     public Tab getTab() {
@@ -287,6 +293,10 @@ public class TabData {
         Tooltip tooltip = new Tooltip(file.getAbsolutePath());
         tooltip.setShowDelay(Duration.millis(300));
         tab.setTooltip(tooltip);
+
+        // re-register file change listener
+        this.unregisterChangeListener();
+        this.registerChangeListener();
     }
 
     public boolean isModified() {
@@ -345,14 +355,14 @@ public class TabData {
 
     private void registerAutoSave() {
         this.saveFuture = Constants.EXECUTOR_SERVICE.scheduleAtFixedRate(() -> {
-            if (this.filePath != null && modified && Configuration.getAutoSave()) {
+            if (this.filePath != null && modified && Configuration.getAutoSave() && !pauseAutoSave) {
                 String filePath = this.filePath;
                 String fileText = this.getFileText();
 
                 boolean success = saveFile(filePath, fileText);
 
                 if (success) {
-                    Platform.runLater(() -> setModified(false));
+                    Platform.runLater(() -> this.setModified(false));
                 }
             }
         }, 0, 10, TimeUnit.SECONDS);
@@ -367,12 +377,96 @@ public class TabData {
     private boolean saveFile(String filePath, String fileText) {
         try {
             Files.writeString(Path.of(filePath), fileText);
+            pauseAutoSave = false;
             return true;
         } catch (IOException e) {
             // fail silently here
             e.printStackTrace();
             return false;
         }
+    }
+
+    private void registerChangeListener() {
+        this.fileSystemChangesThread = new Thread(() -> {
+            Path path = Path.of(filePath);
+            Path parent = path.getParent();
+
+            try (WatchService watchService = FileSystems.getDefault().newWatchService()) {
+                parent.register(watchService, StandardWatchEventKinds.ENTRY_CREATE, StandardWatchEventKinds.ENTRY_MODIFY, StandardWatchEventKinds.ENTRY_DELETE);
+
+                WatchKey watchKey;
+                while ((watchKey = watchService.take()) != null) {
+                    Thread.sleep(50);
+                    for (WatchEvent<?> event : watchKey.pollEvents()) {
+                        final Path changed = (Path) event.context();
+                        if (changed.equals(path.getFileName())) {
+                            if (path.toFile().exists()) {
+                                applyFileSystemChanges(FileSystemState.MODIFIED);
+                            }
+                            else {
+                                applyFileSystemChanges(FileSystemState.DELETED);
+                            }
+                        }
+                    }
+                    watchKey.reset();
+                }
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+            }
+            catch (InterruptedException e) { }
+        });
+        this.fileSystemChangesThread.start();
+    }
+
+    public void unregisterChangeListener() {
+        if (this.fileSystemChangesThread != null && this.fileSystemChangesThread.isAlive()) {
+            this.fileSystemChangesThread.interrupt();
+            try {
+                this.fileSystemChangesThread.join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void applyFileSystemChanges(FileSystemState fileSystemState) {
+        if (filePath != null) {
+            Path path = Path.of(filePath);
+
+            if (fileSystemState == FileSystemState.MODIFIED) {
+                if (this.pauseAutoSave) {
+                    this.pauseAutoSave = false;
+                    Platform.runLater(() -> this.setModified(false));
+                }
+
+                try {
+                    String fileText = Files.readString(path);
+
+                    if (!fileText.equals(this.getFileText())) {
+                        Platform.runLater(() -> {
+                            this.codeArea.replaceText(fileText);
+                            this.setModified(false);
+                            Utils.addNotificationWithDelay("File " + path.getFileName() + " was modified outside of Brainfuck IDE", 5000);
+                        });
+                    }
+                }
+                catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            else if (fileSystemState == FileSystemState.DELETED) {
+                this.pauseAutoSave = true;
+                Platform.runLater(() -> {
+                    this.setModified(true);
+                    Utils.addNotificationWithDelay("File " + path.getFileName() + " was deleted from the file system", 5000);
+                });
+            }
+        }
+    }
+
+    public enum FileSystemState {
+        MODIFIED, DELETED
     }
 
 }

@@ -650,6 +650,9 @@ public class Controller {
             // unregister auto save
             tabData.unregisterAutoSave();
 
+            // unregister change listener
+            tabData.unregisterChangeListener();
+
             tabData.getDebugTerminal().destroy();
             tabData.getInterpretTerminal().destroy();
         });
@@ -663,10 +666,7 @@ public class Controller {
                 alert.setHeaderText("Discard changes?");
                 alert.setContentText("Are you sure you want to discard unsaved changes?\n\n");
 
-                DialogPane pane = alert.getDialogPane();
-                for (ButtonType t : alert.getButtonTypes()) {
-                    ((Button) pane.lookupButton(t)).setDefaultButton(t == ButtonType.NO);
-                }
+                Utils.setDefaultButton(alert, ButtonType.NO);
 
                 alert.initOwner(tabPane.getScene().getWindow());
                 alert.showAndWait();
@@ -1234,8 +1234,7 @@ public class Controller {
 
         alert.getDialogPane().getScene().getRoot().getStyleClass().add("settings-dialog");
 
-        Button apply = (Button) alert.getDialogPane().lookupButton(ButtonType.APPLY);
-        apply.setDefaultButton(true);
+        Utils.setDefaultButton(alert, ButtonType.APPLY);
 
         alert.setTitle(Constants.APPLICATION_NAME);
         alert.setHeaderText("Settings");

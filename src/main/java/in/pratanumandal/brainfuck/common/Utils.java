@@ -6,8 +6,8 @@ import in.pratanumandal.brainfuck.gui.NotificationManager;
 import in.pratanumandal.brainfuck.gui.TabData;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
+import javafx.scene.control.*;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -201,8 +201,7 @@ public class Utils {
 
         alert.getDialogPane().getScene().getRoot().getStyleClass().add("gotoline-dialog");
 
-        javafx.scene.control.Button apply = (javafx.scene.control.Button) alert.getDialogPane().lookupButton(ButtonType.OK);
-        apply.setDefaultButton(true);
+        Utils.setDefaultButton(alert, ButtonType.OK);
 
         alert.setTitle(Constants.APPLICATION_NAME);
         alert.setHeaderText("Go to line");
@@ -266,6 +265,14 @@ public class Utils {
             }
             else break;
         }
+    }
+
+    public static Alert setDefaultButton(Alert alert, ButtonType defBtn) {
+        DialogPane pane = alert.getDialogPane();
+        for (ButtonType t : alert.getButtonTypes()) {
+            ((Button) pane.lookupButton(t)).setDefaultButton(t == defBtn);
+        }
+        return alert;
     }
 
 }
