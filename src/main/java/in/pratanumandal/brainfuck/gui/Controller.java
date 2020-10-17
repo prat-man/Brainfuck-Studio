@@ -1292,7 +1292,8 @@ public class Controller {
         editing.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
         GridPane.setFillWidth(editing, true);
         GridPane.setFillHeight(editing, true);
-        gridPane.add(editing, 0, 1);
+        GridPane.setRowSpan(editing, 2);
+        gridPane.add(editing, 1, 0);
 
         VBox vBox2 = new VBox();
         vBox2.setSpacing(10);
@@ -1306,26 +1307,13 @@ public class Controller {
         autoComplete.setSelected(Configuration.getAutoComplete());
         vBox2.getChildren().add(autoComplete);
 
-        TitledPane highlighting = new TitledPane();
-        highlighting.setText("Syntax Highlighting");
-        highlighting.setCollapsible(false);
-
-        highlighting.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-        GridPane.setFillWidth(highlighting, true);
-        GridPane.setFillHeight(highlighting, true);
-        gridPane.add(highlighting, 1, 1);
-
-        VBox vBox3 = new VBox();
-        vBox3.setSpacing(10);
-        highlighting.setContent(vBox3);
-
         CheckBox syntaxHighlighting = new CheckBox("Highlight brainfuck syntax");
         syntaxHighlighting.setSelected(Configuration.getSyntaxHighlighting());
-        vBox3.getChildren().add(syntaxHighlighting);
+        vBox2.getChildren().add(syntaxHighlighting);
 
         CheckBox bracketHighlighting = new CheckBox("Highlight matching brackets");
         bracketHighlighting.setSelected(Configuration.getBracketHighlighting());
-        vBox3.getChildren().add(bracketHighlighting);
+        vBox2.getChildren().add(bracketHighlighting);
 
         TitledPane miscellaneous = new TitledPane();
         miscellaneous.setText("Miscellaneous");
@@ -1334,19 +1322,19 @@ public class Controller {
         miscellaneous.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
         GridPane.setFillWidth(miscellaneous, true);
         GridPane.setFillHeight(miscellaneous, true);
-        gridPane.add(miscellaneous, 1, 0);
+        gridPane.add(miscellaneous, 0, 1);
 
-        VBox vBox4 = new VBox();
-        vBox4.setSpacing(10);
-        miscellaneous.setContent(vBox4);
+        VBox vBox3 = new VBox();
+        vBox3.setSpacing(10);
+        miscellaneous.setContent(vBox3);
 
         CheckBox autoSave = new CheckBox("Automatically save files every few seconds");
         autoSave.setSelected(Configuration.getAutoSave());
-        vBox4.getChildren().add(autoSave);
+        vBox3.getChildren().add(autoSave);
 
         CheckBox showTips = new CheckBox("Show tips at startup");
         showTips.setSelected(Configuration.getShowTips());
-        vBox4.getChildren().add(showTips);
+        vBox3.getChildren().add(showTips);
 
         alert.getDialogPane().setContent(gridPane);
 
