@@ -1245,14 +1245,18 @@ public class Controller {
         imagePane.getChildren().add(imageView);
         alert.setGraphic(imagePane);
 
-        VBox vBox = new VBox();
-        vBox.setAlignment(Pos.CENTER_LEFT);
-        vBox.setSpacing(10);
+        GridPane gridPane = new GridPane();
+        gridPane.setHgap(10);
+        gridPane.setVgap(10);
 
         TitledPane interpreter = new TitledPane();
         interpreter.setText("Interpreter");
         interpreter.setCollapsible(false);
-        vBox.getChildren().add(interpreter);
+
+        interpreter.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+        GridPane.setFillWidth(interpreter, true);
+        GridPane.setFillHeight(interpreter, true);
+        gridPane.add(interpreter, 0, 0);
 
         VBox vBox1 = new VBox();
         vBox1.setSpacing(15);
@@ -1284,7 +1288,12 @@ public class Controller {
         TitledPane editing = new TitledPane();
         editing.setText("Code Editing");
         editing.setCollapsible(false);
-        vBox.getChildren().add(editing);
+
+        editing.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+        GridPane.setColumnSpan(editing, 2);
+        GridPane.setFillWidth(editing, true);
+        GridPane.setFillHeight(editing, true);
+        gridPane.add(editing, 0, 1);
 
         VBox vBox2 = new VBox();
         vBox2.setSpacing(10);
@@ -1309,7 +1318,11 @@ public class Controller {
         TitledPane miscellaneous = new TitledPane();
         miscellaneous.setText("Miscellaneous");
         miscellaneous.setCollapsible(false);
-        vBox.getChildren().add(miscellaneous);
+
+        miscellaneous.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+        GridPane.setFillWidth(miscellaneous, true);
+        GridPane.setFillHeight(miscellaneous, true);
+        gridPane.add(miscellaneous, 1, 0);
 
         VBox vBox3 = new VBox();
         vBox3.setSpacing(10);
@@ -1323,7 +1336,7 @@ public class Controller {
         showTips.setSelected(Configuration.getShowTips());
         vBox3.getChildren().add(showTips);
 
-        alert.getDialogPane().setContent(vBox);
+        alert.getDialogPane().setContent(gridPane);
 
         alert.initOwner(tabPane.getScene().getWindow());
 
