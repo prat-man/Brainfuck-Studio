@@ -1232,8 +1232,6 @@ public class Controller {
     private void settings() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION, null, ButtonType.APPLY, ButtonType.CANCEL);
 
-        alert.getDialogPane().getScene().getRoot().getStyleClass().add("settings-dialog");
-
         Utils.setDefaultButton(alert, ButtonType.APPLY);
 
         alert.setTitle(Constants.APPLICATION_NAME);
@@ -1393,7 +1391,6 @@ public class Controller {
         alert.setGraphic(null);
         alert.getDialogPane().lookupButton(ButtonType.OK).setVisible(false);
         alert.getDialogPane().lookupButton(ButtonType.OK).setManaged(false);
-        alert.getDialogPane().getScene().getRoot().getStyleClass().add("about-dialog");
 
         VBox vBox = new VBox();
         vBox.getStyleClass().add("about");

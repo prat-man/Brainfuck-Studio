@@ -58,7 +58,7 @@ public abstract class Debugger implements Runnable {
     public void start() {
         this.code = tabData.getFileText();
 
-        tabData.getDebugTerminal().clear();
+        tabData.getDebugTerminal().reset();
 
         synchronized (this.kill) {
             this.kill.set(false);

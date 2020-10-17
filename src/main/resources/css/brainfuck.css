@@ -290,7 +290,7 @@
     -fx-background-color: #3A3F48;
 }
 .about {
-    -fx-padding: 30px 60px 10px 60px;
+    -fx-padding: 30px 50px 10px 40px;
 }
 .about .icon {
     -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.8), 15, 0, 0, 0);
@@ -328,13 +328,6 @@
 .about .hyperlink-sm {
     -fx-font-size: 12px;
     -fx-text-fill: gray;
-}
-
-.settings-dialog {
-    -fx-min-width: 350px;
-}
-.gotoline-dialog {
-    -fx-min-width: 300px;
 }
 
 .check-box {

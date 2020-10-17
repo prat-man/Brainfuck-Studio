@@ -24,7 +24,7 @@ public class Interpreter8 extends Interpreter {
 
     @Override
     public void start() {
-        tabData.getInterpretTerminal().clear();
+        tabData.getInterpretTerminal().reset();
 
         Arrays.fill(this.memory, (byte) 0);
 

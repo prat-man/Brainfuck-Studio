@@ -25,7 +25,7 @@ public class FXTerminal extends TextArea {
     private final Object flushLock;
 
     public FXTerminal() {
-        this(new String());
+        this("");
     }
 
     public FXTerminal(String text) {
@@ -35,7 +35,7 @@ public class FXTerminal extends TextArea {
         super.setText(text);
 
         this.existingText = text;
-        this.readBuffer = new String();
+        this.readBuffer = "";
 
         this.readLock = new AtomicBoolean(false);
         this.autoScroll = new AtomicBoolean(true);
@@ -153,10 +153,7 @@ public class FXTerminal extends TextArea {
         menu.getItems().add(pasteItem);
 
         MenuItem clearItem = new MenuItem("Clear");
-        clearItem.setOnAction(event -> {
-            this.existingText = "";
-            this.setText(this.existingText);
-        });
+        clearItem.setOnAction(event -> this.clear());
         menu.getItems().add(clearItem);
 
         menu.getItems().add(new SeparatorMenuItem());
@@ -203,8 +200,13 @@ public class FXTerminal extends TextArea {
         }
     }
 
+    public void reset() {
+        this.clear();
+        this.readBuffer = "";
+    }
+
     public void clear() {
-        this.existingText = new String();
+        this.existingText = "";
         this.setText(this.existingText);
     }
 

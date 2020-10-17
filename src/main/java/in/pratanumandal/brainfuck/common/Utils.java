@@ -199,8 +199,6 @@ public class Utils {
 
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION, null, ButtonType.OK, ButtonType.CANCEL);
 
-        alert.getDialogPane().getScene().getRoot().getStyleClass().add("gotoline-dialog");
-
         Utils.setDefaultButton(alert, ButtonType.OK);
 
         alert.setTitle(Constants.APPLICATION_NAME);
