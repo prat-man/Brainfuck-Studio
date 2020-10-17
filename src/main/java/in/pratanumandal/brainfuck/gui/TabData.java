@@ -7,6 +7,7 @@ import in.pratanumandal.brainfuck.engine.debugger.Debugger;
 import in.pratanumandal.brainfuck.engine.Memory;
 import in.pratanumandal.brainfuck.engine.processor.interpreter.Interpreter;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.*;
@@ -18,6 +19,7 @@ import java.io.IOException;
 import java.nio.file.*;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class TabData {
 
@@ -444,11 +446,27 @@ public class TabData {
                     String fileText = Files.readString(path);
 
                     if (!fileText.equals(this.getFileText())) {
-                        Platform.runLater(() -> {
-                            this.codeArea.replaceText(fileText);
-                            this.setModified(false);
-                            Utils.addNotificationWithDelay("File " + path.getFileName() + " was modified outside of Brainfuck IDE", 5000);
-                        });
+                        if (this.codeArea.isEditable()) {
+                            Platform.runLater(() -> {
+                                this.codeArea.replaceText(fileText);
+                                this.setModified(false);
+                                Utils.addNotificationWithDelay("File " + path.getFileName() + " was modified outside of Brainfuck IDE", 5000);
+                            });
+                        }
+                        else {
+                            AtomicReference<ChangeListener<Boolean>> changeListener = new AtomicReference<>();
+                            changeListener.set((obs, oldVal, newVal) -> {
+                                if (newVal) {
+                                    Platform.runLater(() -> {
+                                        this.codeArea.replaceText(fileText);
+                                        this.setModified(false);
+                                        Utils.addNotificationWithDelay("File " + path.getFileName() + " was modified outside of Brainfuck IDE", 5000);
+                                    });
+                                }
+                                this.codeArea.editableProperty().removeListener(changeListener.get());
+                            });
+                            this.codeArea.editableProperty().addListener(changeListener.get());
+                        }
                     }
                 }
                 catch (IOException e) {

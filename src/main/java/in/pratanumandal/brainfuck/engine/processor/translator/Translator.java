@@ -50,13 +50,15 @@ public abstract class Translator extends Processor {
         try {
             super.start();
         } catch (UnmatchedBracketException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle(Constants.APPLICATION_NAME);
-            alert.setHeaderText("Translator Error");
-            alert.setContentText(e.getMessage() + "\n\n");
+            Platform.runLater(() -> {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle(Constants.APPLICATION_NAME);
+                alert.setHeaderText("Translator Error");
+                alert.setContentText(e.getMessage() + "\n\n");
 
-            alert.initOwner(tabData.getTab().getTabPane().getScene().getWindow());
-            alert.showAndWait();
+                alert.initOwner(tabData.getTab().getTabPane().getScene().getWindow());
+                alert.showAndWait();
+            });
 
             return;
         }

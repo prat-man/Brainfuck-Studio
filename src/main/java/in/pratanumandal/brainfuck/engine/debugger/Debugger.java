@@ -5,11 +5,14 @@ import in.pratanumandal.brainfuck.common.Utils;
 import in.pratanumandal.brainfuck.engine.UnmatchedBracketException;
 import in.pratanumandal.brainfuck.gui.TabData;
 import in.pratanumandal.brainfuck.common.Constants;
+import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
 import javafx.scene.input.ContextMenuEvent;
 import org.fxmisc.richtext.CodeArea;
+import org.reactfx.Change;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,7 +34,7 @@ public abstract class Debugger implements Runnable {
 
     protected Thread thread;
 
-    protected final EventHandler<ContextMenuEvent> consumeAllContextMenu = Event::consume;
+    protected final ChangeListener<String> textChangeListener;
 
     protected Debugger(TabData tabData) {
         this.tabData = tabData;
@@ -43,6 +46,13 @@ public abstract class Debugger implements Runnable {
         this.pause = new AtomicBoolean(false);
 
         this.kill = new AtomicBoolean(true);
+
+        this.textChangeListener = (obs, oldVal, newVal) -> {
+            this.code = tabData.getFileText();
+            try {
+                this.initializeBrackets();
+            } catch (UnmatchedBracketException e) { }
+        };
     }
 
     public void start() {
@@ -58,21 +68,9 @@ public abstract class Debugger implements Runnable {
 
         try {
             this.initializeBrackets();
-        } catch (UnmatchedBracketException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle(Constants.APPLICATION_NAME);
-            alert.setHeaderText("Debug Error");
-            alert.setContentText(e.getMessage() + "\n\n");
+        } catch (UnmatchedBracketException e) { }
 
-            alert.initOwner(tabData.getTab().getTabPane().getScene().getWindow());
-            alert.showAndWait();
-
-            return;
-        }
-
-        this.codeArea.setEditable(false);
-
-        this.codeArea.addEventFilter(ContextMenuEvent.CONTEXT_MENU_REQUESTED, consumeAllContextMenu);
+        this.codeArea.textProperty().addListener(textChangeListener);
 
         thread = new Thread(this);
         thread.start();
@@ -178,9 +176,7 @@ public abstract class Debugger implements Runnable {
 
         this.tabData.getDebugTerminal().flush();
 
-        this.codeArea.setEditable(true);
-
-        this.codeArea.removeEventFilter(ContextMenuEvent.CONTEXT_MENU_REQUESTED, consumeAllContextMenu);
+        this.codeArea.textProperty().removeListener(textChangeListener);
 
         this.tabData.getDebugResumeButton().setDisable(true);
         this.tabData.getDebugPauseButton().setDisable(true);
@@ -204,6 +200,18 @@ public abstract class Debugger implements Runnable {
         }
 
         return null;
+    }
+
+    protected void showUnmatchedBrackets(UnmatchedBracketException e) {
+        Platform.runLater(() -> {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle(Constants.APPLICATION_NAME);
+            alert.setHeaderText("Debug Error");
+            alert.setContentText(e.getMessage() + "\n\n");
+
+            alert.initOwner(tabData.getTab().getTabPane().getScene().getWindow());
+            alert.showAndWait();
+        });
     }
 
 }

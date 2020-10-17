@@ -4,6 +4,7 @@ import in.pratanumandal.brainfuck.common.Configuration;
 import in.pratanumandal.brainfuck.common.Constants;
 import in.pratanumandal.brainfuck.common.Utils;
 import in.pratanumandal.brainfuck.engine.Memory;
+import in.pratanumandal.brainfuck.engine.UnmatchedBracketException;
 import in.pratanumandal.brainfuck.gui.NotificationManager;
 import in.pratanumandal.brainfuck.gui.TabData;
 import in.pratanumandal.brainfuck.gui.TableViewExtra;
@@ -45,16 +46,6 @@ public class Debugger16 extends Debugger {
         int dataPointer = 0;
 
         for (int i = 0; i < code.length() && !this.kill.get(); i++) {
-            synchronized (this.pause) {
-                if (this.pause.get()) {
-                    try {
-                        this.pause.wait();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-
             int finalI = i;
             Platform.runLater(() -> {
                 this.codeArea.selectRange(finalI, finalI + 1);
@@ -78,7 +69,7 @@ public class Debugger16 extends Debugger {
                         tabData.getTableView().getSelectionModel().select(finalDataPointer);
                     });
                 }
-            } else if (code.charAt(i) == '<') {
+            } else if (ch == '<') {
                 dataPointer--;
                 if (dataPointer < 0) {
                     tabData.getDebugTerminal().write("\nError: Memory index out of bounds " + dataPointer + "\n");
@@ -91,26 +82,26 @@ public class Debugger16 extends Debugger {
                         tabData.getTableView().getSelectionModel().select(finalDataPointer);
                     });
                 }
-            } else if (code.charAt(i) == '+') {
+            } else if (ch == '+') {
                 memory[dataPointer]++;
 
                 int finalDataPointer = dataPointer;
                 Memory memoryBlock = tabData.getMemory().get(finalDataPointer);
                 memoryBlock.setData(Short.toUnsignedInt(memory[finalDataPointer]));
                 Platform.runLater(() ->  tabData.getMemory().set(finalDataPointer, memoryBlock));
-            } else if (code.charAt(i) == '-') {
+            } else if (ch == '-') {
                 memory[dataPointer]--;
 
                 int finalDataPointer = dataPointer;
                 Memory memoryBlock = tabData.getMemory().get(finalDataPointer);
                 memoryBlock.setData(Short.toUnsignedInt(memory[finalDataPointer]));
                 Platform.runLater(() ->  tabData.getMemory().set(finalDataPointer, memoryBlock));
-            } else if (code.charAt(i) == '.') {
+            } else if (ch == '.') {
                 int codePoint = this.memory[dataPointer].intValue();
                 if (codePoint < 0) codePoint += 256;
                 String text = String.valueOf((char) codePoint);
                 tabData.getDebugTerminal().write(text);
-            } else if (code.charAt(i) == ',') {
+            } else if (ch == ',') {
                 Character character = tabData.getDebugTerminal().readChar();
                 memory[dataPointer] = character == null ? (short) 0 : (short) (int) character;
 
@@ -118,13 +109,27 @@ public class Debugger16 extends Debugger {
                 Memory memoryBlock = tabData.getMemory().get(finalDataPointer);
                 memoryBlock.setData(Short.toUnsignedInt(memory[finalDataPointer]));
                 Platform.runLater(() ->  tabData.getMemory().set(finalDataPointer, memoryBlock));
-            } else if (code.charAt(i) == '[') {
+            } else if (ch == '[') {
                 if (memory[dataPointer] == 0) {
-                    i = brackets.get(i);
+                    Integer other = brackets.get(i);
+                    try {
+                        if (other == null) Utils.throwUnmatchedBracketException(code, i + 1);
+                        else i = other;
+                    } catch (UnmatchedBracketException e) {
+                        showUnmatchedBrackets(e);
+                        this.kill.set(true);
+                    }
                 }
-            } else if (code.charAt(i) == ']') {
+            } else if (ch == ']') {
                 if (memory[dataPointer] != 0) {
-                    i = brackets.get(i);
+                    Integer other = brackets.get(i);
+                    try {
+                        if (other == null) Utils.throwUnmatchedBracketException(code, i + 1);
+                        else i = other;
+                    } catch (UnmatchedBracketException e) {
+                        showUnmatchedBrackets(e);
+                        this.kill.set(true);
+                    }
                 }
             }
 
@@ -133,6 +138,16 @@ public class Debugger16 extends Debugger {
                 Thread.sleep(delay);
             } catch (InterruptedException e) {
                 e.printStackTrace();
+            }
+
+            synchronized (this.pause) {
+                if (this.pause.get()) {
+                    try {
+                        this.pause.wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
         }
 
