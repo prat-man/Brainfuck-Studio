@@ -1473,7 +1473,7 @@ public class Controller {
 
     @FXML
     private void keymapReference() {
-        Utils.browseURL("https://github.com/prat-man/Brainfuck-IDE/blob/master/Brainfuck_IDE_Keymap_Reference.pdf");
+        Utils.browseURL("https://raw.githubusercontent.com/prat-man/Brainfuck-IDE/master/Brainfuck_IDE_Keymap_Reference.pdf");
     }
 
     @FXML
