@@ -109,6 +109,9 @@ public class TabData {
             this.setModified(true);
         });
 
+        codeArea.setOnKeyPressed(event -> this.pauseAutoSave = true);
+        codeArea.setOnKeyReleased(event -> this.pauseAutoSave = false);
+
         tabHeader = tab.getText();
 
         this.registerAutoSave();
