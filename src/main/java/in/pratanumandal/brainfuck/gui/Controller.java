@@ -173,13 +173,13 @@ public class Controller {
         this.stage = stage;
 
         // define key events
-        final KeyCombination keyComb1 = new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN);
-        final KeyCombination keyComb2 = new KeyCodeCombination(KeyCode.S, KeyCombination.SHIFT_DOWN, KeyCombination.CONTROL_DOWN);
-        final KeyCombination keyComb3 = new KeyCodeCombination(KeyCode.O, KeyCombination.CONTROL_DOWN);
-        final KeyCombination keyComb4 = new KeyCodeCombination(KeyCode.N, KeyCombination.CONTROL_DOWN);
-        final KeyCombination keyComb5 = new KeyCodeCombination(KeyCode.F, KeyCombination.CONTROL_DOWN);
-        final KeyCombination keyComb6 = new KeyCodeCombination(KeyCode.R, KeyCombination.CONTROL_DOWN);
-        final KeyCombination keyComb7 = new KeyCodeCombination(KeyCode.H, KeyCombination.CONTROL_DOWN);
+        final KeyCombination keyComb1 = new KeyCodeCombination(KeyCode.S, KeyCombination.SHORTCUT_DOWN);
+        final KeyCombination keyComb2 = new KeyCodeCombination(KeyCode.S, KeyCombination.SHIFT_DOWN, KeyCombination.SHORTCUT_DOWN);
+        final KeyCombination keyComb3 = new KeyCodeCombination(KeyCode.O, KeyCombination.SHORTCUT_DOWN);
+        final KeyCombination keyComb4 = new KeyCodeCombination(KeyCode.N, KeyCombination.SHORTCUT_DOWN);
+        final KeyCombination keyComb5 = new KeyCodeCombination(KeyCode.F, KeyCombination.SHORTCUT_DOWN);
+        final KeyCombination keyComb6 = new KeyCodeCombination(KeyCode.R, KeyCombination.SHORTCUT_DOWN);
+        final KeyCombination keyComb7 = new KeyCodeCombination(KeyCode.H, KeyCombination.SHORTCUT_DOWN);
         final KeyCombination keyComb8 = new KeyCodeCombination(KeyCode.F3);
         final KeyCombination keyComb9 = new KeyCodeCombination(KeyCode.F3, KeyCombination.SHIFT_DOWN);
         final KeyCombination keyComb10 = new KeyCodeCombination(KeyCode.F9);
