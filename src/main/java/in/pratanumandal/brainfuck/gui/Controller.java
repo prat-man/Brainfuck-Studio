@@ -182,6 +182,10 @@ public class Controller {
         final KeyCombination keyComb7 = new KeyCodeCombination(KeyCode.H, KeyCombination.CONTROL_DOWN);
         final KeyCombination keyComb8 = new KeyCodeCombination(KeyCode.F3);
         final KeyCombination keyComb9 = new KeyCodeCombination(KeyCode.F3, KeyCombination.SHIFT_DOWN);
+        final KeyCombination keyComb10 = new KeyCodeCombination(KeyCode.F9);
+        final KeyCombination keyComb11 = new KeyCodeCombination(KeyCode.F9, KeyCombination.SHIFT_DOWN);
+        final KeyCombination keyComb12 = new KeyCodeCombination(KeyCode.F8);
+        final KeyCombination keyComb13 = new KeyCodeCombination(KeyCode.F8, KeyCombination.SHIFT_DOWN);
 
         // handle key events
         stage.addEventHandler(KeyEvent.KEY_RELEASED, event -> {
@@ -205,6 +209,21 @@ public class Controller {
             }
             else if (keyComb9.match(event)) {
                 findPrevious();
+            }
+            else if (this.currentTab.getDebugger() != null) {
+                if (keyComb10.match(event)) {
+                    this.currentTab.getDebugger().resume();
+                }
+                else if (keyComb11.match(event)) {
+                    this.currentTab.getDebugger().pause();
+                }
+                else if (keyComb12.match(event)) {
+                    this.currentTab.getDebugger().step();
+                }
+                else if (keyComb13.match(event)) {
+                    boolean selected = this.currentTab.getDebugBreakpointButton().isSelected();
+                    this.currentTab.getDebugBreakpointButton().setSelected(!selected);
+                }
             }
         });
     }
