@@ -16,7 +16,7 @@ The IDE is Java based and requires Java 11+. It supports Windows, OSX, and Linux
 <br><br>
 
 ## Screenshot
-![Brainfuck IDE screeshot](/screenshot.png)
+![Brainfuck IDE screeshot](/screenshots/screenshot.png)
 <br><br>
 
 ## Information
