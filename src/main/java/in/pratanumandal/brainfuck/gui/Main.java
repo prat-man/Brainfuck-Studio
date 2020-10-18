@@ -15,6 +15,10 @@ import javafx.scene.image.Image;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+
 public class Main extends Application {
 
     public static Stage superStage;
@@ -79,6 +83,13 @@ public class Main extends Application {
     public static void main(String[] args) {
         // load fonts before preloader
         loadFonts();
+
+        // create config directory if not exists
+        try {
+            Files.createDirectories(Path.of(Constants.CONFIG_DIR));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         // launch the application
         launch(args);

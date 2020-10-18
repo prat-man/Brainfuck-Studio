@@ -12,8 +12,6 @@ import java.util.List;
 
 public class Configuration {
 
-    public static final String CONFIG_FILE = "config.properties";
-
     private static Configuration instance;
     private static final List<Integer> FONT_SIZES = Arrays.asList(new Integer[] {10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40});
     private static Boolean firstRun = false;
@@ -31,7 +29,7 @@ public class Configuration {
     private Configuration() {
         Configurations configs = new Configurations();
         try {
-            File file = new File(CONFIG_FILE);
+            File file = new File(Constants.CONFIG_FILE);
             if (!file.exists()) {
                 firstRun = true;
                 file.createNewFile();
@@ -191,7 +189,7 @@ public class Configuration {
     private static void flush(boolean sanitize) throws ConfigurationException, IOException {
         if (sanitize) sanitize();
 
-        File file = new File(CONFIG_FILE);
+        File file = new File(Constants.CONFIG_FILE);
         if (file.exists()) file.delete();
         file.createNewFile();
 

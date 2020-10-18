@@ -7,7 +7,11 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class Constants {
 
-    public static final String WELCOME_FILE = "welcome.bf";
+    public static final String CONFIG_DIR = System.getProperty("user.home") + File.separator + ".brainfuck-ide";
+
+    public static final String CONFIG_FILE = CONFIG_DIR + File.separator + "config.properties";
+
+    public static final String WELCOME_FILE = CONFIG_DIR + File.separator + "welcome.bf";
 
     public static final String WELCOME_TEXT = "WELCOME TO BRAINFUCK IDE\n" +
             "========================\n" +
@@ -21,7 +25,7 @@ public class Constants {
             "    +    increment (increase by one) the byte at the data pointer.\n" +
             "    -    decrement (decrease by one) the byte at the data pointer.\n" +
             "    .    output the byte at the data pointer.\n" +
-            "    ,    accept one byte of input, storing its value in ~the byte at the data pointer.\n" +
+            "    ,    accept one byte of input, storing its value in the byte at the data pointer.\n" +
             "    [    if the byte at the data pointer is zero, then instead of moving the instruction pointer forward to the next command, jump it forward to the command after the matching ] command.\n" +
             "    ]    if the byte at the data pointer is nonzero, then instead of moving the instruction pointer forward to the next command, jump it back to the command after the matching [ command.\n" +
             "\n" +
