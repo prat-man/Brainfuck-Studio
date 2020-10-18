@@ -16,7 +16,7 @@ public class Constants {
     public static final String WELCOME_TEXT = "WELCOME TO BRAINFUCK IDE\n" +
             "========================\n" +
             "\n" +
-            "[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[\n" +
+            "[[\n" +
             "\n" +
             "BRAINFUCK OPERATORS\n" +
             "\n" +
@@ -34,7 +34,7 @@ public class Constants {
             "\n" +
             "    ~    breakpoint - while debugging pauses the execution when encountered. this is a non-standard feature specific to Brainfuck IDE.\n" +
             "\n" +
-            "]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]\n" +
+            "]]\n" +
             "\n" +
             "\n" +
             "+++++++++[->+++++++++<]>++++++.<+++[->+++<]>+++++.+++++++.--\n" +
