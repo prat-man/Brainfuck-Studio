@@ -9,9 +9,9 @@ Additionally, you can export brainfuck programs to other languages.<br>
 The IDE is Java based and requires Java 11+. It supports Windows, OSX, and Linux.
 <br><br>
 
-### Downloads
-
-
+### Releases
+[View releases of Brainfuck IDE](https://github.com/prat-man/Brainfuck-IDE/releases)
+<br><br>
 
 ### Features
 * Fast code optimizing interpreter
@@ -25,7 +25,7 @@ The IDE is Java based and requires Java 11+. It supports Windows, OSX, and Linux
 ![Brainfuck IDE screeshot](screenshot.png)
 <br><br>
 
-## Information
+### Information
 
 Brainfuck IDE is written in Java 11 and uses JavaFX for its user interface.<br>
 <br>
