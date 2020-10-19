@@ -11,6 +11,7 @@ The IDE supports Windows, OSX, and Linux.
 <br><br>
 
 ### Downloads
+
 Platform | Download      | Requirements
 ---------| ------------- | ------------
 Java | [Download .jar file]() | Requires Java 11+ runtime environment
