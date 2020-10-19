@@ -7,7 +7,7 @@ This is a modern IDE for Brainfuck with tabbed interface and syntax highlighting
 It provides tools to create, debug, and execute brainfuck programs.<br>
 Additionally, you can export brainfuck programs to other languages.<br>
 <br>
-The IDE is Java based and requires Java 11+. It supports Windows, OSX, and Linux.
+The IDE supports Windows, OSX, and Linux.
 <br><br>
 
 ### Releases
