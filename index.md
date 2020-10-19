@@ -10,9 +10,15 @@ Additionally, you can export brainfuck programs to other languages.<br>
 The IDE supports Windows, OSX, and Linux.
 <br><br>
 
-### Releases
-[View releases of Brainfuck IDE](https://github.com/prat-man/Brainfuck-IDE/releases)
-<br><br>
+### Downloads
+Platform | Download      | Requirements
+---------| ------------- | ------------
+Java | [Download .jar file]() | Requires Java 11+ runtime environment
+Windows | [Download .zip file]() |
+OSX | [Download .tar file]() |
+Linux | [Download .tar file]() |
+
+<br>
 
 ### Features
 * Fast code optimizing interpreter
