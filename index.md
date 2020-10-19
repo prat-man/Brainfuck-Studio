@@ -34,7 +34,7 @@ Platform         | Download            | Requirements
 <br><br>
 
 ### Keymap Reference
-The Keymap Reference (Keyboard Shortcuts) information is provided [here](https://github.com/prat-man/Brainfuck-IDE/blob/master/res/keymap/Brainfuck_IDE_Keymap_Reference.pdf).
+Get the official [Keymap Reference (Keyboard Shortcuts)](https://github.com/prat-man/Brainfuck-IDE/blob/master/res/keymap/Brainfuck_IDE_Keymap_Reference.pdf) information for Brainfuck IDE.
 <br><br>
 
 ### Information
