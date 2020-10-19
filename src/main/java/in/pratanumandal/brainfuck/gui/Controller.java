@@ -1440,10 +1440,10 @@ public class Controller {
         label1.getStyleClass().add("title");
         vBox.getChildren().add(label1);
 
-        Hyperlink hyperlink1 = new Hyperlink("https://github.com/prat-man/Brainfuck-IDE");
+        Hyperlink hyperlink1 = new Hyperlink("https://brainfuck.pratanumandal.in/");
         hyperlink1.getStyleClass().add("hyperlink");
         hyperlink1.setOnAction(event -> {
-            Utils.browseURL("https://github.com/prat-man/Brainfuck-IDE");
+            Utils.browseURL("https://prat-man.github.io/Brainfuck-IDE/");
         });
         vBox.getChildren().add(hyperlink1);
 

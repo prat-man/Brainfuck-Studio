@@ -290,7 +290,7 @@
     -fx-background-color: #3A3F48;
 }
 .about {
-    -fx-padding: 30px 50px 10px 40px;
+    -fx-padding: 30px 60px 10px 50px;
 }
 .about .icon {
     -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.8), 15, 0, 0, 0);
