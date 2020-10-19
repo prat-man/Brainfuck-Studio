@@ -1,4 +1,4 @@
-## Introduction
+### Introduction
 
 Brainfuck is an esoteric programming language created in 1993 by Urban Müller, and is notable for its extreme minimalism.
 
@@ -9,11 +9,11 @@ Additionally, you can export brainfuck programs to other languages.<br>
 The IDE is Java based and requires Java 11+. It supports Windows, OSX, and Linux.
 <br><br>
 
-## Downloads
+### Downloads
 
 
 
-## Features
+### Features
 * Fast code optimizing interpreter
 * Graphical debugger
 * Export from brainfuck to other languages
@@ -21,7 +21,7 @@ The IDE is Java based and requires Java 11+. It supports Windows, OSX, and Linux
 * Supports custom memory size
 <br><br>
 
-## Screenshot
+### Screenshot
 ![Brainfuck IDE screeshot](screenshot.png)
 <br><br>
 
@@ -33,6 +33,6 @@ A special thanks to [RichTextFX](https://github.com/FXMisc/RichTextFX) for their
 The Brainfuck IDE icon is made by [Smashicons](https://www.flaticon.com/authors/smashicons) from [www.flaticon.com](https://www.flaticon.com/).
 <br><br>
 
-## License
+### License
 
 [GNU Public License v3.0](https://github.com/prat-man/Brainfuck-IDE/blob/master/LICENSE)
