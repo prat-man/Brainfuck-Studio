@@ -1,6 +1,3 @@
-![Brainfuck IDE logo](icon-large.png)
-
-# Brainfuck IDE
 A modern IDE for Brainfuck with tabbed interface and syntax highlighting.<br>
 Create, debug, execute, and export (to other languages) brainfuck programs.<br>
 <br>
