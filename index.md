@@ -1,5 +1,10 @@
-A modern IDE for Brainfuck with tabbed interface and syntax highlighting.<br>
-Create, debug, execute, and export (to other languages) brainfuck programs.<br>
+## Introduction
+
+Brainfuck is an esoteric programming language created in 1993 by Urban Müller, and is notable for its extreme minimalism.
+
+This is a modern IDE for Brainfuck with tabbed interface and syntax highlighting.<br>
+It provides tools to create, debug, and execute brainfuck programs.<br>
+Additionally, you can export brainfuck programs to other languages.<br>
 <br>
 The IDE is Java based and requires Java 11+. It supports Windows, OSX, and Linux.
 <br><br>
