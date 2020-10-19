@@ -1,37 +1,32 @@
-## Welcome to GitHub Pages
+![Brainfuck IDE logo](icon-large.png)
 
-You can use the [editor on GitHub](https://github.com/prat-man/Brainfuck-IDE/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+# Brainfuck IDE
+A modern IDE for Brainfuck with tabbed interface and syntax highlighting.<br>
+Create, debug, execute, and export (to other languages) brainfuck programs.<br>
+<br>
+The IDE is Java based and requires Java 11+. It supports Windows, OSX, and Linux.
+<br><br>
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+## Features
+* Fast code optimizing interpreter
+* Graphical debugger
+* Export from brainfuck to other languages
+* Supports 8 bit and 16 bit cell sizes
+* Supports custom memory size
+<br><br>
 
-### Markdown
+## Screenshot
+![Brainfuck IDE screeshot](screenshot.png)
+<br><br>
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+## Information
 
-```markdown
-Syntax highlighted code block
+Brainfuck IDE is written in Java 11 and uses JavaFX for its user interface.<br>
+<br>
+A special thanks to [RichTextFX](https://github.com/FXMisc/RichTextFX) for their awesome rich text library for JavaFX.<br>
+The Brainfuck IDE icon is made by [Smashicons](https://www.flaticon.com/authors/smashicons) from [www.flaticon.com](https://www.flaticon.com/).
+<br><br>
 
-# Header 1
-## Header 2
-### Header 3
+## License
 
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/prat-man/Brainfuck-IDE/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+[GNU Public License v3.0](https://github.com/prat-man/Brainfuck-IDE/blob/master/LICENSE)
