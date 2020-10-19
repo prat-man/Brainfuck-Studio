@@ -33,6 +33,10 @@ Platform         | Download            | Requirements
 ![Brainfuck IDE screeshot](/images/screenshot.png)
 <br><br>
 
+### Keymap Reference
+The Keymap Reference (Keyboard Shortcuts) information is provided [here](https://github.com/prat-man/Brainfuck-IDE/blob/master/res/keymap/Brainfuck_IDE_Keymap_Reference.pdf).
+<br><br>
+
 ### Information
 
 Brainfuck IDE is written in Java 11 and uses JavaFX for its user interface.<br>
