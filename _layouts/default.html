@@ -24,6 +24,9 @@
       table:nth-of-type(1) tr td:nth-of-type(2) {
         width: 30%;
       }
+      .version {
+        font-weight: bold;
+      }
     </style>
   </head>
   <body>
@@ -38,7 +41,7 @@
         <br><br>
         <p>{{ site.description | default: site.github.project_tagline }}</p>
         
-        <p>Latest release: {{ site.version }}</p>
+        <p class="version">Latest release: {{ site.version }}</p>
 
         {% if site.github.is_project_page %}
         <p class="view"><a href="{{ site.github.repository_url }}">View the Project on GitHub <small>{{ site.github.repository_nwo }}</small></a></p>
