@@ -14,10 +14,10 @@ The IDE supports Windows, OSX, and Linux.
 
 Platform | Download      | Requirements
 ---------| ------------- | ------------
-<img src="/images/windows.svg" width="14px">&emsp;Java | [Download .jar file]() | Requires Java 11+ runtime environment
-<img src="/images/windows.svg" width="14px">&emsp;Windows | [Download .zip file]() |
-<img src="/images/apple.svg" width="14px">&emsp;OSX | [Download .tar file]() |
-<img src="/images/linux.svg" width="14px">&emsp;Linux | [Download .tar file]() |
+<img src="images/windows.svg" width="14px">&emsp;Java | [Download .jar file]() | Requires Java 11+ runtime environment
+<img src="images/windows.svg" width="14px">&emsp;Windows | [Download .zip file]() |
+<img src="images/apple.svg" width="14px">&emsp;OSX | [Download .tar file]() |
+<img src="images/linux.svg" width="14px">&emsp;Linux | [Download .tar file]() |
 
 <br>
 
