@@ -1,4 +1,4 @@
 theme: jekyll-theme-minimal
 title: Brainfuck IDE
 description: A modern IDE for Brainfuck with tabbed interface and syntax highlighting
-logo: /icon-large.png
+logo: /icon-large.svg
