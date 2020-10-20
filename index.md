@@ -16,8 +16,8 @@ Platform         | Download            | Requirements
 ---------------- | ------------------- | ------------
 <img src="images/java.svg" width="14px">&nbsp; Java | [Download .jar file]() | Requires Java 11+ runtime environment
 <img src="images/windows.svg" width="14px">&nbsp; Windows | [Download .zip file]() |
-<img src="images/apple.svg" width="14px">&nbsp; OSX | [Download .tar file]() |
-<img src="images/linux.svg" width="14px">&nbsp; Linux | [Download .tar file]() |
+<img src="images/apple.svg" width="14px">&nbsp; OSX | [Download .tar.gz file]() |
+<img src="images/linux.svg" width="14px">&nbsp; Linux | [Download .tar.gz file]() |
 
 <br>
 
