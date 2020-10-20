@@ -12,12 +12,34 @@ The IDE supports Windows, OSX, and Linux.
 
 ### Downloads
 
-Platform | Download
--------- | --------
-<img src="images/java.svg" width="14px">&nbsp; Java<span style="color: red;">*</span> | [Download .jar file]()
-<img src="images/windows.svg" width="14px">&nbsp; Windows | [Download .exe file]()<br>[Download .zip file]()
-<img src="images/apple.svg" width="14px">&nbsp; OSX | [Download .tar.gz file]()
-<img src="images/linux.svg" width="14px">&nbsp; Linux | [Download .tar.gz file]()
+<span>
+<table>
+  <tr>
+    <th>Platform</th>
+    <th>Download</th>
+  </tr>
+  <tr>
+    <td><img src="images/java.svg" width="14px">&nbsp; Java<span style="color: red;">*</span></td>
+    <td><a href="">Download .jar file</a></td>
+  </tr>
+  <tr>
+    <td><img src="images/windows.svg" width="14px">&nbsp; Windows</td>
+    <td>
+      <a href="">Download .exe file</a>
+      <hr>
+      <a href="">Download .zip file</a>
+    </td>
+  </tr>
+  <tr>
+    <td><img src="images/apple.svg" width="14px">&nbsp; OSX</td>
+    <td><a href="">Download .tar.gz file</a></td>
+  </tr>
+  <tr>
+    <td><img src="images/linux.svg" width="14px">&nbsp; Linux</td>
+    <td><a href="">Download .tar.gz file</a></td>
+  </tr>
+</table>
+</span>
 
 <span style="color: red;">*</span>Requires Java 11+ runtime environment
 <br><br>
