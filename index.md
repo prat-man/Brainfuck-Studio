@@ -20,6 +20,7 @@ Platform | Download
 <img src="images/linux.svg" width="14px">&nbsp; Linux | [Download .tar.gz file]()
 
 <span style="color: red;">*</span>Requires Java 11+ runtime environment
+<br>
 
 ### Features
 * Fast code optimizing interpreter
