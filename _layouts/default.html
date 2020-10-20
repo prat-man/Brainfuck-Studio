@@ -65,12 +65,10 @@
 
       </section>
       <footer>
-        <p>
-          {% if site.github.is_project_page %}
-          This project is maintained by <a href="{{ site.github.owner_url }}">{{ site.github.owner_name }}</a><br>
-          {% endif %}
-          <a href="https://pratanumandal.in/">https://pratanumandal.in/</a>
-        </p>
+        {% if site.github.is_project_page %}
+        <p>This project is maintained by <a href="{{ site.github.owner_url }}">{{ site.github.owner_name }}</a></p>
+        {% endif %}
+        <p><small><a href="{{ site.website }}">{{ site.website }}</a><small></p>
       </footer>
     </div>
     <script src="{{ "/assets/js/scale.fix.js" | relative_url }}"></script>
