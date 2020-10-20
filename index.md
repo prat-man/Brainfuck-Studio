@@ -15,7 +15,7 @@ The IDE supports Windows, OSX, and Linux.
 Platform | Download
 -------- | --------
 <img src="images/java.svg" width="14px">&nbsp; Java<span style="color: red;">*</span> | [Download .jar file]()
-<img src="images/windows.svg" width="14px">&nbsp; Windows | [Download .exe file]()<br>[Download .zip file]()
+<img src="images/windows.svg" width="14px">&nbsp; Windows | [Download .exe file]()<br><hr>[Download .zip file]()
 <img src="images/apple.svg" width="14px">&nbsp; OSX | [Download .tar.gz file]()
 <img src="images/linux.svg" width="14px">&nbsp; Linux | [Download .tar.gz file]()
 
