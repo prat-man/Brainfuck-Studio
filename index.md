@@ -19,9 +19,7 @@ Platform | Download
 <img src="images/apple.svg" width="14px">&nbsp; OSX | [Download .tar.gz file]()
 <img src="images/linux.svg" width="14px">&nbsp; Linux | [Download .tar.gz file]()
 
-<span style="color: red;">*Requires Java 11+ runtime environment</span>
-
-<br>
+<span style="color: red;">*</span>Requires Java 11+ runtime environment
 
 ### Features
 * Fast code optimizing interpreter
