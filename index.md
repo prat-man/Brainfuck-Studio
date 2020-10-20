@@ -3,8 +3,8 @@
 
 Brainfuck is an esoteric programming language created in 1993 by Urban Müller, and is notable for its extreme minimalism.
 
-This is a modern IDE for Brainfuck with tabbed interface and syntax highlighting.
-It provides tools to create, debug, and execute brainfuck programs.
+This is a modern IDE for Brainfuck with tabbed interface and syntax highlighting.<br>
+It provides tools to create, debug, and execute brainfuck programs.<br>
 Additionally, you can export brainfuck programs to other languages.<br>
 <br>
 The IDE supports Windows, OSX, and Linux.
