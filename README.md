@@ -1,6 +1,7 @@
 ![Brainfuck IDE logo](/src/main/resources/images/icon-large.png)
 
 [https://brainfuck.pratanumandal.in/](https://brainfuck.pratanumandal.in/)
+<br><br>
 
 # Brainfuck IDE
 A modern IDE for Brainfuck with tabbed interface and syntax highlighting.<br>
