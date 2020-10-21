@@ -23,8 +23,13 @@ Platform | Download
 <br><br>
 
 ### Features
+* Cross platform
+* Modern, clean, tabbed interface
 * Fast code optimizing interpreter
-* Graphical debugger
+* Graphical debugger with breakpoints
+* Syntax highlighting
+* Auto-completion
+* Auto-saving and auto-updating
 * Export from brainfuck to other languages
 * Supports 8 bit and 16 bit cell sizes
 * Supports custom memory size
