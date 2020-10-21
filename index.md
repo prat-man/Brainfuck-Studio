@@ -23,6 +23,7 @@ Platform | Download
 <br><br>
 
 ### Features
+* Open source
 * Cross platform
 * Modern, clean, tabbed interface
 * Fast code optimizing interpreter
