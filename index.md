@@ -51,7 +51,6 @@ The Brainfuck IDE icon is made by [Smashicons](https://www.flaticon.com/authors/
 [GNU Public License v3.0](https://github.com/prat-man/Brainfuck-IDE/blob/master/LICENSE)
 <br><br>
 
-{% if page.comments %}
 ### Comments
+
 {% include comments.html %}
-{% endif %}
