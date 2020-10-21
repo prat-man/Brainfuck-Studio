@@ -14,10 +14,10 @@ The IDE supports Windows, OSX, and Linux.
 
 Platform | Download
 -------- | --------
-<img src="images/java.svg" width="14px">&nbsp; Java<span style="color: red;">*</span> | [Download .jar file]()
-<img src="images/windows.svg" width="14px">&nbsp; Windows | [Download .exe file]()<br><span style="margin-bottom: 6px; display: block;"></span>[Download .zip file]()
-<img src="images/apple.svg" width="14px">&nbsp; OSX | [Download .tar.gz file]()
-<img src="images/linux.svg" width="14px">&nbsp; Linux | [Download .tar.gz file]()
+<img src="images/java.svg" width="14px">&nbsp; Java<span style="color: red;">*</span> | [Download .jar file](https://github.com/prat-man/Brainfuck-IDE/releases/download/1.0/brainfuck-ide-1.0.jar)
+<img src="images/windows.svg" width="14px">&nbsp; Windows | [Download .exe file](https://github.com/prat-man/Brainfuck-IDE/releases/download/1.0/Brainfuck_IDE_1.0_Setup.exe)<br><span style="margin-bottom: 6px; display: block;"></span>[Download .zip file](https://github.com/prat-man/Brainfuck-IDE/releases/download/1.0/Brainfuck_IDE_1.0_Windows.zip)
+<img src="images/apple.svg" width="14px">&nbsp; OSX | [Download .tar.gz file](https://github.com/prat-man/Brainfuck-IDE/releases/download/1.0/Brainfuck_IDE_1.0_OSX.tar.gz)
+<img src="images/linux.svg" width="14px">&nbsp; Linux | [Download .tar.gz file](https://github.com/prat-man/Brainfuck-IDE/releases/download/1.0/Brainfuck_IDE_1.0_Linux.tar.gz)
 
 <span style="color: red;">*</span>Requires Java 11+ runtime environment
 <br><br>
