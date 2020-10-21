@@ -40,7 +40,7 @@ Platform | Download
 <br><br>
 
 ### Keymap Reference
-Get the official [Keymap Reference (Keyboard Shortcuts)](https://github.com/prat-man/Brainfuck-IDE/blob/master/res/keymap/Brainfuck_IDE_Keymap_Reference.pdf) information for Brainfuck IDE.
+Get the official [Keymap Reference (Keyboard Shortcuts)](https://raw.githubusercontent.com/prat-man/Brainfuck-IDE/master/res/keymap/Brainfuck_IDE_Keymap_Reference.pdf) information for Brainfuck IDE.
 <br><br>
 
 ### Information
