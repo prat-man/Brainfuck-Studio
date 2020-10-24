@@ -312,7 +312,7 @@ public class TabData {
         this.modified = modified;
 
         if (this.modified) {
-            tab.setText("\u25CF " + tabHeader);
+            tab.setText("\u26AB " + tabHeader);
         } else {
             this.tab.setText(tabHeader);
         }
