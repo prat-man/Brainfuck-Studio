@@ -1,5 +1,5 @@
 .root {
-    -fx-font-family: 'Open Sans SemiBold';
+    -fx-font-family: 'Open Sans';
 }
 
 .background {
@@ -237,7 +237,7 @@
 .context-menu {
     -fx-background-color: #444952;
     -fx-text-fill: white;
-    -fx-font-family: 'Open Sans SemiBold';
+    -fx-font-family: 'Open Sans';
     -fx-font-size: 12px;
     -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.8), 15, 0, 0, 0);
 }

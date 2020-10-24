@@ -26,7 +26,8 @@ public class Main extends Application {
 
     private static void loadFonts() {
         Font.loadFont(Main.class.getClassLoader().getResourceAsStream("fonts/OpenSans-Regular.ttf"), 12);
-        Font.loadFont(Main.class.getClassLoader().getResourceAsStream("fonts/VeraMono.ttf"), 14);
+        Font.loadFont(Main.class.getClassLoader().getResourceAsStream("fonts/OpenSans-Bold.ttf"), 12);
+        Font.loadFont(Main.class.getClassLoader().getResourceAsStream("fonts/VeraMono.ttf"), 12);
     }
 
     @Override
