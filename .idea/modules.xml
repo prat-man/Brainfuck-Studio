@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Brainfuck IDE.iml" filepath="$PROJECT_DIR$/Brainfuck IDE.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Brainfuck Studio.iml" filepath="$PROJECT_DIR$/Brainfuck Studio.iml" />
     </modules>
   </component>
 </project>

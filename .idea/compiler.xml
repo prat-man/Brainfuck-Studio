@@ -16,11 +16,11 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="Brainfuck IDE" />
+        <module name="Brainfuck Studio" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="Brainfuck IDE" target="11" />
+      <module name="Brainfuck Studio" target="11" />
     </bytecodeTargetLevel>
   </component>
 </project>

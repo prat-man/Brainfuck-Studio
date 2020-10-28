@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>in.pratanumandal</groupId>
-    <artifactId>brainfuck-ide</artifactId>
+    <artifactId>brainfuck-studio</artifactId>
     <version>1.0</version>
 
     <properties>
