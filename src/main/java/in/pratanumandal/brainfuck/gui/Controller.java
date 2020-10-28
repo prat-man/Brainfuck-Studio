@@ -792,7 +792,7 @@ public class Controller {
                     if (filePath.equals(data.getFilePath())) {
                         Alert alert = new Alert(Alert.AlertType.ERROR);
                         alert.setTitle(Constants.APPLICATION_NAME);
-                        alert.setContentText("The file is already open in Brainfuck IDE!\n\n");
+                        alert.setContentText("The file is already open in Brainfuck Studio!\n\n");
 
                         alert.initOwner(tabPane.getScene().getWindow());
                         alert.showAndWait();
@@ -872,7 +872,7 @@ public class Controller {
                 if (data != tabData && filePath.equals(data.getFilePath())) {
                     Alert alert = new Alert(Alert.AlertType.ERROR);
                     alert.setTitle(Constants.APPLICATION_NAME);
-                    alert.setContentText("The file is already open in Brainfuck IDE!\n\n");
+                    alert.setContentText("The file is already open in Brainfuck Studio!\n\n");
 
                     alert.initOwner(tabPane.getScene().getWindow());
                     alert.showAndWait();
@@ -1443,7 +1443,7 @@ public class Controller {
         Hyperlink hyperlink1 = new Hyperlink("https://brainfuck.pratanumandal.in/");
         hyperlink1.getStyleClass().add("hyperlink");
         hyperlink1.setOnAction(event -> {
-            Utils.browseURL("https://prat-man.github.io/Brainfuck-IDE/");
+            Utils.browseURL("https://prat-man.github.io/Brainfuck-Studio/");
         });
         vBox.getChildren().add(hyperlink1);
 
@@ -1480,7 +1480,7 @@ public class Controller {
         Hyperlink hyperlink3 = new Hyperlink("Licensed under GPL v3.0");
         hyperlink3.getStyleClass().add("subheading4");
         hyperlink3.setOnAction(event -> {
-            Utils.browseURL("https://github.com/prat-man/Brainfuck-IDE/blob/master/LICENSE");
+            Utils.browseURL("https://github.com/prat-man/Brainfuck-Studio/blob/master/LICENSE");
         });
         vBox.getChildren().add(hyperlink3);
 
@@ -1492,7 +1492,7 @@ public class Controller {
 
     @FXML
     private void keymapReference() {
-        Utils.browseURL("https://raw.githubusercontent.com/prat-man/Brainfuck-IDE/master/res/keymap/Brainfuck_IDE_Keymap_Reference.pdf");
+        Utils.browseURL("https://raw.githubusercontent.com/prat-man/Brainfuck-Studio/master/res/keymap/Brainfuck_Studio_Keymap_Reference.pdf");
     }
 
     @FXML

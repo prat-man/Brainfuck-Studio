@@ -453,7 +453,7 @@ public class TabData {
                             Platform.runLater(() -> {
                                 this.codeArea.replaceText(fileText);
                                 this.setModified(false);
-                                Utils.addNotificationWithDelay("File " + path.getFileName() + " was modified outside of Brainfuck IDE", 5000);
+                                Utils.addNotificationWithDelay("File " + path.getFileName() + " was modified outside of Brainfuck Studio", 5000);
                             });
                         }
                         else {
@@ -463,7 +463,7 @@ public class TabData {
                                     Platform.runLater(() -> {
                                         this.codeArea.replaceText(fileText);
                                         this.setModified(false);
-                                        Utils.addNotificationWithDelay("File " + path.getFileName() + " was modified outside of Brainfuck IDE", 5000);
+                                        Utils.addNotificationWithDelay("File " + path.getFileName() + " was modified outside of Brainfuck Studio", 5000);
                                     });
                                 }
                                 this.codeArea.editableProperty().removeListener(changeListener.get());

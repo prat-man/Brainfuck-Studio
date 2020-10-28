@@ -62,7 +62,7 @@ public class Main extends Application {
         primaryStage.setOnCloseRequest((event) -> {
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION, null, ButtonType.YES, ButtonType.NO);
             alert.setTitle(Constants.APPLICATION_NAME);
-            alert.setContentText("Are you sure you want to exit Brainfuck IDE?\n\n");
+            alert.setContentText("Are you sure you want to exit Brainfuck Studio?\n\n");
 
             Utils.setDefaultButton(alert, ButtonType.NO);
 

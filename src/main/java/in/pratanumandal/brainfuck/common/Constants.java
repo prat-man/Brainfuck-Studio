@@ -7,14 +7,14 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class Constants {
 
-    public static final String CONFIG_DIR = System.getProperty("user.home") + File.separator + ".brainfuck-ide";
+    public static final String CONFIG_DIR = System.getProperty("user.home") + File.separator + ".brainfuck-studio";
 
     public static final String CONFIG_FILE = CONFIG_DIR + File.separator + "config.properties";
 
     public static final String WELCOME_FILE = CONFIG_DIR + File.separator + "welcome.bf";
 
-    public static final String WELCOME_TEXT = "WELCOME TO BRAINFUCK IDE\n" +
-            "========================\n" +
+    public static final String WELCOME_TEXT = "WELCOME TO BRAINFUCK STUDIO\n" +
+            "===========================\n" +
             "\n" +
             "[[\n" +
             "\n" +
@@ -32,7 +32,7 @@ public class Constants {
             "\n" +
             "IDE SPECIFIC OPERATORS\n" +
             "\n" +
-            "    ~    breakpoint - while debugging pauses the execution when encountered. this is a non-standard feature specific to Brainfuck IDE.\n" +
+            "    ~    breakpoint - while debugging pauses the execution when encountered. this is a non-standard feature specific to Brainfuck Studio.\n" +
             "\n" +
             "]]\n" +
             "\n" +
@@ -62,7 +62,7 @@ public class Constants {
             "-----<]>----.<++++++[->++++++<]>+++++++++.<++++[->++++<]>+++\n" +
             "+.<+++[->+++<]>++++.<+++[->---<]>-.---.<+++[->+++<]>++.<\n";
 
-    public static final String APPLICATION_NAME = "Brainfuck IDE";
+    public static final String APPLICATION_NAME = "Brainfuck Studio";
 
     public static final String APPLICATION_VERSION = "1.0";
 
