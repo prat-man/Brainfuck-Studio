@@ -133,9 +133,7 @@ public class Controller {
             }
 
             for (TabData td : tabDataList) {
-                td.getCodeArea().setStyle("-fx-font-size: " + fontSize + "px");
-                td.getDebugTerminal().setStyle("-fx-font-size: " + (fontSize - 3) + "px");
-                td.getInterpretTerminal().setStyle("-fx-font-size: " + (fontSize - 3) + "px");
+                this.setFontSize(td);
             }
         });
 
@@ -143,9 +141,7 @@ public class Controller {
         fontSize = Configuration.getFontSize();
         fontSizeChooser.getSelectionModel().select(fontSize + "px");
         for (TabData td : tabDataList) {
-            td.getCodeArea().setStyle("-fx-font-size: " + fontSize + "px");
-            td.getDebugTerminal().setStyle("-fx-font-size: " + (fontSize - 3) + "px");
-            td.getInterpretTerminal().setStyle("-fx-font-size: " + (fontSize - 3) + "px");
+            this.setFontSize(td);
         }
 
         // toggle search
@@ -272,9 +268,6 @@ public class Controller {
         // set context menu for code area
         codeArea.setContextMenu(new DefaultContextMenu());
 
-        // set font size for code area
-        codeArea.setStyle("-fx-font-size: " + fontSize + "px");
-
         // add line numbers to the left of area
         codeArea.setParagraphGraphicFactory(LineNumberFactory.get(codeArea));
 
@@ -373,9 +366,6 @@ public class Controller {
 
         // set the debug terminal
         tabData.setDebugTerminal(debugTerminal);
-
-        // set font size for debug terminal
-        debugTerminal.setStyle("-fx-font-size: " + (fontSize - 3) + "px");
 
         // add debug terminal toolbar and debug terminal to vbox
         VBox debugTerminalToolbar = new VBox();
@@ -616,9 +606,6 @@ public class Controller {
         // set the interpreter terminal
         tabData.setInterpretTerminal(interpretTerminal);
 
-        // set font size for interpret terminal
-        interpretTerminal.setStyle("-fx-font-size: " + (fontSize - 3) + "px");
-
         // add interpreter terminal toolbar and interpreter terminal to vbox
         VBox interpreterTerminalToolbar = new VBox();
         interpreterTerminalToolbar.getChildren().add(interpreterTerminalControls);
@@ -662,6 +649,9 @@ public class Controller {
 
         // add tab data to tab data list
         tabDataList.add(tabData);
+
+        // set font sizes
+        this.setFontSize(tabData);
 
         tab.setOnClosed((event) -> {
             tabDataList.remove(tabData);
@@ -1661,6 +1651,12 @@ public class Controller {
         caretPosition.setText("Position: " + posStr);
         caretRow.setText("Line: " + rowStr);
         caretColumn.setText("Column: " + colStr);
+    }
+
+    private void setFontSize(TabData tabData) {
+        tabData.getCodeArea().setStyle("-fx-font-size: " + fontSize + "px");
+        tabData.getDebugTerminal().setStyle("-fx-font-size: " + (fontSize - 3) + "px");
+        tabData.getInterpretTerminal().setStyle("-fx-font-size: " + (fontSize - 3) + "px");
     }
 
 }
