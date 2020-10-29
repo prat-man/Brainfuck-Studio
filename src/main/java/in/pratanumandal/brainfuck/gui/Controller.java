@@ -389,12 +389,16 @@ public class Controller {
         debugTerminal.managedProperty().bind(debugTerminal.visibleProperty());
         debugTerminal.visibleProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal) {
-                Platform.runLater(() -> splitPane.getItems().add(debugTerminalToolbar));
-                splitPane.setDividerPositions(tabData.getDividerPosition());
+                Platform.runLater(() -> {
+                    splitPane.getItems().add(debugTerminalToolbar);
+                    splitPane.setDividerPositions(tabData.getDividerPosition());
+                });
             }
             else {
-                tabData.setDividerPosition(tabData.getSplitPane().getDividerPositions()[0]);
-                Platform.runLater(() -> splitPane.getItems().remove(debugTerminalToolbar));
+                Platform.runLater(() -> {
+                    tabData.setDividerPosition(tabData.getSplitPane().getDividerPositions()[0]);
+                    splitPane.getItems().remove(debugTerminalToolbar);
+                });
             }
         });
 
@@ -624,12 +628,16 @@ public class Controller {
         interpreterTerminal.managedProperty().bind(interpreterTerminal.visibleProperty());
         interpreterTerminal.visibleProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal) {
-                Platform.runLater(() -> splitPane.getItems().add(interpreterTerminalToolbar));
-                splitPane.setDividerPositions(tabData.getDividerPosition());
+                Platform.runLater(() -> {
+                    splitPane.getItems().add(interpreterTerminalToolbar);
+                    splitPane.setDividerPositions(tabData.getDividerPosition());
+                });
             }
             else {
-                tabData.setDividerPosition(tabData.getSplitPane().getDividerPositions()[0]);
-                Platform.runLater(() -> splitPane.getItems().remove(interpreterTerminalToolbar));
+                Platform.runLater(() -> {
+                    tabData.setDividerPosition(tabData.getSplitPane().getDividerPositions()[0]);
+                    splitPane.getItems().remove(interpreterTerminalToolbar);
+                });
             }
         });
 
