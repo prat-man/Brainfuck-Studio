@@ -335,9 +335,9 @@ public class TabData {
 
                     tab.getTabPane().getSelectionModel().select(tab);
 
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    Alert alert = new Alert(Alert.AlertType.WARNING);
                     alert.setTitle(Constants.APPLICATION_NAME);
-                    alert.setContentText("Highlighting has been disabled for this tab due to heavy load.\nThis is usually done for files that are very complex to process.\n\n");
+                    alert.setContentText("Highlighting has been disabled for this tab due to heavy load. This is usually done for files that are very complex to process.\n\n");
 
                     alert.initOwner(tab.getTabPane().getScene().getWindow());
                     alert.showAndWait();

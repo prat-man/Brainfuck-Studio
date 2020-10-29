@@ -487,6 +487,7 @@
 
 .scroll-bar {
     -fx-background-color: #626770;
+    -fx-font-size: 12px;
 }
 
 .scroll-bar:horizontal .track {

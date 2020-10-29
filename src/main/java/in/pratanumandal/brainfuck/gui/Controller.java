@@ -54,7 +54,7 @@ public class Controller {
 
     private TabData currentTab;
 
-    private String fontSize;
+    private int fontSize;
 
     private Stage stage;
 
@@ -122,9 +122,9 @@ public class Controller {
 
         // change font size based on selection
         fontSizeChooser.getSelectionModel().selectedItemProperty().addListener((ObservableValue<? extends String> observableValue, String oldVal, String newVal) -> {
-            fontSize = newVal;
+            fontSize = Integer.valueOf(newVal.substring(0, newVal.length() - 2));
 
-            Configuration.setFontSize(Integer.valueOf(newVal.substring(0, newVal.length() - 2)));
+            Configuration.setFontSize(fontSize);
             try {
                 Configuration.flush();
             } catch (ConfigurationException | IOException e) {
@@ -133,15 +133,19 @@ public class Controller {
             }
 
             for (TabData td : tabDataList) {
-                td.getCodeArea().setStyle("-fx-font-size: " + fontSize);
+                td.getCodeArea().setStyle("-fx-font-size: " + fontSize + "px");
+                td.getDebugTerminal().setStyle("-fx-font-size: " + (fontSize - 3) + "px");
+                td.getInterpretTerminal().setStyle("-fx-font-size: " + (fontSize - 3) + "px");
             }
         });
 
         // select current font
-        fontSize = Configuration.getFontSize() + "px";
-        fontSizeChooser.getSelectionModel().select(fontSize);
+        fontSize = Configuration.getFontSize();
+        fontSizeChooser.getSelectionModel().select(fontSize + "px");
         for (TabData td : tabDataList) {
-            td.getCodeArea().setStyle("-fx-font-size: " + fontSize);
+            td.getCodeArea().setStyle("-fx-font-size: " + fontSize + "px");
+            td.getDebugTerminal().setStyle("-fx-font-size: " + (fontSize - 3) + "px");
+            td.getInterpretTerminal().setStyle("-fx-font-size: " + (fontSize - 3) + "px");
         }
 
         // toggle search
@@ -269,7 +273,7 @@ public class Controller {
         codeArea.setContextMenu(new DefaultContextMenu());
 
         // set font size for code area
-        codeArea.setStyle("-fx-font-size: " + fontSize);
+        codeArea.setStyle("-fx-font-size: " + fontSize + "px");
 
         // add line numbers to the left of area
         codeArea.setParagraphGraphicFactory(LineNumberFactory.get(codeArea));
@@ -369,6 +373,9 @@ public class Controller {
 
         // set the debug terminal
         tabData.setDebugTerminal(debugTerminal);
+
+        // set font size for debug terminal
+        debugTerminal.setStyle("-fx-font-size: " + (fontSize - 3) + "px");
 
         // add debug terminal toolbar and debug terminal to vbox
         VBox debugTerminalToolbar = new VBox();
@@ -604,29 +611,32 @@ public class Controller {
         interpreterCloseButton.setTooltip(closeTooltip);
 
         // create a interpreter terminal
-        FXTerminal interpreterTerminal = new FXTerminal();
+        FXTerminal interpretTerminal = new FXTerminal();
 
         // set the interpreter terminal
-        tabData.setInterpretTerminal(interpreterTerminal);
+        tabData.setInterpretTerminal(interpretTerminal);
+
+        // set font size for interpret terminal
+        interpretTerminal.setStyle("-fx-font-size: " + (fontSize - 3) + "px");
 
         // add interpreter terminal toolbar and interpreter terminal to vbox
         VBox interpreterTerminalToolbar = new VBox();
         interpreterTerminalToolbar.getChildren().add(interpreterTerminalControls);
-        interpreterTerminalToolbar.getChildren().add(interpreterTerminal);
+        interpreterTerminalToolbar.getChildren().add(interpretTerminal);
 
         // set style of interpreter toolbar
         interpreterTerminalToolbar.getStyleClass().add("terminal-toolbar");
 
         // bind interpreter terminal height property
-        interpreterTerminal.prefHeightProperty().bind(interpreterTerminalToolbar.heightProperty());
+        interpretTerminal.prefHeightProperty().bind(interpreterTerminalToolbar.heightProperty());
 
         // bind interpreter terminal visibility
-        interpreterTerminal.setVisible(false);
+        interpretTerminal.setVisible(false);
         interpreterTerminalToolbar.setVisible(false);
-        interpreterTerminalToolbar.managedProperty().bind(interpreterTerminal.visibleProperty());
-        interpreterTerminalToolbar.visibleProperty().bind(interpreterTerminal.visibleProperty());
-        interpreterTerminal.managedProperty().bind(interpreterTerminal.visibleProperty());
-        interpreterTerminal.visibleProperty().addListener((obs, oldVal, newVal) -> {
+        interpreterTerminalToolbar.managedProperty().bind(interpretTerminal.visibleProperty());
+        interpreterTerminalToolbar.visibleProperty().bind(interpretTerminal.visibleProperty());
+        interpretTerminal.managedProperty().bind(interpretTerminal.visibleProperty());
+        interpretTerminal.visibleProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal) {
                 Platform.runLater(() -> {
                     splitPane.getItems().add(interpreterTerminalToolbar);
@@ -645,7 +655,7 @@ public class Controller {
         interpreterStopButton.setOnAction(actionEvent -> tabData.getInterpreter().stop());
 
         // add close button action
-        interpreterCloseButton.setOnAction(actionEvent -> interpreterTerminal.setVisible(false));
+        interpreterCloseButton.setOnAction(actionEvent -> interpretTerminal.setVisible(false));
 
         // set tab content
         tab.setContent(horizontalSplitPane);
