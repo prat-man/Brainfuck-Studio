@@ -9,7 +9,7 @@ Additionally, you can export brainfuck programs to other languages.<br>
 <br>
 The IDE supports Windows, OSX, and Linux.
 <br><br>
-<!--
+<!---
 ### Downloads
 
 Platform | Download
@@ -20,7 +20,7 @@ Platform | Download
 <img src="images/linux.svg" width="14px">&nbsp; Linux | [Download .tar.gz file](https://github.com/prat-man/Brainfuck-IDE/releases/download/1.0/Brainfuck_IDE_1.0_Linux.tar.gz)
 
 <span style="color: red;">*</span>Requires Java 11+ runtime environment
-<br><br>-->
+<br><br>--->
 
 ### Features
 * Open source
