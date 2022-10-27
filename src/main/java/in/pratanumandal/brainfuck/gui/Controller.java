@@ -28,13 +28,17 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import org.apache.commons.configuration2.ex.ConfigurationException;
+import org.apache.commons.lang3.reflect.FieldUtils;
+import org.fxmisc.flowless.VirtualFlow;
 import org.fxmisc.flowless.VirtualizedScrollPane;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.LineNumberFactory;
+import org.fxmisc.richtext.model.StyleSpans;
 import org.reactfx.Subscription;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.NumberFormat;
@@ -1655,8 +1659,8 @@ public class Controller {
 
     private void setFontSize(TabData tabData) {
         tabData.getCodeArea().setStyle("-fx-font-size: " + fontSize + "px");
-        tabData.getDebugTerminal().setStyle("-fx-font-size: " + (fontSize - 3) + "px");
-        tabData.getInterpretTerminal().setStyle("-fx-font-size: " + (fontSize - 3) + "px");
+        tabData.getDebugTerminal().setStyle("-fx-font-size: " + fontSize + "px");
+        tabData.getInterpretTerminal().setStyle("-fx-font-size: " + fontSize + "px");
     }
 
 }

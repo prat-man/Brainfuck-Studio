@@ -32,7 +32,7 @@
     -fx-font-weight: bold;
 }
 .code-area .paragraph-box .text.output {
-    -fx-fill: 	#00FFFF;
+    -fx-fill: #00FFFF;
     -fx-font-weight: bold;
 }
 .code-area .paragraph-box .text.input {
@@ -439,6 +439,13 @@
 }
 .terminal-toolbar {
     -fx-background-color: #585D66;
+}
+.terminal.code-area .paragraph-box .text.plain-text,
+.terminal.code-area .paragraph-box .text {
+    -fx-fill: white;
+}
+.terminal.code-area .paragraph-box .text.message {
+    -fx-fill: gray;
 }
 
 .slider .thumb {

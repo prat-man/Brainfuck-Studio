@@ -4,14 +4,21 @@ import javafx.application.Platform;
 import javafx.scene.control.*;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
+import org.fxmisc.richtext.CodeArea;
+import org.fxmisc.richtext.model.StyleSpans;
+import org.fxmisc.richtext.model.StyleSpansBuilder;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class FXTerminal extends TextArea {
+public class FXTerminal extends CodeArea {
 
     private String existingText;
     private String readBuffer;
@@ -20,6 +27,7 @@ public class FXTerminal extends TextArea {
     private final AtomicBoolean autoScroll;
 
     private final StringBuilder writeBuffer;
+    private final Map<Integer, Integer> messageMap;
     private final ScheduledFuture<?> future;
 
     private final Object flushLock;
@@ -30,7 +38,7 @@ public class FXTerminal extends TextArea {
 
     public FXTerminal(String text) {
         this.existingText = this.sanitizeText(text);
-        super.setText(this.existingText);
+        super.replaceText(0, this.getLength(), this.existingText);
 
         this.readBuffer = "";
 
@@ -42,23 +50,17 @@ public class FXTerminal extends TextArea {
         this.getStyleClass().add("terminal");
 
         // disable changing text
-        this.setTextFormatter(new TextFormatter<String>((TextFormatter.Change c) -> {
-            String proposed;
-            try {
-                proposed = c.getControlNewText();
-            }
-            catch (Exception e) {
-                proposed = "";
-            }
+        this.textProperty().addListener((obs, existing, proposed) -> {
             boolean readLock = this.readLock.get();
             if (!readLock && proposed.equals(this.existingText)) {
-                return c;
+                // do nothing
             } else if (readLock && proposed.startsWith(this.existingText)) {
-                return c;
+                // do nothing
             } else {
-                return null;
+                // disallow change
+                this.replaceText(0, this.getLength(), this.existingText);
             }
-        }));
+        });
 
         // disable lock when newline is in input
         this.textProperty().addListener((obs, oldVal, newVal) -> {
@@ -71,14 +73,16 @@ public class FXTerminal extends TextArea {
         });
 
         // correct mouse click at end of text
-        this.setOnMouseClicked(event -> {
+        /*this.setOnMouseClicked(event -> {
             if (this.getCaretPosition() == this.getLength()) {
-                this.positionCaret(0);
-                this.positionCaret(this.getLength());
+                this.moveTo(0);
+                this.requestFollowCaret();
             }
-        });
+        });*/
 
         this.writeBuffer = new StringBuilder();
+
+        this.messageMap = new HashMap<>();
 
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
         this.future = scheduler.scheduleWithFixedDelay(() -> {
@@ -87,32 +91,40 @@ public class FXTerminal extends TextArea {
                     String newText = this.writeBuffer.toString();
                     this.writeBuffer.setLength(0);
 
-                    this.existingText += this.sanitizeText(newText);
+                    this.existingText += newText;
 
                     if (this.autoScroll.get()) {
                         Platform.runLater(() -> {
                             // set the text
-                            this.setText(this.existingText);
+                            this.replaceText(0, this.getLength(), this.existingText);
+
+                            // set highlighting
+                            this.setStyleSpans(0, this.computeHighlighting());
 
                             // reset properties
-                            this.setScrollTop(Double.MAX_VALUE);
-                            this.positionCaret(this.getLength());
+                            /*this.setScrollTop(Double.MAX_VALUE);
+                            this.positionCaret(this.getLength());*/
+                            this.moveTo(this.getLength());
+                            this.requestFollowCaret();
                         });
                     } else {
                         Platform.runLater(() -> {
                             // get current properties
-                            double scrollLeft = this.getScrollLeft();
-                            double scrollTop = this.getScrollTop();
+                            double scrollLeft = this.getEstimatedScrollX();
+                            double scrollTop = this.getEstimatedScrollY();
                             int caretPos = this.getCaretPosition();
                             IndexRange selection = this.getSelection();
 
                             // set the text
-                            this.setText(this.existingText);
+                            this.replaceText(0, this.getLength(), this.existingText);
+
+                            // set highlighting
+                            this.setStyleSpans(0, this.computeHighlighting());
 
                             // reset properties
-                            this.setScrollLeft(scrollLeft);
-                            this.setScrollTop(scrollTop);
-                            this.positionCaret(caretPos);
+                            this.scrollXToPixel(scrollLeft);
+                            this.scrollYToPixel(scrollTop);
+                            this.moveTo(caretPos);
                             this.selectRange(selection.getStart(), selection.getEnd());
                         });
                     }
@@ -161,8 +173,8 @@ public class FXTerminal extends TextArea {
     public Character readChar() {
         if (this.readBuffer.isEmpty()) {
             if (this.autoScroll.get()) {
-                this.setScrollTop(Double.MAX_VALUE);
-                this.positionCaret(this.getLength());
+                this.moveTo(this.getLength());
+                this.requestFollowCaret();
             }
 
             Platform.runLater(() -> this.requestFocus());
@@ -189,8 +201,17 @@ public class FXTerminal extends TextArea {
     }
 
     public void write(String text) {
+        String sanitizedText = this.sanitizeText(text);
         synchronized (this.writeBuffer) {
-            this.writeBuffer.append(text);
+            this.writeBuffer.append(sanitizedText);
+        }
+    }
+
+    public void writeMessage(String text) {
+        String sanitizedText = this.sanitizeText(text);
+        synchronized (this.writeBuffer) {
+            this.messageMap.put(this.getLength() + this.writeBuffer.length(), sanitizedText.length());
+            this.writeBuffer.append(sanitizedText);
         }
     }
 
@@ -201,7 +222,7 @@ public class FXTerminal extends TextArea {
 
     public void clear() {
         this.existingText = "";
-        this.setText(this.existingText);
+        Platform.runLater(() -> this.replaceText(0, this.getLength(), this.existingText));
     }
 
     public void flush() {
@@ -228,6 +249,23 @@ public class FXTerminal extends TextArea {
     private String sanitizeText(String text) {
         return text.replace("\r", "")
                 .replaceAll("[\\p{Cc}\\p{Cf}\\p{Co}\\p{Cn}&&[^\\s]]", "\uFFFD");
+    }
+
+    private StyleSpans<Collection<String>> computeHighlighting() {
+        StyleSpansBuilder<Collection<String>> spansBuilder = new StyleSpansBuilder<>();
+
+        int lastKwEnd = 0;
+        for (Map.Entry<Integer, Integer> entry : messageMap.entrySet()) {
+            int start = entry.getKey();
+            int length = entry.getValue();
+
+            spansBuilder.add(Collections.singleton("plain-text"), start - lastKwEnd);
+            spansBuilder.add(Collections.singleton("message"), length);
+            lastKwEnd = start + length;
+        }
+
+        spansBuilder.add(Collections.singleton("plain-text"), this.getLength() - lastKwEnd);
+        return spansBuilder.create();
     }
 
 }

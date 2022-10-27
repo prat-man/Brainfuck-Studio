@@ -84,7 +84,7 @@ public class Interpreter8 extends Interpreter {
                 int sum = jumps[i];
                 dataPointer += sum;
                 if (dataPointer < 0 || dataPointer >= this.memory.length) {
-                    tabData.getInterpretTerminal().write("\nError: Memory index out of bounds " + dataPointer + "\n");
+                    tabData.getInterpretTerminal().writeMessage("\nError: Memory index out of bounds " + dataPointer + "\n");
                     this.stop(false);
                 }
             }
@@ -139,17 +139,17 @@ public class Interpreter8 extends Interpreter {
         String durationStr = Utils.nanoToBestFitTimeUnits(duration);
 
         // print the execution time
-        tabData.getInterpretTerminal().write("\n\n");
-        tabData.getInterpretTerminal().write("--------------------------------------------------------------------------------\n");
+        tabData.getInterpretTerminal().writeMessage("\n\n");
+        tabData.getInterpretTerminal().writeMessage("--------------------------------------------------------------------------------\n");
 
         Platform.runLater(() -> notification.close());
 
         if (this.kill.get()) {
-            tabData.getInterpretTerminal().write("Execution terminated; Runtime " + durationStr + "\n");
+            tabData.getInterpretTerminal().writeMessage("Execution terminated; Runtime " + durationStr + "\n");
             Platform.runLater(() -> Utils.addNotification("File " + tabData.getTab().getText() + " execution terminated"));
         }
         else {
-            tabData.getInterpretTerminal().write("Execution completed in " + durationStr + "\n");
+            tabData.getInterpretTerminal().writeMessage("Execution completed in " + durationStr + "\n");
             Platform.runLater(() -> Utils.addNotification("File " + tabData.getTab().getText() + " execution finished"));
         }
 

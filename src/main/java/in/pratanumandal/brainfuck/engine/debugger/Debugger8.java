@@ -59,7 +59,7 @@ public class Debugger8 extends Debugger {
             } else if (ch == '>') {
                 dataPointer++;
                 if (dataPointer >= this.memory.length) {
-                    tabData.getDebugTerminal().write("\nError: Memory index out of bounds " + dataPointer + "\n");
+                    tabData.getDebugTerminal().writeMessage("\nError: Memory index out of bounds " + dataPointer + "\n");
                     this.stop(false);
                 }
                 else {
@@ -72,7 +72,7 @@ public class Debugger8 extends Debugger {
             } else if (ch == '<') {
                 dataPointer--;
                 if (dataPointer < 0) {
-                    tabData.getDebugTerminal().write("\nError: Memory index out of bounds " + dataPointer + "\n");
+                    tabData.getDebugTerminal().writeMessage("\nError: Memory index out of bounds " + dataPointer + "\n");
                     this.stop(false);
                 }
                 else {
