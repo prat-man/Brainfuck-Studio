@@ -374,7 +374,7 @@ public class Controller {
         // add debug terminal toolbar and debug terminal to vbox
         VBox debugTerminalToolbar = new VBox();
         debugTerminalToolbar.getChildren().add(debugTerminalControls);
-        debugTerminalToolbar.getChildren().add(debugTerminal);
+        debugTerminalToolbar.getChildren().add(new VirtualizedScrollPane<>(debugTerminal));
 
         // set style of interpreter toolbar
         debugTerminalToolbar.getStyleClass().add("terminal-toolbar");
@@ -613,7 +613,7 @@ public class Controller {
         // add interpreter terminal toolbar and interpreter terminal to vbox
         VBox interpreterTerminalToolbar = new VBox();
         interpreterTerminalToolbar.getChildren().add(interpreterTerminalControls);
-        interpreterTerminalToolbar.getChildren().add(interpretTerminal);
+        interpreterTerminalToolbar.getChildren().add(new VirtualizedScrollPane<>(interpretTerminal));
 
         // set style of interpreter toolbar
         interpreterTerminalToolbar.getStyleClass().add("terminal-toolbar");

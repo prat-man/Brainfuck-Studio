@@ -8,10 +8,7 @@ import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.model.StyleSpans;
 import org.fxmisc.richtext.model.StyleSpansBuilder;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -27,10 +24,11 @@ public class FXTerminal extends CodeArea {
     private final AtomicBoolean autoScroll;
 
     private final StringBuilder writeBuffer;
-    private final Map<Integer, Integer> messageMap;
+    private final SortedMap<Integer, Integer> messageMap;
     private final ScheduledFuture<?> future;
 
     private final Object flushLock;
+    private final Object writeLock;
 
     public FXTerminal() {
         this("");
@@ -46,6 +44,7 @@ public class FXTerminal extends CodeArea {
         this.autoScroll = new AtomicBoolean(true);
 
         this.flushLock = new Object();
+        this.writeLock = new Object();
 
         this.getStyleClass().add("terminal");
 
@@ -82,11 +81,11 @@ public class FXTerminal extends CodeArea {
 
         this.writeBuffer = new StringBuilder();
 
-        this.messageMap = new HashMap<>();
+        this.messageMap = new TreeMap<>();
 
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
         this.future = scheduler.scheduleWithFixedDelay(() -> {
-            synchronized (this.writeBuffer) {
+            synchronized (this.writeLock) {
                 if (this.writeBuffer.length() > 0) {
                     String newText = this.writeBuffer.toString();
                     this.writeBuffer.setLength(0);
@@ -170,6 +169,10 @@ public class FXTerminal extends CodeArea {
         menu.getItems().add(scrollItem);
     }
 
+    public int getVirutalLength() {
+        return this.existingText.length() + this.writeBuffer.length();
+    }
+
     public Character readChar() {
         if (this.readBuffer.isEmpty()) {
             if (this.autoScroll.get()) {
@@ -202,15 +205,15 @@ public class FXTerminal extends CodeArea {
 
     public void write(String text) {
         String sanitizedText = this.sanitizeText(text);
-        synchronized (this.writeBuffer) {
+        synchronized (this.writeLock) {
             this.writeBuffer.append(sanitizedText);
         }
     }
 
     public void writeMessage(String text) {
         String sanitizedText = this.sanitizeText(text);
-        synchronized (this.writeBuffer) {
-            this.messageMap.put(this.getLength() + this.writeBuffer.length(), sanitizedText.length());
+        synchronized (this.writeLock) {
+            this.messageMap.put(this.getVirutalLength(), sanitizedText.length());
             this.writeBuffer.append(sanitizedText);
         }
     }
@@ -259,12 +262,21 @@ public class FXTerminal extends CodeArea {
             int start = entry.getKey();
             int length = entry.getValue();
 
+            // ignore styles for text that has not been actually written yet
+            if (start > this.getLength()) break;
+            if (start + length > this.getLength()) {
+                length = this.getLength() - start;
+            }
+
             spansBuilder.add(Collections.singleton("plain-text"), start - lastKwEnd);
             spansBuilder.add(Collections.singleton("message"), length);
             lastKwEnd = start + length;
         }
 
-        spansBuilder.add(Collections.singleton("plain-text"), this.getLength() - lastKwEnd);
+        if (lastKwEnd < this.getLength()) {
+            spansBuilder.add(Collections.singleton("plain-text"), this.getLength() - lastKwEnd);
+        }
+
         return spansBuilder.create();
     }
 
