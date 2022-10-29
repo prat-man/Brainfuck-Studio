@@ -84,7 +84,7 @@ public class Interpreter8 extends Interpreter {
                 int sum = jumps[i];
                 dataPointer += sum;
                 if (dataPointer < 0 || dataPointer >= this.memory.length) {
-                    tabData.getInterpretTerminal().writeMessage("\nError: Memory index out of bounds " + dataPointer + "\n");
+                    tabData.getInterpretTerminal().writeError("\nError: Memory index out of bounds " + dataPointer + "\n");
                     this.stop(false);
                 }
             }

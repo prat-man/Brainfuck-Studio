@@ -1,7 +1,6 @@
 package in.pratanumandal.brainfuck.engine.processor;
 
 import in.pratanumandal.brainfuck.common.Utils;
-import in.pratanumandal.brainfuck.engine.UnmatchedBracketException;
 import in.pratanumandal.brainfuck.gui.TabData;
 import javafx.util.Pair;
 import org.fxmisc.richtext.CodeArea;

@@ -1,13 +1,11 @@
 package in.pratanumandal.brainfuck.engine.debugger;
 
 import in.pratanumandal.brainfuck.common.Configuration;
-import in.pratanumandal.brainfuck.common.Constants;
 import in.pratanumandal.brainfuck.common.Utils;
 import in.pratanumandal.brainfuck.engine.Memory;
 import in.pratanumandal.brainfuck.engine.UnmatchedBracketException;
 import in.pratanumandal.brainfuck.gui.NotificationManager;
 import in.pratanumandal.brainfuck.gui.TabData;
-import in.pratanumandal.brainfuck.gui.TableViewExtra;
 import javafx.application.Platform;
 import javafx.scene.control.Slider;
 
@@ -59,7 +57,7 @@ public class Debugger16 extends Debugger {
             } else if (ch == '>') {
                 dataPointer++;
                 if (dataPointer >= this.memory.length) {
-                    tabData.getDebugTerminal().writeMessage("\nError: Memory index out of bounds " + dataPointer + "\n");
+                    tabData.getDebugTerminal().writeError("\nError: Memory index out of bounds " + dataPointer + "\n");
                     this.stop(false);
                 }
                 else {
@@ -72,7 +70,7 @@ public class Debugger16 extends Debugger {
             } else if (ch == '<') {
                 dataPointer--;
                 if (dataPointer < 0) {
-                    tabData.getDebugTerminal().writeMessage("\nError: Memory index out of bounds " + dataPointer + "\n");
+                    tabData.getDebugTerminal().writeError("\nError: Memory index out of bounds " + dataPointer + "\n");
                     this.stop(false);
                 }
                 else {

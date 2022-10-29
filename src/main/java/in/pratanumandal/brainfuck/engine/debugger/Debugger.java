@@ -1,18 +1,14 @@
 package in.pratanumandal.brainfuck.engine.debugger;
 
 import in.pratanumandal.brainfuck.common.Configuration;
+import in.pratanumandal.brainfuck.common.Constants;
 import in.pratanumandal.brainfuck.common.Utils;
 import in.pratanumandal.brainfuck.engine.UnmatchedBracketException;
 import in.pratanumandal.brainfuck.gui.TabData;
-import in.pratanumandal.brainfuck.common.Constants;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
-import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
-import javafx.scene.input.ContextMenuEvent;
 import org.fxmisc.richtext.CodeArea;
-import org.reactfx.Change;
 
 import java.util.HashMap;
 import java.util.Map;

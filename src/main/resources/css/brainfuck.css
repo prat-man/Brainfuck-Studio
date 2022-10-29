@@ -447,6 +447,13 @@
 .terminal.code-area .paragraph-box .text.message {
     -fx-fill: gray;
 }
+.terminal.code-area .paragraph-box .text.error {
+    -fx-fill: #FF6B4A;
+}
+.terminal.code-area .paragraph-box .text.input {
+    -fx-fill: #6FC951;
+    -fx-font-weight: normal;
+}
 
 .slider .thumb {
     -fx-background-color: white;

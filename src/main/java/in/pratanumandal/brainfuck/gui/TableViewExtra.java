@@ -1,11 +1,11 @@
 package in.pratanumandal.brainfuck.gui;
 
-import java.util.LinkedHashSet;
-
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.util.Callback;
+
+import java.util.LinkedHashSet;
 
 public class TableViewExtra<T> {
 

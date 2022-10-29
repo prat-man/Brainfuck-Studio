@@ -1,7 +1,6 @@
 package in.pratanumandal.brainfuck.engine.processor.translator;
 
 import in.pratanumandal.brainfuck.common.Configuration;
-import in.pratanumandal.brainfuck.common.Constants;
 import in.pratanumandal.brainfuck.common.Utils;
 import in.pratanumandal.brainfuck.gui.NotificationManager;
 import in.pratanumandal.brainfuck.gui.TabData;
