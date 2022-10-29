@@ -52,7 +52,7 @@ public class Controller {
     private final List<TabData> tabDataList = new ArrayList<>();
 
     private final ChangeListener charCountListener = (ChangeListener<String>) (observableValue, oldValue, newValue) -> { updateTextStatus(); };
-    private final ChangeListener caretPositonListener = (ChangeListener<Integer>) (observableValue, oldValue, newValue) -> { updateCaretStatus(); };
+    private final ChangeListener caretPositionListener = (ChangeListener<Integer>) (observableValue, oldValue, newValue) -> { updateCaretStatus(); };
 
     private TabData currentTab;
 
@@ -716,7 +716,7 @@ public class Controller {
 
                 if (currentTab != null) {
                     currentTab.getCodeArea().textProperty().removeListener(charCountListener);
-                    currentTab.getCodeArea().caretPositionProperty().removeListener(caretPositonListener);
+                    currentTab.getCodeArea().caretPositionProperty().removeListener(caretPositionListener);
                 }
 
                 currentTab = tabData;
@@ -724,7 +724,7 @@ public class Controller {
                 updateCaretStatus();
 
                 currentTab.getCodeArea().textProperty().addListener(charCountListener);
-                currentTab.getCodeArea().caretPositionProperty().addListener(caretPositonListener);
+                currentTab.getCodeArea().caretPositionProperty().addListener(caretPositionListener);
             }
         });
 
