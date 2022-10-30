@@ -9,6 +9,8 @@ import in.pratanumandal.brainfuck.engine.processor.translator.JavaTranslator;
 import in.pratanumandal.brainfuck.engine.processor.translator.JavaTranslatorFast;
 import in.pratanumandal.brainfuck.engine.processor.translator.PythonTranslator;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.BooleanBinding;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
@@ -68,6 +70,12 @@ public class Controller {
     private final Object processLock = new Object();
 
     @FXML private TabPane tabPane;
+    @FXML private VBox placeHolder;
+
+    @FXML private SplitMenuButton saveFileButton;
+    @FXML private Button debugButton;
+    @FXML private Button interpretButton;
+    @FXML private MenuButton exportButton;
 
     @FXML private ComboBox<String> fontSizeChooser;
 
@@ -111,12 +119,7 @@ public class Controller {
             }
             catch (IOException e) {
                 e.printStackTrace();
-                addUntitledTab();
             }
-        }
-        // add a new untitled tab in the beginning
-        else {
-            addUntitledTab();
         }
 
         // allow reordering of tabs
@@ -167,6 +170,24 @@ public class Controller {
             }
             else {
                 AnchorPane.setBottomAnchor(notificationPane, 50.0);
+            }
+        });
+
+        // show placeholder if no tabs are open
+        BooleanBinding bb = Bindings.isEmpty(tabPane.getTabs());
+        placeHolder.visibleProperty().bind(bb);
+        placeHolder.managedProperty().bind(bb);
+
+        // disable buttons if no tabs are open
+        saveFileButton.disableProperty().bind(bb);
+        debugButton.disableProperty().bind(bb);
+        interpretButton.disableProperty().bind(bb);
+        exportButton.disableProperty().bind(bb);
+
+        bb.addListener((obs, oldVal, newVal) -> {
+            if (newVal) {
+                this.updateTextStatus();
+                this.updateCaretStatus();
             }
         });
     }
@@ -667,10 +688,6 @@ public class Controller {
                     tabData.getInterpreter().stop();
                     tabData.getInterpretTerminal().setVisible(false);
                 }
-            }
-
-            if (tabDataList.isEmpty()) {
-                addUntitledTab();
             }
 
             // clean up subscription
@@ -1507,6 +1524,8 @@ public class Controller {
 
     @FXML
     private void debug() {
+        if (tabPane.getTabs().isEmpty()) return;
+
         Thread thread = new Thread(() -> {
             synchronized (processLock) {
                 TabData tabData = currentTab;
@@ -1540,6 +1559,8 @@ public class Controller {
 
     @FXML
     private void interpret() {
+        if (tabPane.getTabs().isEmpty()) return;
+
         Thread thread = new Thread(() -> {
             synchronized (processLock) {
                 TabData tabData = currentTab;
@@ -1570,6 +1591,8 @@ public class Controller {
 
     @FXML
     private void exportToC() {
+        if (tabPane.getTabs().isEmpty()) return;
+
         TabData tabData = currentTab;
         saveFile();
         if (tabData.getFilePath() != null) {
@@ -1580,6 +1603,8 @@ public class Controller {
 
     @FXML
     private void exportToJava() {
+        if (tabPane.getTabs().isEmpty()) return;
+
         TabData tabData = currentTab;
         saveFile();
         if (tabData.getFilePath() != null) {
@@ -1590,6 +1615,8 @@ public class Controller {
 
     @FXML
     private void exportToJavaFast() {
+        if (tabPane.getTabs().isEmpty()) return;
+
         TabData tabData = currentTab;
         saveFile();
         if (tabData.getFilePath() != null) {
@@ -1600,6 +1627,8 @@ public class Controller {
 
     @FXML
     private void exportToPython() {
+        if (tabPane.getTabs().isEmpty()) return;
+
         TabData tabData = currentTab;
         saveFile();
         if (tabData.getFilePath() != null) {
@@ -1628,31 +1657,44 @@ public class Controller {
     }
 
     private void updateTextStatus() {
-        CodeArea codeArea = currentTab.getCodeArea();
+        if (tabPane.getTabs().isEmpty()) {
+            charCount.setText("Characters");
+            lineCount.setText("Lines");
+        }
+        else {
+            CodeArea codeArea = currentTab.getCodeArea();
 
-        int chars = codeArea.getText().length();
-        String charsStr = NumberFormat.getNumberInstance(Locale.US).format(chars);
-        charCount.setText(charsStr + " characters");
+            int chars = codeArea.getText().length();
+            String charsStr = NumberFormat.getNumberInstance(Locale.US).format(chars);
+            charCount.setText(charsStr + " characters");
 
-        int lines = codeArea.getParagraphs().size();
-        String linesStr = NumberFormat.getNumberInstance(Locale.US).format(lines);
-        lineCount.setText(linesStr + " lines");
+            int lines = codeArea.getParagraphs().size();
+            String linesStr = NumberFormat.getNumberInstance(Locale.US).format(lines);
+            lineCount.setText(linesStr + " lines");
+        }
     }
 
     private void updateCaretStatus() {
-        CodeArea codeArea = currentTab.getCodeArea();
+        if (tabPane.getTabs().isEmpty()) {
+            caretPosition.setText("Position");
+            caretRow.setText("Line");
+            caretColumn.setText("Column");
+        }
+        else {
+            CodeArea codeArea = currentTab.getCodeArea();
 
-        int pos = codeArea.getCaretPosition() + 1;
-        int row = codeArea.getCurrentParagraph() + 1;
-        int col = codeArea.getCaretColumn() + 1;
+            int pos = codeArea.getCaretPosition() + 1;
+            int row = codeArea.getCurrentParagraph() + 1;
+            int col = codeArea.getCaretColumn() + 1;
 
-        String posStr = NumberFormat.getNumberInstance(Locale.US).format(pos);
-        String rowStr = NumberFormat.getNumberInstance(Locale.US).format(row);
-        String colStr = NumberFormat.getNumberInstance(Locale.US).format(col);
+            String posStr = NumberFormat.getNumberInstance(Locale.US).format(pos);
+            String rowStr = NumberFormat.getNumberInstance(Locale.US).format(row);
+            String colStr = NumberFormat.getNumberInstance(Locale.US).format(col);
 
-        caretPosition.setText("Position: " + posStr);
-        caretRow.setText("Line: " + rowStr);
-        caretColumn.setText("Column: " + colStr);
+            caretPosition.setText("Position: " + posStr);
+            caretRow.setText("Line: " + rowStr);
+            caretColumn.setText("Column: " + colStr);
+        }
     }
 
     private void setFontSize(TabData tabData) {
