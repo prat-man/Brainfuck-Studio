@@ -233,7 +233,7 @@ public class Controller {
             else if (keyComb9.match(event)) {
                 findPrevious();
             }
-            else if (this.currentTab.getDebugger() != null) {
+            else if (this.currentTab != null && this.currentTab.getDebugger() != null) {
                 if (keyComb10.match(event)) {
                     this.currentTab.getDebugger().resume();
                 }
@@ -857,6 +857,8 @@ public class Controller {
 
     @FXML
     public void saveFile() {
+        if (tabPane.getTabs().isEmpty()) return;
+
         TabData tabData = currentTab;
 
         if (tabData.getFilePath() == null) {
@@ -876,6 +878,8 @@ public class Controller {
 
     @FXML
     public void saveAsFile() {
+        if (tabPane.getTabs().isEmpty()) return;
+
         FileChooser fileChooser = new FileChooser();
 
         fileChooser.setTitle(Constants.APPLICATION_NAME);
