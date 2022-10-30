@@ -1,9 +1,9 @@
 package in.pratanumandal.brainfuck.common;
 
 import in.pratanumandal.brainfuck.engine.UnmatchedBracketException;
-import in.pratanumandal.brainfuck.gui.Main;
-import in.pratanumandal.brainfuck.gui.NotificationManager;
-import in.pratanumandal.brainfuck.gui.TabData;
+import in.pratanumandal.brainfuck.gui.BrainfuckStudioApplication;
+import in.pratanumandal.brainfuck.gui.component.NotificationManager;
+import in.pratanumandal.brainfuck.gui.component.TabData;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -73,7 +73,7 @@ public class Utils {
     }
 
     public static void browseURL(String url) {
-        Main.hostServices.showDocument(url);
+        BrainfuckStudioApplication.hostServices.showDocument(url);
     }
 
     public static void runAndWait(Runnable action) {

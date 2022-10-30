@@ -197,12 +197,9 @@
 }
 
 .status-bar,
-.tab-header-background {
-    -fx-background-color: #626770;
-}
-
+.tab-header-background,
 .tab-pane {
-    -fx-background-color: #535861;
+    -fx-background-color: #626770;
 }
 
 .tab {

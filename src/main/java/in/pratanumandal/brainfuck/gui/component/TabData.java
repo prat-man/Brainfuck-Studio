@@ -1,4 +1,4 @@
-package in.pratanumandal.brainfuck.gui;
+package in.pratanumandal.brainfuck.gui.component;
 
 import in.pratanumandal.brainfuck.common.Configuration;
 import in.pratanumandal.brainfuck.common.Constants;
@@ -6,6 +6,10 @@ import in.pratanumandal.brainfuck.common.Utils;
 import in.pratanumandal.brainfuck.engine.Memory;
 import in.pratanumandal.brainfuck.engine.debugger.Debugger;
 import in.pratanumandal.brainfuck.engine.processor.interpreter.Interpreter;
+import in.pratanumandal.brainfuck.gui.codearea.CustomCodeArea;
+import in.pratanumandal.brainfuck.gui.codearea.FXTerminal;
+import in.pratanumandal.brainfuck.gui.highlight.BracketHighlighter;
+import in.pratanumandal.brainfuck.gui.highlight.Highlighter;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;

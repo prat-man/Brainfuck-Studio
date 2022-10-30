@@ -1,7 +1,8 @@
-package in.pratanumandal.brainfuck.gui;
+package in.pratanumandal.brainfuck.gui.highlight;
 
 import in.pratanumandal.brainfuck.common.Configuration;
 import in.pratanumandal.brainfuck.common.Utils;
+import in.pratanumandal.brainfuck.gui.component.TabData;
 import javafx.application.Platform;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.model.StyleSpans;

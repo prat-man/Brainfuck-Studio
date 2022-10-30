@@ -2,6 +2,7 @@ package in.pratanumandal.brainfuck.gui;
 
 import in.pratanumandal.brainfuck.common.Constants;
 import in.pratanumandal.brainfuck.common.Utils;
+import in.pratanumandal.brainfuck.gui.controller.Controller;
 import javafx.application.Application;
 import javafx.application.HostServices;
 import javafx.fxml.FXMLLoader;
@@ -17,15 +18,15 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-public class Main extends Application {
+public class BrainfuckStudioApplication extends Application {
 
     public static Stage superStage;
     public static HostServices hostServices;
 
     private static void loadFonts() {
-        Font.loadFont(Main.class.getClassLoader().getResourceAsStream("fonts/OpenSans-Regular.ttf"), 12);
-        Font.loadFont(Main.class.getClassLoader().getResourceAsStream("fonts/OpenSans-Bold.ttf"), 12);
-        Font.loadFont(Main.class.getClassLoader().getResourceAsStream("fonts/VeraMono.ttf"), 12);
+        Font.loadFont(BrainfuckStudioApplication.class.getClassLoader().getResourceAsStream("fonts/OpenSans-Regular.ttf"), 12);
+        Font.loadFont(BrainfuckStudioApplication.class.getClassLoader().getResourceAsStream("fonts/OpenSans-Bold.ttf"), 12);
+        Font.loadFont(BrainfuckStudioApplication.class.getClassLoader().getResourceAsStream("fonts/VeraMono.ttf"), 12);
     }
 
     @Override

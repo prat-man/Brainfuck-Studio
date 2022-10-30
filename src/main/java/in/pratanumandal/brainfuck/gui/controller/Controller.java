@@ -1,4 +1,4 @@
-package in.pratanumandal.brainfuck.gui;
+package in.pratanumandal.brainfuck.gui.controller;
 
 import in.pratanumandal.brainfuck.common.Configuration;
 import in.pratanumandal.brainfuck.common.Constants;
@@ -8,6 +8,13 @@ import in.pratanumandal.brainfuck.engine.processor.translator.CTranslator;
 import in.pratanumandal.brainfuck.engine.processor.translator.JavaTranslator;
 import in.pratanumandal.brainfuck.engine.processor.translator.JavaTranslatorFast;
 import in.pratanumandal.brainfuck.engine.processor.translator.PythonTranslator;
+import in.pratanumandal.brainfuck.gui.codearea.CustomCodeArea;
+import in.pratanumandal.brainfuck.gui.codearea.FXTerminal;
+import in.pratanumandal.brainfuck.gui.component.DefaultContextMenu;
+import in.pratanumandal.brainfuck.gui.component.NotificationManager;
+import in.pratanumandal.brainfuck.gui.component.TabData;
+import in.pratanumandal.brainfuck.gui.highlight.BracketHighlighter;
+import in.pratanumandal.brainfuck.gui.highlight.Highlighter;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
@@ -173,18 +180,21 @@ public class Controller {
             }
         });
 
+        // create binding for checking if tabs are empty
+        BooleanBinding emptyTabPaneBinding = Bindings.isEmpty(tabPane.getTabs());
+
         // show placeholder if no tabs are open
-        BooleanBinding bb = Bindings.isEmpty(tabPane.getTabs());
-        placeHolder.visibleProperty().bind(bb);
-        placeHolder.managedProperty().bind(bb);
+        placeHolder.visibleProperty().bind(emptyTabPaneBinding);
+        placeHolder.managedProperty().bind(emptyTabPaneBinding);
 
         // disable buttons if no tabs are open
-        saveFileButton.disableProperty().bind(bb);
-        debugButton.disableProperty().bind(bb);
-        interpretButton.disableProperty().bind(bb);
-        exportButton.disableProperty().bind(bb);
+        saveFileButton.disableProperty().bind(emptyTabPaneBinding);
+        debugButton.disableProperty().bind(emptyTabPaneBinding);
+        interpretButton.disableProperty().bind(emptyTabPaneBinding);
+        exportButton.disableProperty().bind(emptyTabPaneBinding);
 
-        bb.addListener((obs, oldVal, newVal) -> {
+        // update status if no tabs are open
+        emptyTabPaneBinding.addListener((obs, oldVal, newVal) -> {
             if (newVal) {
                 this.updateTextStatus();
                 this.updateCaretStatus();

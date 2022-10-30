@@ -1,4 +1,4 @@
-package in.pratanumandal.brainfuck.gui;
+package in.pratanumandal.brainfuck.gui.codearea;
 
 import in.pratanumandal.brainfuck.common.SortedList;
 import javafx.application.Platform;

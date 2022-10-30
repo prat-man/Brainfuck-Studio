@@ -2,7 +2,7 @@ package in.pratanumandal.brainfuck.engine.processor.interpreter;
 
 import in.pratanumandal.brainfuck.common.Configuration;
 import in.pratanumandal.brainfuck.engine.processor.Processor;
-import in.pratanumandal.brainfuck.gui.TabData;
+import in.pratanumandal.brainfuck.gui.component.TabData;
 
 public abstract class Interpreter extends Processor {
 

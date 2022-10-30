@@ -1,4 +1,4 @@
-package in.pratanumandal.brainfuck.gui;
+package in.pratanumandal.brainfuck.gui.component;
 
 import javafx.application.Platform;
 import javafx.scene.control.Button;

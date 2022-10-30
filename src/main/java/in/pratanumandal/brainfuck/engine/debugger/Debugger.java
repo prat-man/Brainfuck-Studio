@@ -4,7 +4,7 @@ import in.pratanumandal.brainfuck.common.Configuration;
 import in.pratanumandal.brainfuck.common.Constants;
 import in.pratanumandal.brainfuck.common.Utils;
 import in.pratanumandal.brainfuck.engine.UnmatchedBracketException;
-import in.pratanumandal.brainfuck.gui.TabData;
+import in.pratanumandal.brainfuck.gui.component.TabData;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.scene.control.Alert;

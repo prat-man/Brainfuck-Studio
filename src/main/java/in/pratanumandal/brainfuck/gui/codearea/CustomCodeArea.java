@@ -1,6 +1,9 @@
-package in.pratanumandal.brainfuck.gui;
+package in.pratanumandal.brainfuck.gui.codearea;
 
 import in.pratanumandal.brainfuck.common.Utils;
+import in.pratanumandal.brainfuck.gui.component.TabData;
+import in.pratanumandal.brainfuck.gui.component.TextInsertionListener;
+import in.pratanumandal.brainfuck.gui.highlight.Highlighter;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.KeyCode;
