@@ -202,6 +202,10 @@
     -fx-background-color: #626770;
 }
 
+.tab-pane {
+    -fx-tab-max-width: 200;
+}
+
 .tab {
     -fx-background-color: #535861;
     -fx-background-insets: 0 1 -1 0;

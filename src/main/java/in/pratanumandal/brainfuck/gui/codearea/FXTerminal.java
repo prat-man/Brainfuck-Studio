@@ -9,6 +9,7 @@ import org.fxmisc.richtext.Caret;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.model.StyleSpans;
 import org.fxmisc.richtext.model.StyleSpansBuilder;
+import org.fxmisc.undo.UndoManager;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -59,58 +60,32 @@ public class FXTerminal extends CodeArea {
         this.setEditable(false);
 
         // disable changing text
-        this.caretPositionProperty().addListener((obs, oldVal, newVal) -> {
-            IndexRange selection = this.getSelection();
-            boolean readLock = this.readLock.get();
-            boolean editable = false;
-
-            if (readLock) {
-                if (selection.getLength() > 0) {
-                    if (selection.getStart() >= this.existingText.length() &&
-                            selection.getEnd() >= this.existingText.length()) {
-                        editable = true;
-                    }
-                }
-                else if (newVal >= this.existingText.length()) {
-                    editable = true;
-                }
-            }
-
-            this.setEditable(editable);
-        });
+        this.caretPositionProperty().addListener((obs, oldVal, newVal) -> this.updateEditable());
+        this.selectionProperty().addListener((obs, oldVal, newVal) -> this.updateEditable());
 
         // disable lock when newline is in input
         this.textProperty().addListener((obs, oldVal, newVal) -> {
             if (this.readLock.get()) {
                 if (newVal.substring(this.existingText.length()).contains("\n")) {
-                    synchronized (this.readLock) {
-                        this.readLock.set(false);
-                        this.readLock.notifyAll();
-                    }
-
+                    this.release();
                     this.inputStyle = null;
+
+                    // forget undo history
+                    this.forgetUndoHistory();
                 }
                 else {
                     if (this.inputStyle == null) {
-                        this.inputStyle = this.addStyle(this.getLength(), 0, "input");
+                        this.inputStyle = this.addStyle(this.existingText.length(), 0, "input");
                     }
 
                     // compute new length
                     this.inputStyle.length = this.getLength() - inputStyle.start;
 
-                    // set highlighting
-                    this.setStyleSpans(0, this.computeHighlighting());
+                    // update highlighting
+                    this.updateHighlighting();
                 }
             }
         });
-
-        // correct mouse click at end of text
-        /*this.setOnMouseClicked(event -> {
-            if (this.getCaretPosition() == this.getLength()) {
-                this.moveTo(0);
-                this.requestFollowCaret();
-            }
-        });*/
 
         this.writeBuffer = new StringBuilder();
         this.styleList = new SortedList<>(Comparator.comparingInt(obj -> obj.start));
@@ -129,14 +104,15 @@ public class FXTerminal extends CodeArea {
                             // set the text
                             this.replaceText(0, this.getLength(), this.existingText);
 
-                            // set highlighting
-                            this.setStyleSpans(0, this.computeHighlighting());
+                            // update highlighting
+                            this.updateHighlighting();
 
                             // reset properties
-                            /*this.setScrollTop(Double.MAX_VALUE);
-                            this.positionCaret(this.getLength());*/
                             this.moveTo(this.getLength());
                             this.requestFollowCaret();
+
+                            // forget undo history
+                            this.forgetUndoHistory();
                         });
                     } else {
                         Platform.runLater(() -> {
@@ -149,14 +125,17 @@ public class FXTerminal extends CodeArea {
                             // set the text
                             this.replaceText(0, this.getLength(), this.existingText);
 
-                            // set highlighting
-                            this.setStyleSpans(0, this.computeHighlighting());
+                            // update highlighting
+                            this.updateHighlighting();
 
                             // reset properties
                             this.scrollXToPixel(scrollLeft);
                             this.scrollYToPixel(scrollTop);
                             this.moveTo(caretPos);
                             this.selectRange(selection.getStart(), selection.getEnd());
+
+                            // forget undo history
+                            this.forgetUndoHistory();
                         });
                     }
                 }
@@ -215,11 +194,35 @@ public class FXTerminal extends CodeArea {
         return this.existingText.length() + this.writeBuffer.length();
     }
 
+    public void updateEditable() {
+        IndexRange selection = this.getSelection();
+        int caretPosition = this.getCaretPosition();
+        boolean readLock = this.readLock.get();
+        boolean editable = false;
+
+        if (readLock) {
+            if (selection.getLength() > 0) {
+                if (selection.getStart() >= this.existingText.length() &&
+                        selection.getEnd() >= this.existingText.length()) {
+                    editable = true;
+                }
+            }
+            else if (caretPosition >= this.existingText.length()) {
+                editable = true;
+            }
+        }
+
+        boolean finalEditable = editable;
+        Platform.runLater(() -> this.setEditable(finalEditable));
+    }
+
     public Character readChar() {
         if (this.readBuffer.isEmpty()) {
             if (this.autoScroll.get()) {
-                this.moveTo(this.getLength());
-                this.requestFollowCaret();
+                Platform.runLater(() -> {
+                    this.moveTo(this.getLength());
+                    this.requestFollowCaret();
+                });
             }
 
             Platform.runLater(() -> this.requestFocus());
@@ -227,6 +230,7 @@ public class FXTerminal extends CodeArea {
             synchronized (this.readLock) {
                 try {
                     this.readLock.set(true);
+                    this.updateEditable();
                     this.readLock.wait();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -268,18 +272,31 @@ public class FXTerminal extends CodeArea {
         }
     }
 
+    public void forgetUndoHistory() {
+        UndoManager undoManager = this.getUndoManager();
+        undoManager.forgetHistory();
+    }
+
     public void reset() {
-        this.clear();
         this.readBuffer = "";
+        this.inputStyle = null;
+        this.clear();
     }
 
     public void clear() {
+        this.existingText = "";
+
         synchronized (this.styleList) {
             this.styleList.clear();
         }
+        if (this.inputStyle != null) {
+            this.inputStyle = this.addStyle(this.existingText.length(), 0, "input");
+        }
 
-        this.existingText = "";
-        Platform.runLater(() -> this.replaceText(0, this.getLength(), this.existingText));
+        Platform.runLater(() -> {
+            this.replaceText(0, this.getLength(), this.existingText);
+            this.forgetUndoHistory();
+        });
     }
 
     public void flush() {
@@ -308,13 +325,22 @@ public class FXTerminal extends CodeArea {
                 .replaceAll("[\\p{Cc}\\p{Cf}\\p{Co}\\p{Cn}&&[^\\s]]", "\uFFFD");
     }
 
+    private void updateHighlighting() {
+        if (this.styleList.isEmpty()) {
+            this.clearStyle(0, this.getLength());
+        }
+        else {
+            this.setStyleSpans(0, this.computeHighlighting());
+        }
+    }
+
     private StyleSpans<Collection<String>> computeHighlighting() {
         StyleSpansBuilder<Collection<String>> spansBuilder = new StyleSpansBuilder<>();
 
         int lastKwEnd = 0;
 
         synchronized (this.styleList) {
-            for (Style style : styleList) {
+            for (Style style : this.styleList) {
                 // ignore styles for text that has not been actually written yet
                 if (style.start > this.getLength()) break;
                 if (style.start + style.length > this.getLength()) {
