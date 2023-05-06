@@ -577,3 +577,31 @@
 .virtualized-scroll-pane, .scroll-pane, .corner, .filler {
     -fx-background-color: #626770;
 }
+
+.tab .tab-close-button {
+    -fx-background-color: #A0A0A0;
+    -fx-shape: "M 0,0 H1 L 4,3 7,0 H8 V1 L 5,4 8,7 V8 H7 L 4,5 1,8 H0 V7 L 3,4 0,1 Z";
+    -fx-scale-shape: false;
+    -fx-effect: dropshadow(two-pass-box , rgba(140, 140, 140, 0.4), 1, 0.0 , 0, 1);
+}
+
+.tab .tab-close-button:hover {
+    -fx-background-color: #C8C8C8;
+    -fx-shape: "M 0,0 H1 L 4,3 7,0 H8 V1 L 5,4 8,7 V8 H7 L 4,5 1,8 H0 V7 L 3,4 0,1 Z";
+    -fx-scale-shape: false;
+    -fx-effect: dropshadow(two-pass-box , rgba(180, 180, 180, 0.4), 1, 0.0 , 0, 1);
+}
+
+.tab.modified .tab-close-button {
+    -fx-background-color: #83AA83;
+    -fx-shape: "M 4, 8 a 4,4 0 1,1 8,0 a 4,4 0 1,1 -8,0";
+    -fx-scale-shape: false;
+    -fx-effect: none;
+}
+
+.tab.modified .tab-close-button:hover {
+    -fx-background-color: #83AA83;
+    -fx-shape: "M 0,0 H1 L 4,3 7,0 H8 V1 L 5,4 8,7 V8 H7 L 4,5 1,8 H0 V7 L 3,4 0,1 Z";
+    -fx-scale-shape: false;
+    -fx-effect: dropshadow(two-pass-box , rgba(180, 180, 180, 0.4), 1, 0.0 , 0, 1);
+}

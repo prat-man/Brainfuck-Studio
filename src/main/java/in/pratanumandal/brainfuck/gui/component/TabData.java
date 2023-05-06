@@ -60,8 +60,6 @@ public class TabData {
 
     private boolean largeFile;
 
-    private String tabHeader;
-
     private double dividerPosition;
 
     private ScheduledFuture<?> saveFuture;
@@ -85,7 +83,7 @@ public class TabData {
             this.tab.setText("Untitled " + untitledTabIndex++);
 
             // set modified
-            this.modified = true;
+            this.setModified(true);
         }
         else {
             File file = new File(this.filePath);
@@ -94,7 +92,7 @@ public class TabData {
             this.tab.setText(file.getName());
 
             // set modified
-            this.modified = false;
+            this.setModified(false);
 
             // set tab tooltip
             Tooltip tooltip = new Tooltip(file.getAbsolutePath());
@@ -121,10 +119,6 @@ public class TabData {
 
         codeArea.setOnKeyPressed(event -> this.pauseAutoSave = true);
         codeArea.setOnKeyReleased(event -> this.pauseAutoSave = false);
-
-        tabHeader = tab.getText();
-
-        this.setModified(this.modified);
 
         this.registerAutoSave();
     }
@@ -304,7 +298,6 @@ public class TabData {
 
         // set tab text
         this.tab.setText(file.getName());
-        tabHeader = tab.getText();
 
         // set tab tooltip
         Tooltip tooltip = new Tooltip(file.getAbsolutePath());
@@ -324,9 +317,10 @@ public class TabData {
         this.modified = modified;
 
         if (this.modified) {
-            this.tab.setText("\u26AB " + tabHeader);
-        } else {
-            this.tab.setText(tabHeader);
+            this.tab.getStyleClass().add("modified");
+        }
+        else {
+            this.tab.getStyleClass().removeAll("modified");
         }
     }
 
