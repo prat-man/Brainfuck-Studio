@@ -520,8 +520,8 @@ public class Controller {
         Label debugSpeedLabel = new Label("Speed");
         debugSpeedControls.getChildren().add(debugSpeedLabel);
 
-        Slider debugSpeed = new Slider(0, 475, 350);
-        debugSpeed.setMajorTickUnit(25);
+        Slider debugSpeed = new Slider(0, 500, 350);
+        debugSpeed.setMajorTickUnit(1);
         debugSpeed.setMinorTickCount(0);
         debugSpeed.setSnapToTicks(true);
         HBox.setHgrow(debugSpeed, Priority.ALWAYS);
@@ -814,7 +814,7 @@ public class Controller {
 
         fileChooser.setInitialDirectory(Constants.BROWSE_DIRECTORY.get());
 
-        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Brainfuck files (*.bf)", "*.bf");
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Brainfuck files (*.bf, *.b)", "*.bf", "*.b");
         fileChooser.getExtensionFilters().add(extFilter);
 
         File file = fileChooser.showOpenDialog(tabPane.getScene().getWindow());
@@ -896,7 +896,7 @@ public class Controller {
 
         fileChooser.setInitialDirectory(Constants.BROWSE_DIRECTORY.get());
 
-        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Brainfuck files (*.bf)", "*.bf");
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Brainfuck files (*.bf, *.b)", "*.bf", "*.b");
         fileChooser.getExtensionFilters().add(extFilter);
 
         File file = fileChooser.showSaveDialog(tabPane.getScene().getWindow());

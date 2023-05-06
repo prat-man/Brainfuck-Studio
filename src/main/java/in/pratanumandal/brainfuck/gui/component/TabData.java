@@ -77,18 +77,24 @@ public class TabData {
         this.splitPane = splitPane;
         this.codeArea = codeArea;
         this.filePath = filePath;
-        this.modified = false;
         this.dividerPosition = 0.5;
         this.memory = FXCollections.observableArrayList();
 
         if (this.filePath == null) {
-            tab.setText("Untitled " + untitledTabIndex++);
+            // set tab text
+            this.tab.setText("Untitled " + untitledTabIndex++);
+
+            // set modified
+            this.modified = true;
         }
         else {
             File file = new File(this.filePath);
 
             // set tab text
             this.tab.setText(file.getName());
+
+            // set modified
+            this.modified = false;
 
             // set tab tooltip
             Tooltip tooltip = new Tooltip(file.getAbsolutePath());
@@ -117,6 +123,8 @@ public class TabData {
         codeArea.setOnKeyReleased(event -> this.pauseAutoSave = false);
 
         tabHeader = tab.getText();
+
+        this.setModified(this.modified);
 
         this.registerAutoSave();
     }
@@ -316,7 +324,7 @@ public class TabData {
         this.modified = modified;
 
         if (this.modified) {
-            tab.setText("\u26AB " + tabHeader);
+            this.tab.setText("\u26AB " + tabHeader);
         } else {
             this.tab.setText(tabHeader);
         }
