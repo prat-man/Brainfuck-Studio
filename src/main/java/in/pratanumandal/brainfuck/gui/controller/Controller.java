@@ -27,12 +27,44 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Hyperlink;
+import javafx.scene.control.IndexRange;
+import javafx.scene.control.Label;
+import javafx.scene.control.MenuButton;
+import javafx.scene.control.Slider;
+import javafx.scene.control.SplitMenuButton;
+import javafx.scene.control.SplitPane;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TitledPane;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.*;
-import javafx.scene.layout.*;
+import javafx.scene.input.ContextMenuEvent;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -1715,6 +1747,26 @@ public class Controller {
         tabData.getCodeArea().setStyle("-fx-font-size: " + fontSize + "px");
         tabData.getDebugTerminal().setStyle("-fx-font-size: " + fontSize + "px");
         tabData.getInterpretTerminal().setStyle("-fx-font-size: " + fontSize + "px");
+    }
+
+    public boolean exitApplication() {
+        for (TabData tabData : tabDataList.stream().toList()) {
+            Tab tab = tabData.getTab();
+            tabPane.getSelectionModel().select(tab);
+
+            StackPane close = (StackPane) tabPane.lookup(".tab-close-button");
+            close.fireEvent(new MouseEvent(MouseEvent.MOUSE_PRESSED,
+                    close.getLayoutX(), close.getLayoutY(),
+                    close.getLayoutX(), close.getLayoutY(),
+                    MouseButton.PRIMARY, 1,
+                    true, true, true, true, true, true, true, true, true, true,
+                    null));
+
+            if (tabDataList.contains(tabData))
+                break;
+        }
+
+        return tabDataList.isEmpty();
     }
 
 }

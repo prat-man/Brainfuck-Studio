@@ -14,13 +14,26 @@ import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.Slider;
+import javafx.scene.control.SplitPane;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TableView;
+import javafx.scene.control.ToggleButton;
+import javafx.scene.control.Tooltip;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.*;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardWatchEventKinds;
+import java.nio.file.WatchEvent;
+import java.nio.file.WatchKey;
+import java.nio.file.WatchService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
@@ -56,8 +69,9 @@ public class TabData {
     private BracketHighlighter bracketHighlighter;
 
     private String filePath;
-    private boolean modified;
 
+    private boolean modified;
+    private boolean untitled;
     private boolean largeFile;
 
     private double dividerPosition;
@@ -75,6 +89,7 @@ public class TabData {
         this.splitPane = splitPane;
         this.codeArea = codeArea;
         this.filePath = filePath;
+        this.modified = false;
         this.dividerPosition = 0.5;
         this.memory = FXCollections.observableArrayList();
 
@@ -82,17 +97,14 @@ public class TabData {
             // set tab text
             this.tab.setText("Untitled " + untitledTabIndex++);
 
-            // set modified
-            this.setModified(true);
+            // set untitled
+            this.setUntitled(true);
         }
         else {
             File file = new File(this.filePath);
 
             // set tab text
             this.tab.setText(file.getName());
-
-            // set modified
-            this.setModified(false);
 
             // set tab tooltip
             Tooltip tooltip = new Tooltip(file.getAbsolutePath());
@@ -321,6 +333,17 @@ public class TabData {
         }
         else {
             this.tab.getStyleClass().removeAll("modified");
+        }
+    }
+
+    public void setUntitled(boolean untitled) {
+        this.untitled = untitled;
+
+        if (this.untitled) {
+            this.tab.getStyleClass().add("untitled");
+        }
+        else {
+            this.tab.getStyleClass().removeAll("untitled");
         }
     }
 

@@ -2,7 +2,11 @@ package in.pratanumandal.brainfuck.gui.codearea;
 
 import in.pratanumandal.brainfuck.common.SortedList;
 import javafx.application.Platform;
-import javafx.scene.control.*;
+import javafx.scene.control.CheckMenuItem;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.IndexRange;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import org.fxmisc.richtext.Caret;

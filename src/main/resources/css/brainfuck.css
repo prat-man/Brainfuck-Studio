@@ -592,14 +592,16 @@
     -fx-effect: dropshadow(two-pass-box , rgba(180, 180, 180, 0.4), 1, 0.0 , 0, 1);
 }
 
-.tab.modified .tab-close-button {
+.tab.modified .tab-close-button,
+.tab.untitled .tab-close-button {
     -fx-background-color: #83AA83;
     -fx-shape: "M 4, 8 a 4,4 0 1,1 8,0 a 4,4 0 1,1 -8,0";
     -fx-scale-shape: false;
     -fx-effect: none;
 }
 
-.tab.modified .tab-close-button:hover {
+.tab.modified .tab-close-button:hover,
+.tab.untitled .tab-close-button:hover {
     -fx-background-color: #83AA83;
     -fx-shape: "M 0,0 H1 L 4,3 7,0 H8 V1 L 5,4 8,7 V8 H7 L 4,5 1,8 H0 V7 L 3,4 0,1 Z";
     -fx-scale-shape: false;
