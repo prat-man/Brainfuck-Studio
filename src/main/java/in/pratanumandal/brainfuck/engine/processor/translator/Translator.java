@@ -28,15 +28,17 @@ public abstract class Translator extends Processor {
     }
 
     public void start() {
-        String outputFilePath = tabData.getFilePath().substring(0, tabData.getFilePath().length() - 2) + this.getExtension();
-        this.outputFile = new File(outputFilePath);
-
         FileChooser fileChooser = new FileChooser();
 
         fileChooser.setTitle(Constants.APPLICATION_NAME);
 
-        fileChooser.setInitialDirectory(this.outputFile.getParentFile());
-        fileChooser.setInitialFileName(outputFile.getName());
+        if (tabData.getFilePath() != null) {
+            String outputFilePath = tabData.getFilePath().substring(0, tabData.getFilePath().length() - 2) + this.getExtension();
+            this.outputFile = new File(outputFilePath);
+
+            fileChooser.setInitialDirectory(this.outputFile.getParentFile());
+            fileChooser.setInitialFileName(this.outputFile.getName());
+        }
 
         fileChooser.getExtensionFilters().add(this.getExtensionFilter());
 

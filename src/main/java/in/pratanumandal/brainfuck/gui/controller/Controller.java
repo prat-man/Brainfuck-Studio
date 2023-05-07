@@ -1631,48 +1631,32 @@ public class Controller {
     private void exportToC() {
         if (tabPane.getTabs().isEmpty()) return;
 
-        TabData tabData = currentTab;
-        saveFile();
-        if (tabData.getFilePath() != null) {
-            CTranslator translator = new CTranslator(this.currentTab);
-            translator.start();
-        }
+        CTranslator translator = new CTranslator(this.currentTab);
+        translator.start();
     }
 
     @FXML
     private void exportToJava() {
         if (tabPane.getTabs().isEmpty()) return;
 
-        TabData tabData = currentTab;
-        saveFile();
-        if (tabData.getFilePath() != null) {
-            JavaTranslator translator = new JavaTranslator(this.currentTab);
-            translator.start();
-        }
+        JavaTranslator translator = new JavaTranslator(this.currentTab);
+        translator.start();
     }
 
     @FXML
     private void exportToJavaFast() {
         if (tabPane.getTabs().isEmpty()) return;
 
-        TabData tabData = currentTab;
-        saveFile();
-        if (tabData.getFilePath() != null) {
-            JavaTranslatorFast translator = new JavaTranslatorFast(this.currentTab);
-            translator.start();
-        }
+        JavaTranslatorFast translator = new JavaTranslatorFast(this.currentTab);
+        translator.start();
     }
 
     @FXML
     private void exportToPython() {
         if (tabPane.getTabs().isEmpty()) return;
 
-        TabData tabData = currentTab;
-        saveFile();
-        if (tabData.getFilePath() != null) {
-            PythonTranslator translator = new PythonTranslator(this.currentTab);
-            translator.start();
-        }
+        PythonTranslator translator = new PythonTranslator(this.currentTab);
+        translator.start();
     }
 
     private boolean saveFile(String filePath, String fileText) {
