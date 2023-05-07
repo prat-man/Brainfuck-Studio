@@ -1576,28 +1576,24 @@ public class Controller {
             synchronized (processLock) {
                 TabData tabData = currentTab;
 
-                Utils.runAndWait(() -> saveFile());
+                // stop and hide debugger
+                if (tabData.getDebugger() != null)
+                    tabData.getDebugger().stop();
+                tabData.getDebug().setVisible(false);
+                tabData.getDebugTerminal().setVisible(false);
 
-                if (tabData.getFilePath() != null) {
-                    // stop and hide debugger
-                    if (tabData.getDebugger() != null)
-                        tabData.getDebugger().stop();
-                    tabData.getDebug().setVisible(false);
-                    tabData.getDebugTerminal().setVisible(false);
+                // stop and hide interpreter
+                if (tabData.getInterpreter() != null)
+                    tabData.getInterpreter().stop();
+                tabData.getInterpretTerminal().setVisible(false);
 
-                    // stop and hide interpreter
-                    if (tabData.getInterpreter() != null)
-                        tabData.getInterpreter().stop();
-                    tabData.getInterpretTerminal().setVisible(false);
-
-                    // show and start debugger
-                    tabData.initializeDebugger();
-                    tabData.getDebug().setVisible(true);
-                    tabData.getDebugTerminal().setVisible(true);
-                    tabData.getTableView().scrollTo(0);
-                    tabData.getTableView().getSelectionModel().select(0);
-                    tabData.getDebugger().start();
-                }
+                // show and start debugger
+                tabData.initializeDebugger();
+                tabData.getDebug().setVisible(true);
+                tabData.getDebugTerminal().setVisible(true);
+                tabData.getTableView().scrollTo(0);
+                tabData.getTableView().getSelectionModel().select(0);
+                tabData.getDebugger().start();
             }
         });
         thread.start();
@@ -1611,25 +1607,21 @@ public class Controller {
             synchronized (processLock) {
                 TabData tabData = currentTab;
 
-                Utils.runAndWait(() -> saveFile());
+                // stop and hide debugger
+                if (tabData.getDebugger() != null)
+                    tabData.getDebugger().stop();
+                tabData.getDebug().setVisible(false);
+                tabData.getDebugTerminal().setVisible(false);
 
-                if (tabData.getFilePath() != null) {
-                    // stop and hide debugger
-                    if (tabData.getDebugger() != null)
-                        tabData.getDebugger().stop();
-                    tabData.getDebug().setVisible(false);
-                    tabData.getDebugTerminal().setVisible(false);
+                // stop and hide interpreter
+                if (tabData.getInterpreter() != null)
+                    tabData.getInterpreter().stop();
+                tabData.getInterpretTerminal().setVisible(false);
 
-                    // stop and hide interpreter
-                    if (tabData.getInterpreter() != null)
-                        tabData.getInterpreter().stop();
-                    tabData.getInterpretTerminal().setVisible(false);
-
-                    // show and start interpreter
-                    tabData.initializeInterpreter();
-                    tabData.getInterpretTerminal().setVisible(true);
-                    tabData.getInterpreter().start();
-                }
+                // show and start interpreter
+                tabData.initializeInterpreter();
+                tabData.getInterpretTerminal().setVisible(true);
+                tabData.getInterpreter().start();
             }
         });
         thread.start();
