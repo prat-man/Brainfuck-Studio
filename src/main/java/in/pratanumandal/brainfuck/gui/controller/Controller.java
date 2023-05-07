@@ -189,8 +189,11 @@ public class Controller {
         }
 
         // toggle search
-        searchButton.selectedProperty().addListener((observableValue, oldVal, newVal) -> {
-            findAndReplace.setVisible(newVal);
+        searchButton.selectedProperty().addListener((obs, oldVal, newVal) -> findAndReplace.setVisible(newVal));
+        searchButton.disableProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal) {
+                searchButton.setSelected(false);
+            }
         });
 
         // bind managed property with visible property find and replace
@@ -224,6 +227,7 @@ public class Controller {
         debugButton.disableProperty().bind(emptyTabPaneBinding);
         interpretButton.disableProperty().bind(emptyTabPaneBinding);
         exportButton.disableProperty().bind(emptyTabPaneBinding);
+        searchButton.disableProperty().bind(emptyTabPaneBinding);
 
         // update status if no tabs are open
         emptyTabPaneBinding.addListener((obs, oldVal, newVal) -> {
@@ -635,6 +639,8 @@ public class Controller {
         Button interpreterStopButton = new Button();
         Image stopImage = new Image(getClass().getClassLoader().getResourceAsStream("images/stop.png"));
         ImageView stopImageView = new ImageView(stopImage);
+        stopImageView.setFitHeight(16);
+        stopImageView.setFitWidth(16);
         interpreterStopButton.setGraphic(stopImageView);
         interpreterStopButton.getStyleClass().add("secondary");
         interpreterTerminalControls.getChildren().add(interpreterStopButton);
@@ -652,6 +658,8 @@ public class Controller {
         Button interpreterCloseButton = new Button();
         Image closeImage = new Image(getClass().getClassLoader().getResourceAsStream("images/close.png"));
         ImageView closeImageView = new ImageView(closeImage);
+        closeImageView.setFitHeight(16);
+        closeImageView.setFitWidth(16);
         interpreterCloseButton.setGraphic(closeImageView);
         interpreterCloseButton.getStyleClass().add("secondary");
         interpreterTerminalControls.getChildren().add(interpreterCloseButton);
@@ -796,6 +804,8 @@ public class Controller {
 
         Image image = new Image(getClass().getClassLoader().getResourceAsStream("images/" + imageStr + ".png"));
         ImageView imageView = new ImageView(image);
+        imageView.setFitHeight(16);
+        imageView.setFitWidth(16);
         button.setGraphic(imageView);
 
         Tooltip tooltip = new Tooltip(tooltipStr);
@@ -813,6 +823,8 @@ public class Controller {
         Image image = new Image(getClass().getClassLoader().getResourceAsStream("images/" + imageStr + ".png"));
         Image imageDisabled = new Image(getClass().getClassLoader().getResourceAsStream("images/" + imageStrDisabled + ".png"));
         ImageView imageView = new ImageView(image);
+        imageView.setFitHeight(16);
+        imageView.setFitWidth(16);
         button.setGraphic(imageView);
 
         button.selectedProperty().addListener((obs, oldVal, newVal) -> {
@@ -1329,11 +1341,13 @@ public class Controller {
         alert.setTitle(Constants.APPLICATION_NAME);
         alert.setHeaderText("Settings");
 
-        StackPane imagePane = new StackPane();
-        imagePane.setPadding(new Insets(8));
+        Image image = new Image(getClass().getClassLoader().getResourceAsStream("images/settings.png"));
         ImageView imageView = new ImageView();
-        Image image = new Image(getClass().getClassLoader().getResourceAsStream("images/settings-medium.png"));
         imageView.setImage(image);
+        imageView.setFitHeight(32);
+        imageView.setFitWidth(32);
+        StackPane imagePane = new StackPane();
+        imagePane.setPadding(new Insets(5));
         imagePane.getChildren().add(imageView);
         alert.setGraphic(imagePane);
 
@@ -1504,8 +1518,8 @@ public class Controller {
         ImageView imageView1 = new ImageView();
         Image image1 = new Image(getClass().getClassLoader().getResourceAsStream("images/icon-large.png"));
         imageView1.setImage(image1);
-        imageView1.setFitWidth(96.0);
-        imageView1.setFitHeight(96.0);
+        imageView1.setFitHeight(96);
+        imageView1.setFitWidth(96);
         imageView1.getStyleClass().add("icon");
         vBox.getChildren().add(imageView1);
 
@@ -1542,8 +1556,8 @@ public class Controller {
         ImageView imageView2 = new ImageView();
         Image image2 = new Image(getClass().getClassLoader().getResourceAsStream("images/heart.png"));
         imageView2.setImage(image2);
-        imageView2.setFitWidth(48.0);
-        imageView2.setFitHeight(48.0);
+        imageView2.setFitWidth(48);
+        imageView2.setFitHeight(48);
         vBox.getChildren().add(imageView2);
 
         HBox hBox = new HBox();

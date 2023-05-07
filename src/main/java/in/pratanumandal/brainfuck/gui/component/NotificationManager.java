@@ -1,12 +1,14 @@
 package in.pratanumandal.brainfuck.gui.component;
 
 import javafx.application.Platform;
+import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 import java.util.ArrayList;
@@ -54,14 +56,16 @@ public class NotificationManager {
             notification.progressBar = progressBar;
         }
 
-        Button close = new Button();
-        Image closeImage = new Image(getClass().getClassLoader().getResourceAsStream("images/close.png"));
+        Image closeImage = new Image(getClass().getClassLoader().getResourceAsStream("images/close-large.png"));
         ImageView closeImageView = new ImageView(closeImage);
         closeImageView.setFitHeight(8);
         closeImageView.setFitWidth(8);
+
+        Button close = new Button();
         close.setGraphic(closeImageView);
         close.getStyleClass().add("close");
         hBox.getChildren().add(close);
+
         close.setOnAction(event -> {
             this.notificationPane.getChildren().remove(hBox);
             for (NotificationListener listener : notification.listeners) {

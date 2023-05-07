@@ -13,7 +13,7 @@
         <maven.compiler.source>17</maven.compiler.source>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <javafx.version>15</javafx.version>
+        <javafx.version>20.0.1</javafx.version>
     </properties>
 
     <dependencies>

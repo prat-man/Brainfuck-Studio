@@ -79,7 +79,6 @@
                       </ImageView>
                    </graphic>
                 </Button>
-                <Separator layoutX="118.0" layoutY="10.0" />
                 <Button fx:id="interpretButton" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#interpret" text="Run">
                    <graphic>
                       <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
@@ -273,30 +272,8 @@
                         <Tooltip showDelay="300ms" text="Find Previous" />
                     </tooltip>
                 </Button>
-                <Button contentDisplay="RIGHT" mnemonicParsing="false" onAction="#replace">
-                    <graphic>
-                        <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
-                            <image>
-                                <Image url="@../images/replace.png" />
-                            </image>
-                        </ImageView>
-                    </graphic>
-                    <tooltip>
-                        <Tooltip showDelay="300ms" text="Replace" />
-                    </tooltip>
-                </Button>
-                <Button contentDisplay="RIGHT" mnemonicParsing="false" onAction="#replaceAll">
-                    <graphic>
-                        <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
-                            <image>
-                                <Image url="@../images/replace-all.png" />
-                            </image>
-                        </ImageView>
-                    </graphic>
-                    <tooltip>
-                        <Tooltip showDelay="300ms" text="Replace All" />
-                    </tooltip>
-                </Button>
+                <Button contentDisplay="RIGHT" mnemonicParsing="false" onAction="#replace" text="Replace" />
+                <Button contentDisplay="RIGHT" mnemonicParsing="false" onAction="#replaceAll" text="Replace All" />
                 <Button mnemonicParsing="false" onAction="#toggleSearch" styleClass="secondary">
                    <graphic>
                       <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
