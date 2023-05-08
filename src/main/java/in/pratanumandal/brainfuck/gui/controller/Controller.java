@@ -1573,6 +1573,7 @@ public class Controller {
         vBox.getChildren().add(hyperlink3);
 
         alert.getDialogPane().setContent(vBox);
+        alert.getDialogPane().getStyleClass().add("about-dialog");
 
         alert.initOwner(tabPane.getScene().getWindow());
         alert.showAndWait();

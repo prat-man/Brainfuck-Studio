@@ -141,7 +141,7 @@
 .combo-box-popup .list-view {
     -fx-background-color: #626770;
     -fx-background-insets: 0, 1;
-    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.6), 8, 0.0, 0, 0);
+    /*-fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.6), 8, 0.0, 0, 0);*/
 }
 .combo-box-popup .list-view .list-cell {
     -fx-background-color: #626770;
@@ -246,12 +246,12 @@
 }
 
 .context-menu {
-    -fx-background-color: #444952;
+    -fx-background-color: #626770;
     -fx-text-fill: white;
     -fx-font-family: 'Open Sans';
     -fx-font-size: 12px;
     -fx-padding: 5 0 5 0;
-    -fx-background-radius: 3px;
+    -fx-background-radius: 2px;
     /*-fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.8), 15, 0, 0, 0);*/
 }
 
@@ -301,7 +301,7 @@
 }
 
 .about-dialog {
-    -fx-background-color: #3A3F48;
+    -fx-background-color: #444952;
 }
 .about {
     -fx-padding: 30px 40px 10px 30px;
