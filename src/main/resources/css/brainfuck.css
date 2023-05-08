@@ -202,6 +202,13 @@
     -fx-background-color: #626770;
 }
 
+.tab-down-button {
+    -fx-background-color: #444952;
+    -fx-background-radius: 100%;
+    -fx-pref-width: 14px;
+    -fx-pref-height: 26px;
+}
+
 .tab-pane {
     -fx-tab-max-width: 200;
 }
@@ -250,7 +257,8 @@
     -fx-text-fill: white;
 }
 
-.check-menu-item:checked > .left-container > .check {
+.check-menu-item:checked > .left-container > .check,
+.radio-menu-item:checked > .left-container > .radio {
     -fx-background-color: white;
 }
 

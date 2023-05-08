@@ -1,4 +1,4 @@
-![Brainfuck Studio logo](/src/main/resources/images/icon-large.png)
+![Brainfuck Studio logo](/src/main/resources/images/icon/icon_128.png)
 
 [https://brainfuck.pratanumandal.in/](https://brainfuck.pratanumandal.in/)
 <br><br>

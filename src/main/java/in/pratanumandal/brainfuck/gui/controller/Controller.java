@@ -1517,7 +1517,7 @@ public class Controller {
         vBox.setAlignment(Pos.CENTER);
 
         ImageView imageView1 = new ImageView();
-        Image image1 = new Image(getClass().getClassLoader().getResourceAsStream("images/icon-large.png"));
+        Image image1 = new Image(getClass().getClassLoader().getResourceAsStream("images/icon/icon_128.png"));
         imageView1.setImage(image1);
         imageView1.setFitHeight(96);
         imageView1.setFitWidth(96);

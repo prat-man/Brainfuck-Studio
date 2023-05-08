@@ -56,7 +56,15 @@ public class BrainfuckStudioApplication extends Application {
         primaryStage.sizeToScene();
 
         primaryStage.getScene().getStylesheets().add(getClass().getClassLoader().getResource("css/brainfuck.css").toExternalForm());
-        primaryStage.getIcons().add(new Image(getClass().getClassLoader().getResourceAsStream("images/icon.png")));
+
+        primaryStage.getIcons().addAll(
+                new Image(getClass().getClassLoader().getResourceAsStream("images/icon/icon_16.png")),
+                new Image(getClass().getClassLoader().getResourceAsStream("images/icon/icon_24.png")),
+                new Image(getClass().getClassLoader().getResourceAsStream("images/icon/icon_32.png")),
+                new Image(getClass().getClassLoader().getResourceAsStream("images/icon/icon_64.png")),
+                new Image(getClass().getClassLoader().getResourceAsStream("images/icon/icon_128.png")),
+                new Image(getClass().getClassLoader().getResourceAsStream("images/icon/icon_256.png")),
+                new Image(getClass().getClassLoader().getResourceAsStream("images/icon/icon_512.png")));
 
         primaryStage.setOnCloseRequest((event) -> {
             if (controller.exitApplication()) {
