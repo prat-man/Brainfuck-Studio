@@ -27,6 +27,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
@@ -1740,11 +1741,15 @@ public class Controller {
     }
 
     public boolean exitApplication() {
-        for (TabData tabData : tabDataList.stream().toList()) {
+        List<TabData> originalTabDataList = tabDataList.stream().toList();
+        List<Node> closeList = tabPane.lookupAll(".tab-close-button").stream().toList();
+
+        for (int i = 0; i < originalTabDataList.size(); i++) {
+            TabData tabData = originalTabDataList.get(i);
             Tab tab = tabData.getTab();
             tabPane.getSelectionModel().select(tab);
 
-            StackPane close = (StackPane) tabPane.lookup(".tab-close-button");
+            Node close = closeList.get(i);
             close.fireEvent(new MouseEvent(MouseEvent.MOUSE_PRESSED,
                     close.getLayoutX(), close.getLayoutY(),
                     close.getLayoutX(), close.getLayoutY(),
@@ -1752,8 +1757,7 @@ public class Controller {
                     true, true, true, true, true, true, true, true, true, true,
                     null));
 
-            if (tabDataList.contains(tabData))
-                break;
+            if (tabDataList.contains(tabData)) break;
         }
 
         return tabDataList.isEmpty();
