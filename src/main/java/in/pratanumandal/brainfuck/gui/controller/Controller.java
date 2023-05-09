@@ -79,6 +79,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -144,7 +146,9 @@ public class Controller {
         // show basic info for first run
         if (Configuration.isFirstRun()) {
             try {
-                Path path = Files.writeString(Path.of(Constants.WELCOME_FILE), Constants.WELCOME_TEXT);
+                Path path = Paths.get(Constants.WELCOME_FILE);
+
+                Files.copy(getClass().getClassLoader().getResourceAsStream("bf/welcome.bf"), path, StandardCopyOption.REPLACE_EXISTING);
 
                 TabData tabData = createTab(path.toFile().getAbsolutePath());
 
@@ -857,7 +861,7 @@ public class Controller {
 
         fileChooser.setTitle(Constants.APPLICATION_NAME);
 
-        fileChooser.setInitialDirectory(Constants.BROWSE_DIRECTORY.get());
+        fileChooser.setInitialDirectory(Configuration.getInitialDirectory());
 
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Brainfuck files (*.bf, *.b)", "*.bf", "*.b");
         fileChooser.getExtensionFilters().add(extFilter);
@@ -865,7 +869,14 @@ public class Controller {
         File file = fileChooser.showOpenDialog(tabPane.getScene().getWindow());
 
         if (file != null) {
-            Constants.BROWSE_DIRECTORY.set(file.getParentFile());
+            Configuration.setInitialDirectory(file.getParentFile());
+            try {
+                Configuration.flush();
+            } catch (ConfigurationException | IOException e) {
+                Alert error = new Alert(Alert.AlertType.ERROR, "Failed to save configuration!");
+                error.initOwner(tabPane.getScene().getWindow());
+                error.showAndWait();
+            }
 
             try {
                 String filePath = file.getAbsolutePath();
@@ -939,7 +950,7 @@ public class Controller {
 
         fileChooser.setTitle(Constants.APPLICATION_NAME);
 
-        fileChooser.setInitialDirectory(Constants.BROWSE_DIRECTORY.get());
+        fileChooser.setInitialDirectory(Configuration.getInitialDirectory());
 
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Brainfuck files (*.bf, *.b)", "*.bf", "*.b");
         fileChooser.getExtensionFilters().add(extFilter);
@@ -947,7 +958,14 @@ public class Controller {
         File file = fileChooser.showSaveDialog(tabPane.getScene().getWindow());
 
         if (file != null) {
-            Constants.BROWSE_DIRECTORY.set(file.getParentFile());
+            Configuration.setInitialDirectory(file.getParentFile());
+            try {
+                Configuration.flush();
+            } catch (ConfigurationException | IOException e) {
+                Alert error = new Alert(Alert.AlertType.ERROR, "Failed to save configuration!");
+                error.initOwner(tabPane.getScene().getWindow());
+                error.showAndWait();
+            }
 
             TabData tabData = currentTab;
 

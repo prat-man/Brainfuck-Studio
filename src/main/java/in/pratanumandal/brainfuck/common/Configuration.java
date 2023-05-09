@@ -7,13 +7,15 @@ import org.apache.commons.configuration2.ex.ConfigurationException;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.List;
 
 public class Configuration {
 
     private static Configuration instance;
-    private static final List<Integer> FONT_SIZES = Arrays.asList(new Integer[] {10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40});
+    private static final List<Integer> FONT_SIZES = Arrays.asList(10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 36, 38, 40);
     private static Boolean firstRun = false;
 
     private Integer cellSize;
@@ -25,6 +27,7 @@ public class Configuration {
     private Boolean bracketHighlighting;
     private Boolean autoSave;
     private Boolean showTips;
+    private String initialDirectory;
 
     private Configuration() {
         Configurations configs = new Configurations();
@@ -39,26 +42,28 @@ public class Configuration {
 
             this.cellSize = config.getInteger("cellSize", 8);
             this.memorySize = config.getInteger("memorySize", 30000);
-            this.fontSize = config.getInteger("fontSize", 16);
+            this.fontSize = config.getInteger("fontSize", 14);
             this.wrapText = config.getBoolean("wrapText", false);
             this.autoComplete = config.getBoolean("autoComplete", true);
             this.syntaxHighlighting = config.getBoolean("syntaxHighlighting", true);
             this.bracketHighlighting = config.getBoolean("bracketHighlighting", true);
             this.autoSave = config.getBoolean("autoSave", true);
             this.showTips = config.getBoolean("showTips", true);
+            this.initialDirectory = config.getString("initialDirectory", System.getProperty("user.home"));
         }
         catch (ConfigurationException | IOException e) {
             e.printStackTrace();
 
             this.cellSize = 8;
             this.memorySize = 30000;
-            this.fontSize = 16;
+            this.fontSize = 14;
             this.wrapText = false;
             this.autoComplete = true;
             this.syntaxHighlighting = true;
             this.bracketHighlighting = true;
             this.autoSave = true;
             this.showTips = true;
+            this.initialDirectory = System.getProperty("user.home");
         }
     }
 
@@ -71,13 +76,14 @@ public class Configuration {
 
         if (instance.cellSize == null || (instance.cellSize != 8 && instance.cellSize != 16)) instance.cellSize = 8;
         if (instance.memorySize == null || (instance.memorySize < 1000 || instance.memorySize > 50000)) instance.memorySize = 30000;
-        if (instance.fontSize == null || (!FONT_SIZES.contains(instance.fontSize))) instance.fontSize = 16;
+        if (instance.fontSize == null || (!FONT_SIZES.contains(instance.fontSize))) instance.fontSize = 14;
         if (instance.wrapText == null) instance.wrapText = false;
         if (instance.autoComplete == null) instance.autoComplete = true;
         if (instance.syntaxHighlighting == null) instance.syntaxHighlighting = true;
         if (instance.bracketHighlighting == null) instance.bracketHighlighting = true;
         if (instance.autoSave == null) instance.autoSave = true;
         if (instance.showTips == null) instance.showTips = true;
+        if (instance.initialDirectory == null || !Files.isDirectory(Path.of(instance.initialDirectory))) instance.initialDirectory = System.getProperty("user.home");
 
         if (!exists) {
             try {
@@ -133,6 +139,11 @@ public class Configuration {
         return instance.showTips;
     }
 
+    public static File getInitialDirectory() {
+        sanitize();
+        return new File(instance.initialDirectory);
+    }
+
     public static void setCellSize(Integer cellSize) {
         sanitize();
         instance.cellSize = cellSize;
@@ -178,6 +189,11 @@ public class Configuration {
         instance.showTips = showTips;
     }
 
+    public static void setInitialDirectory(File initialDirectory) {
+        sanitize();
+        instance.initialDirectory = initialDirectory.getAbsolutePath();
+    }
+
     public static Boolean isFirstRun() {
         return firstRun;
     }
@@ -206,6 +222,7 @@ public class Configuration {
         config.addProperty("bracketHighlighting", instance.bracketHighlighting);
         config.addProperty("autoSave", instance.autoSave);
         config.addProperty("showTips", instance.showTips);
+        config.addProperty("initialDirectory", instance.initialDirectory);
 
         builder.save();
     }

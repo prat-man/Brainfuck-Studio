@@ -10,6 +10,7 @@ import in.pratanumandal.brainfuck.gui.component.TabData;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.stage.FileChooser;
+import org.apache.commons.configuration2.ex.ConfigurationException;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -39,36 +40,46 @@ public abstract class Translator extends Processor {
             fileChooser.setInitialDirectory(this.outputFile.getParentFile());
             fileChooser.setInitialFileName(this.outputFile.getName());
         }
+        else {
+            fileChooser.setInitialDirectory(Configuration.getInitialDirectory());
+        }
 
         fileChooser.getExtensionFilters().add(this.getExtensionFilter());
 
         File file = fileChooser.showSaveDialog(tabData.getTab().getTabPane().getScene().getWindow());
 
-        if (file == null) return;
-        else this.outputFile = file;
+        if (file != null) {
+            Configuration.setInitialDirectory(file.getParentFile());
+            try {
+                Configuration.flush();
+            } catch (ConfigurationException | IOException e) {
+                Alert error = new Alert(Alert.AlertType.ERROR, "Failed to save configuration!");
+                error.initOwner(tabData.getTab().getTabPane().getScene().getWindow());
+                error.showAndWait();
+            }
 
-        this.cellSize = Configuration.getCellSize();
+            this.outputFile = file;
 
-        try {
-            super.start();
-        } catch (UnmatchedBracketException e) {
-            Platform.runLater(() -> {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle(Constants.APPLICATION_NAME);
-                alert.setHeaderText("Translator Error");
-                alert.setContentText(e.getMessage() + "\n\n");
+            this.cellSize = Configuration.getCellSize();
 
-                alert.initOwner(tabData.getTab().getTabPane().getScene().getWindow());
-                alert.showAndWait();
-            });
+            try {
+                super.start();
+            } catch (UnmatchedBracketException e) {
+                Platform.runLater(() -> {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle(Constants.APPLICATION_NAME);
+                    alert.setHeaderText("Translator Error");
+                    alert.setContentText(e.getMessage() + "\n\n");
 
-            return;
+                    alert.initOwner(tabData.getTab().getTabPane().getScene().getWindow());
+                    alert.showAndWait();
+                });
+            }
         }
     }
 
     @Override
     public void run() {
-
         AtomicReference<NotificationManager.Notification> notificationAtomicReference = new AtomicReference<>();
         Utils.runAndWait(() -> notificationAtomicReference.set(Utils.addNotificationWithProgress("Exporting file " + tabData.getTab().getText() + " to " + this.getLanguage())));
 
@@ -98,7 +109,6 @@ public abstract class Translator extends Processor {
         }
 
         this.stop(false);
-
     }
 
     public String getFileNameWithoutExtension() {
