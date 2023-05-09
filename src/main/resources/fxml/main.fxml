@@ -106,7 +106,7 @@
                  </items>
                </MenuButton>
                 <Pane HBox.hgrow="ALWAYS" />
-                <ToggleButton fx:id="searchButton" mnemonicParsing="false" prefHeight="25.0">
+                <ToggleButton fx:id="searchButton" mnemonicParsing="false">
                     <graphic>
                         <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                             <image>

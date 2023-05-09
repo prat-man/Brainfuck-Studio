@@ -111,6 +111,7 @@
     -fx-background-insets: 0 0 -1 0;
     -fx-text-fill: white;
     -fx-color: white;
+    -fx-pref-height: 30px;
 }
 
 .button:hover, .menu-button:hover, .toggle-button:hover, .choice-box:hover, .combo-box:hover,
@@ -271,7 +272,6 @@
 .toggle-button.secondary,
 .button.secondary:focused,
 .toggle-button.secondary:focused {
-    -fx-min-height: 25px;
     -fx-background-color: #585D66;
 }
 .button.secondary:hover,
@@ -289,6 +289,7 @@
     -fx-border-color: transparent;
     -fx-border-radius: 0;
     -fx-background-insets: 0 0 1 0;
+    -fx-pref-height: 32px;
 }
 
 .split-pane-divider {
