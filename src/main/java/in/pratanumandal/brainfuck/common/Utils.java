@@ -58,7 +58,7 @@ public class Utils {
             switch (choice) {
                 case 0:
                     // show breakpoints notification
-                    Utils.addNotificationWithDelay("Tip:\nYou can use ~ (tilde symbol)\nas breakpoints for debugging", 30000);
+                    Utils.addNotificationWithDelay("Tip:\nYou can use # (hash symbol)\nas breakpoints for debugging", 30000);
                     break;
 
                 case 1:

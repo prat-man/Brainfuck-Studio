@@ -19,7 +19,7 @@ BRAINFUCK OPERATORS
 
 IDE SPECIFIC OPERATORS
 
-    ~    breakpoint - pauses the execution when encountered while debugging
+    #    breakpoint - pauses the execution when encountered while debugging
                       this is a non-standard feature specific to Brainfuck Studio
 
 ]]

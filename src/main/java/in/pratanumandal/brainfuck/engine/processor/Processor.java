@@ -23,12 +23,11 @@ public abstract class Processor implements Runnable {
 
     protected Thread thread;
 
-    public static final Integer NO_JUMP = 0;
     public static final Character SET_ZERO = '!';
     public static final Character SCAN_ZERO_LEFT = '@';
-    public static final Character SCAN_ZERO_RIGHT = '#';
-    public static final Character ADDRESS = '$';
-    public static final Character DATA = '%';
+    public static final Character SCAN_ZERO_RIGHT = '$';
+    public static final Character ADDRESS = '%';
+    public static final Character DATA = '^';
 
     public static boolean isOperator(Character ch) {
         return "<>+-,.[]".indexOf(ch) >= 0;

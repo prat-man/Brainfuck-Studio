@@ -24,7 +24,7 @@ public class Highlighter {
     private static final String OUTPUT_PATTERN = "\\.";
     private static final String INPUT_PATTERN = "\\,";
     private static final String LOOP_PATTERN = "\\[|\\]";
-    private static final String BREAKPOINT_PATTERN = "\\~";
+    private static final String BREAKPOINT_PATTERN = "\\#";
 
     private static final Pattern PATTERN = Pattern.compile(
             "(?<PTRINCR>" + POINTER_INCREMENT_PATTERN + ")"

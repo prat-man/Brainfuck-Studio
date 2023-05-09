@@ -66,7 +66,6 @@ public class Interpreter16 extends Interpreter {
 
     @Override
     public void run() {
-
         AtomicReference<NotificationManager.Notification> notificationAtomicReference = new AtomicReference<>();
         Utils.runAndWait(() -> notificationAtomicReference.set(Utils.addNotification(tabData.getTab().getText() + " execution started")));
         NotificationManager.Notification notification = notificationAtomicReference.get();
@@ -154,7 +153,6 @@ public class Interpreter16 extends Interpreter {
         }
 
         this.stop(false);
-
     }
 
     /**

@@ -52,7 +52,7 @@ public class Debugger16 extends Debugger {
 
             char ch = code.charAt(i);
 
-            if (ch == '~' && tabData.getDebugBreakpointButton().isSelected()) {
+            if (ch == '#' && tabData.getDebugBreakpointButton().isSelected()) {
                 this.pause();
             } else if (ch == '>') {
                 dataPointer++;

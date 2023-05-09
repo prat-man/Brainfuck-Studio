@@ -6,7 +6,6 @@ import in.pratanumandal.brainfuck.common.Utils;
 import in.pratanumandal.brainfuck.engine.Memory;
 import in.pratanumandal.brainfuck.engine.processor.translator.CTranslator;
 import in.pratanumandal.brainfuck.engine.processor.translator.JavaTranslator;
-import in.pratanumandal.brainfuck.engine.processor.translator.JavaTranslatorFast;
 import in.pratanumandal.brainfuck.engine.processor.translator.PythonTranslator;
 import in.pratanumandal.brainfuck.gui.codearea.CustomCodeArea;
 import in.pratanumandal.brainfuck.gui.codearea.FXTerminal;
@@ -1674,14 +1673,6 @@ public class Controller {
         if (tabPane.getTabs().isEmpty()) return;
 
         JavaTranslator translator = new JavaTranslator(this.currentTab);
-        translator.start();
-    }
-
-    @FXML
-    private void exportToJavaFast() {
-        if (tabPane.getTabs().isEmpty()) return;
-
-        JavaTranslatorFast translator = new JavaTranslatorFast(this.currentTab);
         translator.start();
     }
 
