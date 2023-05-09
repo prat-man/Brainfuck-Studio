@@ -36,7 +36,7 @@ public class Debugger8 extends Debugger {
     public void run() {
 
         AtomicReference<NotificationManager.Notification> notificationAtomicReference = new AtomicReference<>();
-        Utils.runAndWait(() -> notificationAtomicReference.set(Utils.addNotification("File " + tabData.getTab().getText() + " debugging started")));
+        Utils.runAndWait(() -> notificationAtomicReference.set(Utils.addNotification(tabData.getTab().getText() + " debugging started")));
         NotificationManager.Notification notification = notificationAtomicReference.get();
 
         Slider debugSpeed = tabData.getDebugSpeed();
@@ -152,10 +152,10 @@ public class Debugger8 extends Debugger {
         Platform.runLater(() -> notification.close());
 
         if (this.kill.get()) {
-            Platform.runLater(() -> Utils.addNotification("File " + tabData.getTab().getText() + " debugging terminated"));
+            Platform.runLater(() -> Utils.addNotification(tabData.getTab().getText() + " debugging terminated"));
         }
         else {
-            Platform.runLater(() -> Utils.addNotification("File " + tabData.getTab().getText() + " debugging finished"));
+            Platform.runLater(() -> Utils.addNotification(tabData.getTab().getText() + " debugging finished"));
         }
 
         this.stop(false);

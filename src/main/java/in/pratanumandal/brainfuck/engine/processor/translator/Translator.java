@@ -83,7 +83,7 @@ public abstract class Translator extends Processor {
         } catch (IOException e) {
             e.printStackTrace();
 
-            Platform.runLater(() -> Utils.addNotification("File " + tabData.getTab().getText() + " export failed"));
+            Platform.runLater(() -> Utils.addNotification(tabData.getTab().getText() + " export failed"));
             this.stop(false);
             return;
         }
@@ -91,10 +91,10 @@ public abstract class Translator extends Processor {
         Platform.runLater(() -> notification.close());
 
         if (this.kill.get()) {
-            Platform.runLater(() -> Utils.addNotification("File " + tabData.getTab().getText() + " export terminated"));
+            Platform.runLater(() -> Utils.addNotification(tabData.getTab().getText() + " export terminated"));
         }
         else {
-            Platform.runLater(() -> Utils.addNotification("File " + tabData.getTab().getText() + " exported to " + this.getLanguage()));
+            Platform.runLater(() -> Utils.addNotification(tabData.getTab().getText() + " exported to " + this.getLanguage()));
         }
 
         this.stop(false);

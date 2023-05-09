@@ -68,7 +68,7 @@ public class Interpreter8 extends Interpreter {
     public void run() {
 
         AtomicReference<NotificationManager.Notification> notificationAtomicReference = new AtomicReference<>();
-        Utils.runAndWait(() -> notificationAtomicReference.set(Utils.addNotification("File " + tabData.getTab().getText() + " execution started")));
+        Utils.runAndWait(() -> notificationAtomicReference.set(Utils.addNotification(tabData.getTab().getText() + " execution started")));
         NotificationManager.Notification notification = notificationAtomicReference.get();
 
         // start time
@@ -146,11 +146,11 @@ public class Interpreter8 extends Interpreter {
 
         if (this.kill.get()) {
             tabData.getInterpretTerminal().writeMessage("Execution terminated; Runtime " + durationStr + "\n");
-            Platform.runLater(() -> Utils.addNotification("File " + tabData.getTab().getText() + " execution terminated"));
+            Platform.runLater(() -> Utils.addNotification(tabData.getTab().getText() + " execution terminated"));
         }
         else {
             tabData.getInterpretTerminal().writeMessage("Execution completed in " + durationStr + "\n");
-            Platform.runLater(() -> Utils.addNotification("File " + tabData.getTab().getText() + " execution finished"));
+            Platform.runLater(() -> Utils.addNotification(tabData.getTab().getText() + " execution finished"));
         }
 
         this.stop(false);

@@ -482,7 +482,7 @@ public class TabData {
                             Platform.runLater(() -> {
                                 this.codeArea.replaceText(fileText);
                                 this.setModified(false);
-                                Utils.addNotificationWithDelay("File " + path.getFileName() + " was modified outside of Brainfuck Studio", 5000);
+                                Utils.addNotificationWithDelay(path.getFileName() + " was modified outside of Brainfuck Studio", 5000);
                             });
                         }
                         else {
@@ -492,7 +492,7 @@ public class TabData {
                                     Platform.runLater(() -> {
                                         this.codeArea.replaceText(fileText);
                                         this.setModified(false);
-                                        Utils.addNotificationWithDelay("File " + path.getFileName() + " was modified outside of Brainfuck Studio", 5000);
+                                        Utils.addNotificationWithDelay(path.getFileName() + " was modified outside of Brainfuck Studio", 5000);
                                     });
                                 }
                                 this.codeArea.editableProperty().removeListener(changeListener.get());
@@ -509,7 +509,7 @@ public class TabData {
                 this.pauseAutoSave = true;
                 Platform.runLater(() -> {
                     this.setModified(true);
-                    Utils.addNotificationWithDelay("File " + path.getFileName() + " was deleted from the file system", 5000);
+                    Utils.addNotificationWithDelay(path.getFileName() + " was deleted from the file system", 5000);
                 });
             }
         }
