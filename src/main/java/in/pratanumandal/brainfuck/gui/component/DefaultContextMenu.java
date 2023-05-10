@@ -13,25 +13,25 @@ public class DefaultContextMenu extends ContextMenu {
     private IndexRange range;
 
     public DefaultContextMenu() {
-        showingProperty().addListener( (ob,ov,showing) -> checkMenuItems( showing ) );
+        showingProperty().addListener((ob, ov,showing) -> checkMenuItems(showing));
 
         cut = new MenuItem("Cut");
-        cut.setOnAction(AE -> { hide(); area.cut(); });
+        cut.setOnAction(AE -> area.cut());
 
         copy = new MenuItem("Copy");
-        copy.setOnAction(AE -> { hide(); area.copy(); });
+        copy.setOnAction(AE -> area.copy());
 
         delete = new MenuItem("Delete");
-        delete.setOnAction(AE -> { hide(); area.deleteText( range ); });
+        delete.setOnAction(AE -> area.deleteText(range));
 
         paste = new MenuItem("Paste");
-        paste.setOnAction(AE -> { hide(); area.paste(); });
+        paste.setOnAction(AE -> area.paste());
 
         redo = new MenuItem("Redo");
-        redo.setOnAction(AE -> { hide(); area.redo(); });
+        redo.setOnAction(AE -> area.redo());
 
         undo = new MenuItem("Undo");
-        undo.setOnAction(AE -> { hide(); area.undo(); });
+        undo.setOnAction(AE -> area.undo());
 
         getItems().addAll(copy, cut, delete, paste, redo, undo);
     }

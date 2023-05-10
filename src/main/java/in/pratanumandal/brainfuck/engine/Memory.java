@@ -1,41 +1,50 @@
 package in.pratanumandal.brainfuck.engine;
 
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+
 public class Memory {
 
-    private Integer address;
-    private Integer data;
-    private Character character;
+    private SimpleBooleanProperty current;
+    private SimpleIntegerProperty address;
+    private SimpleIntegerProperty data;
 
-    public Memory(Integer address, Integer data, Character character) {
-        this.address = address;
-        this.data = data;
-        this.character = character;
+    public Memory(Integer address) {
+        this.current = new SimpleBooleanProperty(false);
+        this.address = new SimpleIntegerProperty(address);
+        this.data = new SimpleIntegerProperty(0);
     }
 
-    public Integer getAddress() {
+    public boolean isCurrent() {
+        return current.get();
+    }
+
+    public SimpleBooleanProperty currentProperty() {
+        return current;
+    }
+
+    public void setCurrent(boolean current) {
+        this.current.set(current);
+    }
+
+    public SimpleIntegerProperty addressProperty() {
         return address;
     }
 
-    public void setAddress(Integer address) {
-        this.address = address;
+    public void setAddress(int address) {
+        this.address.set(address);
     }
 
-    public Integer getData() {
+    public SimpleIntegerProperty dataProperty() {
         return data;
     }
 
-    public void setData(Integer data) {
-        this.data = data;
-        this.character = (char) data.intValue();
+    public void setData(int data) {
+        this.data.set(data);
     }
 
     public Character getCharacter() {
-        return character;
-    }
-
-    public void setCharacter(Character character) {
-        this.character = character;
-        this.data = (int) character;
+        return Character.valueOf((char) data.intValue());
     }
 
 }

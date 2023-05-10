@@ -474,8 +474,8 @@ public class Controller {
 
         // create a debug side pane
         VBox debug = new VBox();
-        debug.setMinWidth(235);
-        debug.setMaxWidth(300);
+        debug.setMinWidth(250);
+        debug.setMaxWidth(400);
 
         debug.setVisible(false);
         debug.managedProperty().bind(debug.visibleProperty());
@@ -582,33 +582,41 @@ public class Controller {
         tabData.setTableView(tableView);
 
         // initialize the tableview columns
-        TableColumn<Memory, Integer> column1 = new TableColumn<>("Address");
-        column1.setCellValueFactory(new PropertyValueFactory<>("address"));
+        TableColumn<Memory, Boolean> column1 = new TableColumn<>("");
+        column1.setCellValueFactory(new PropertyValueFactory<>("current"));
         column1.setCellFactory(column -> {
-            TableCell<Memory, Integer> cell = new TableCell<>() {
+            // load pointer image
+            Image pointer = new Image(getClass().getClassLoader().getResourceAsStream("images/pointer.png"));
+            ImageView pointerNode = new ImageView(pointer);
+            pointerNode.setFitHeight(16);
+            pointerNode.setFitWidth(16);
+
+            TableCell<Memory, Boolean> cell = new TableCell<>() {
                 @Override
-                protected void updateItem(Integer item, boolean empty) {
-                    String format1 = "%0" + (int) (Math.log10(tableView.getItems().size()) + 1) + "d";
+                protected void updateItem(Boolean item, boolean empty) {
                     super.updateItem(item, empty);
-                    if(empty) setText(null);
-                    else setText(String.format(format1, item));
+                    if (empty) setGraphic(null);
+                    else if (item) setGraphic(pointerNode);
+                    else setGraphic(null);
                 }
             };
             return cell;
         });
         column1.setSortable(false);
+        column1.setMinWidth(30);
+        column1.setMaxWidth(35);
         tableView.getColumns().add(column1);
 
-        TableColumn<Memory, Integer> column2 = new TableColumn<>("Data");
-        column2.setCellValueFactory(new PropertyValueFactory<>("data"));
-        String format2 = "%03d";
+        TableColumn<Memory, Integer> column2 = new TableColumn<>("Address");
+        column2.setCellValueFactory(new PropertyValueFactory<>("address"));
         column2.setCellFactory(column -> {
             TableCell<Memory, Integer> cell = new TableCell<>() {
                 @Override
                 protected void updateItem(Integer item, boolean empty) {
+                    String format1 = "%0" + (int) (Math.log10(tableView.getItems().size()) + 1) + "d";
                     super.updateItem(item, empty);
-                    if(empty) setText(null);
-                    else setText(String.format(format2, item));
+                    if (empty) setText(null);
+                    else setText(String.format(format1, item));
                 }
             };
             return cell;
@@ -616,10 +624,27 @@ public class Controller {
         column2.setSortable(false);
         tableView.getColumns().add(column2);
 
-        TableColumn<Memory, Character> column3 = new TableColumn<>("Character");
-        column3.setCellValueFactory(new PropertyValueFactory<>("character"));
+        TableColumn<Memory, Integer> column3 = new TableColumn<>("Data");
+        column3.setCellValueFactory(new PropertyValueFactory<>("data"));
+        String format2 = "%03d";
+        column3.setCellFactory(column -> {
+            TableCell<Memory, Integer> cell = new TableCell<>() {
+                @Override
+                protected void updateItem(Integer item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty) setText(null);
+                    else setText(String.format(format2, item));
+                }
+            };
+            return cell;
+        });
         column3.setSortable(false);
         tableView.getColumns().add(column3);
+
+        TableColumn<Memory, Character> column4 = new TableColumn<>("Character");
+        column4.setCellValueFactory(new PropertyValueFactory<>("character"));
+        column4.setSortable(false);
+        tableView.getColumns().add(column4);
 
         // set the items from the observable memory list
         tableView.setItems(tabData.getMemory());

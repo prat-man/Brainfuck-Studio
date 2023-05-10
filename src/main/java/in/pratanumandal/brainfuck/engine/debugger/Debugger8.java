@@ -61,11 +61,7 @@ public class Debugger8 extends Debugger {
                     this.stop(false);
                 }
                 else {
-                    int finalDataPointer = dataPointer;
-                    Platform.runLater(() -> {
-                        tabData.getTableViewExtra().scrollToIndex(finalDataPointer);
-                        tabData.getTableView().getSelectionModel().select(finalDataPointer);
-                    });
+                    tabData.setCurrentMemoryPointer(dataPointer);
                 }
             } else if (ch == '<') {
                 dataPointer--;
@@ -74,11 +70,7 @@ public class Debugger8 extends Debugger {
                     this.stop(false);
                 }
                 else {
-                    int finalDataPointer = dataPointer;
-                    Platform.runLater(() -> {
-                        tabData.getTableViewExtra().scrollToIndex(finalDataPointer);
-                        tabData.getTableView().getSelectionModel().select(finalDataPointer);
-                    });
+                    tabData.setCurrentMemoryPointer(dataPointer);
                 }
             } else if (ch == '+') {
                 memory[dataPointer]++;

@@ -16,6 +16,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.Slider;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
@@ -73,6 +75,8 @@ public class TabData {
     private boolean modified;
     private boolean untitled;
     private boolean largeFile;
+
+    private int currentMemoryPointer;
 
     private double dividerPosition;
 
@@ -254,9 +258,27 @@ public class TabData {
             ObservableList<Memory> memory = this.getMemory();
             memory.clear();
             for (int i = 0; i < Configuration.getMemorySize(); i++) {
-                memory.add(i, new Memory(i + 1, 0, (char) 0));
+                memory.add(i, new Memory(i + 1));
             }
         }
+
+        // reset memory pointer
+        memory.get(currentMemoryPointer).setCurrent(false);
+        this.currentMemoryPointer = 0;
+        memory.get(currentMemoryPointer).setCurrent(true);
+
+        // create context menu
+        ContextMenu menu = new ContextMenu();
+
+        MenuItem item = new MenuItem("Go to current memory location");
+        menu.getItems().add(item);
+
+        item.setOnAction(AE -> Platform.runLater(() -> {
+            tableViewExtra.scrollToIndex(currentMemoryPointer);
+            tableView.getSelectionModel().select(currentMemoryPointer);
+        }));
+
+        tableView.setContextMenu(menu);
     }
 
     public Debugger getDebugger() {
@@ -373,6 +395,17 @@ public class TabData {
                 });
             }
         }
+    }
+
+    public void setCurrentMemoryPointer(int memoryPointer) {
+        memory.get(currentMemoryPointer).setCurrent(false);
+        this.currentMemoryPointer = memoryPointer;
+        memory.get(currentMemoryPointer).setCurrent(true);
+
+        Platform.runLater(() -> {
+            tableViewExtra.scrollToIndex(memoryPointer);
+            tableView.getSelectionModel().select(memoryPointer);
+        });
     }
 
     public double getDividerPosition() {
