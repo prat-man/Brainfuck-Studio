@@ -8,7 +8,6 @@ import javafx.application.HostServices;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.image.Image;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
@@ -18,7 +17,6 @@ import java.nio.file.Path;
 
 public class BrainfuckStudioApplication extends Application {
 
-    public static Stage superStage;
     public static HostServices hostServices;
 
     private static void loadFonts() {
@@ -30,17 +28,11 @@ public class BrainfuckStudioApplication extends Application {
     @Override
     public void init() throws Exception {
         super.init();
-
-        // do this before anything else
-        Utils.setDockIconIfMac();
-
         hostServices = getHostServices();
     }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        superStage = primaryStage;
-
         FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("fxml/main.fxml"));
         Parent root = loader.load();
 
@@ -57,14 +49,7 @@ public class BrainfuckStudioApplication extends Application {
 
         primaryStage.getScene().getStylesheets().add(getClass().getClassLoader().getResource("css/brainfuck.css").toExternalForm());
 
-        primaryStage.getIcons().addAll(
-                new Image(getClass().getClassLoader().getResourceAsStream("images/icon/icon_16.png")),
-                new Image(getClass().getClassLoader().getResourceAsStream("images/icon/icon_24.png")),
-                new Image(getClass().getClassLoader().getResourceAsStream("images/icon/icon_32.png")),
-                new Image(getClass().getClassLoader().getResourceAsStream("images/icon/icon_64.png")),
-                new Image(getClass().getClassLoader().getResourceAsStream("images/icon/icon_128.png")),
-                new Image(getClass().getClassLoader().getResourceAsStream("images/icon/icon_256.png")),
-                new Image(getClass().getClassLoader().getResourceAsStream("images/icon/icon_512.png")));
+        Utils.setTaskbarIcon(primaryStage);
 
         primaryStage.setOnCloseRequest((event) -> {
             if (controller.exitApplication()) {

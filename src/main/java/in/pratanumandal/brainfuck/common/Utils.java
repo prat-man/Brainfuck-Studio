@@ -11,17 +11,15 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.DialogPane;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import org.apache.commons.lang3.SystemUtils;
 import org.fxmisc.richtext.CodeArea;
 
-import javax.swing.*;
-import java.awt.*;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.awt.Taskbar;
+import java.awt.Toolkit;
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.Arrays;
@@ -149,20 +147,23 @@ public class Utils {
         primaryStage.requestFocus();
     }
 
-    public static void setDockIconIfMac() {
-        if (SystemUtils.IS_OS_MAC) {
-            try {
-                Class clazz = Utils.class.getClassLoader().loadClass("com.apple.eawt.Application");
-                Method getApplication = clazz.getMethod("getApplication");
-                Object object = getApplication.invoke(null);
-                Method setDockImage = clazz.cast(object).getClass().getMethod("setDockIconImage", Image.class);
+    public static void setTaskbarIcon(Stage stage) {
+        stage.getIcons().addAll(
+            new Image(Utils.class.getClassLoader().getResourceAsStream("images/icon/icon_16.png")),
+            new Image(Utils.class.getClassLoader().getResourceAsStream("images/icon/icon_24.png")),
+            new Image(Utils.class.getClassLoader().getResourceAsStream("images/icon/icon_32.png")),
+            new Image(Utils.class.getClassLoader().getResourceAsStream("images/icon/icon_64.png")),
+            new Image(Utils.class.getClassLoader().getResourceAsStream("images/icon/icon_128.png")),
+            new Image(Utils.class.getClassLoader().getResourceAsStream("images/icon/icon_256.png")),
+            new Image(Utils.class.getClassLoader().getResourceAsStream("images/icon/icon_512.png")));
 
-                URL iconURL = Utils.class.getClassLoader().getResource("images/icon/icon_128.png");
-                Image image = new ImageIcon(iconURL).getImage();
+        if (Taskbar.isTaskbarSupported()) {
+            Taskbar taskbar = Taskbar.getTaskbar();
 
-                setDockImage.invoke(object, image);
-            } catch (NoSuchMethodException | ClassNotFoundException | IllegalAccessException | InvocationTargetException e) {
-                e.printStackTrace();
+            if (taskbar.isSupported(Taskbar.Feature.ICON_IMAGE)) {
+                Toolkit toolkit = Toolkit.getDefaultToolkit();
+                URL imageURL = Utils.class.getClassLoader().getResource("images/icon/icon_128.png");
+                taskbar.setIconImage(toolkit.getImage(imageURL));
             }
         }
     }
