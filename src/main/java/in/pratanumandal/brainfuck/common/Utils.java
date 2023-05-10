@@ -147,16 +147,7 @@ public class Utils {
         primaryStage.requestFocus();
     }
 
-    public static void setTaskbarIcon(Stage stage) {
-        stage.getIcons().addAll(
-            new Image(Utils.class.getClassLoader().getResourceAsStream("images/icon/icon_16.png")),
-            new Image(Utils.class.getClassLoader().getResourceAsStream("images/icon/icon_24.png")),
-            new Image(Utils.class.getClassLoader().getResourceAsStream("images/icon/icon_32.png")),
-            new Image(Utils.class.getClassLoader().getResourceAsStream("images/icon/icon_64.png")),
-            new Image(Utils.class.getClassLoader().getResourceAsStream("images/icon/icon_128.png")),
-            new Image(Utils.class.getClassLoader().getResourceAsStream("images/icon/icon_256.png")),
-            new Image(Utils.class.getClassLoader().getResourceAsStream("images/icon/icon_512.png")));
-
+    public static void setTaskbarIcon() {
         if (Taskbar.isTaskbarSupported()) {
             Taskbar taskbar = Taskbar.getTaskbar();
 
@@ -166,6 +157,22 @@ public class Utils {
                 taskbar.setIconImage(toolkit.getImage(imageURL));
             }
         }
+    }
+
+    public static void setStageIcon(Stage stage) {
+        stage.getIcons().addAll(
+                new Image(Utils.class.getClassLoader().getResourceAsStream("images/icon/icon_16.png")),
+                new Image(Utils.class.getClassLoader().getResourceAsStream("images/icon/icon_24.png")),
+                new Image(Utils.class.getClassLoader().getResourceAsStream("images/icon/icon_32.png")),
+                new Image(Utils.class.getClassLoader().getResourceAsStream("images/icon/icon_64.png")),
+                new Image(Utils.class.getClassLoader().getResourceAsStream("images/icon/icon_128.png")),
+                new Image(Utils.class.getClassLoader().getResourceAsStream("images/icon/icon_256.png")),
+                new Image(Utils.class.getClassLoader().getResourceAsStream("images/icon/icon_512.png")));
+    }
+
+    public static void setStylesheet(Stage stage) {
+        stage.getScene().getStylesheets()
+                .add(Utils.class.getClassLoader().getResource("css/brainfuck.css").toExternalForm());
     }
 
     private static int countNewlines(String text) {

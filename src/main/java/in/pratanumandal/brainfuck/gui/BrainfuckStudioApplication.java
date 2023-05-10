@@ -28,6 +28,9 @@ public class BrainfuckStudioApplication extends Application {
     @Override
     public void init() throws Exception {
         super.init();
+
+        Utils.setTaskbarIcon();
+
         hostServices = getHostServices();
     }
 
@@ -47,9 +50,8 @@ public class BrainfuckStudioApplication extends Application {
         primaryStage.setMinHeight(350);
         primaryStage.sizeToScene();
 
-        primaryStage.getScene().getStylesheets().add(getClass().getClassLoader().getResource("css/brainfuck.css").toExternalForm());
-
-        Utils.setTaskbarIcon(primaryStage);
+        Utils.setStageIcon(primaryStage);
+        Utils.setStylesheet(primaryStage);
 
         primaryStage.setOnCloseRequest((event) -> {
             if (controller.exitApplication()) {
