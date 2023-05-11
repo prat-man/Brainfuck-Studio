@@ -36,6 +36,7 @@ import javafx.scene.control.Hyperlink;
 import javafx.scene.control.IndexRange;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.Slider;
 import javafx.scene.control.SplitMenuButton;
 import javafx.scene.control.SplitPane;
@@ -47,6 +48,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
@@ -1411,17 +1413,34 @@ public class Controller {
         vBox1.setSpacing(15);
         interpreter.setContent(vBox1);
 
-        CheckBox cellSize = new CheckBox("Use 16 bit cells (values range 0 - 65535)");
-        cellSize.setSelected(Configuration.getCellSize() == 16);
-        vBox1.getChildren().add(cellSize);
+        HBox cellSizeBox = new HBox();
+        cellSizeBox.setSpacing(10);
+        cellSizeBox.setAlignment(Pos.CENTER_LEFT);
+        vBox1.getChildren().add(cellSizeBox);
+
+        Label cellSizeLabel = new Label("Cell size");
+        cellSizeBox.getChildren().add(cellSizeLabel);
+
+        ToggleGroup cellSizeGroup = new ToggleGroup();
+        int selectedCellSize = Configuration.getCellSize();
+
+        RadioButton cellSize8 = new RadioButton("8 bits");
+        cellSize8.setToggleGroup(cellSizeGroup);
+        cellSize8.setSelected(selectedCellSize == 8);
+        cellSizeBox.getChildren().add(cellSize8);
+
+        RadioButton cellSize16 = new RadioButton("16 bits");
+        cellSize16.setToggleGroup(cellSizeGroup);
+        cellSize16.setSelected(selectedCellSize == 16);
+        cellSizeBox.getChildren().add(cellSize16);
 
         HBox memorySizeBox = new HBox();
         memorySizeBox.setSpacing(10);
-        memorySizeBox.setAlignment(Pos.CENTER);
+        memorySizeBox.setAlignment(Pos.CENTER_LEFT);
         vBox1.getChildren().add(memorySizeBox);
 
-        Label label = new Label("Memory size");
-        memorySizeBox.getChildren().add(label);
+        Label memorySizeLabel = new Label("Memory size");
+        memorySizeBox.getChildren().add(memorySizeLabel);
 
         TextField memorySize = new TextField();
         memorySize.setPromptText("In range 1000 to 50000");
@@ -1514,8 +1533,8 @@ public class Controller {
         while (!valid);
 
         if (valid) {
-            if (cellSize.isSelected()) Configuration.setCellSize(16);
-            else Configuration.setCellSize(8);
+            if (cellSize8.isSelected()) Configuration.setCellSize(8);
+            else Configuration.setCellSize(16);
             Configuration.setMemorySize(Integer.valueOf(memorySize.getText()));
             Configuration.setWrapText(wrapText.isSelected());
             Configuration.setAutoComplete(autoComplete.isSelected());

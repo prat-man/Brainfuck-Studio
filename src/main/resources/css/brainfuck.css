@@ -132,6 +132,16 @@
     -fx-background-color: #3278A2;
 }
 
+.radio-button .radio {
+    -fx-background-color: #6C717A;
+    -fx-background-insets: 0;
+}
+
+.radio-button:selected .radio .dot {
+    -fx-background-color: white;
+    -fx-background-insets: 0;
+}
+
 .menu-button > .arrow-button > .arrow, .choice-box .arrow, .combo-box .arrow, .split-menu-button > .arrow-button > .arrow {
     -fx-background-color: white;
 }
