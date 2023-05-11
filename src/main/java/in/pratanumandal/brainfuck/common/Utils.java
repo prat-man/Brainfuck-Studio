@@ -283,4 +283,11 @@ public class Utils {
         return alert;
     }
 
+    public static String formatBrainfuck(String brainfuck) {
+        brainfuck = brainfuck.replaceAll("\\s+", "");
+        brainfuck = brainfuck.replaceAll("(.{5})", "$1 ").trim();
+        brainfuck = brainfuck.replaceAll("((?:\\S*\\s){9}.*?)\\s", "$1\n").trim();
+        return brainfuck;
+    }
+
 }
