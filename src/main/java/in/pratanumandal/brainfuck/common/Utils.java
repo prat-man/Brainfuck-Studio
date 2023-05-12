@@ -4,12 +4,16 @@ import in.pratanumandal.brainfuck.engine.UnmatchedBracketException;
 import in.pratanumandal.brainfuck.gui.BrainfuckStudioApplication;
 import in.pratanumandal.brainfuck.gui.component.NotificationManager;
 import in.pratanumandal.brainfuck.gui.component.TabData;
+import in.pratanumandal.brainfuck.tool.Number;
+import in.pratanumandal.brainfuck.tool.Text;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.DialogPane;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
@@ -223,16 +227,17 @@ public class Utils {
         lineNumberBox.setAlignment(Pos.CENTER);
         vBox.getChildren().add(lineNumberBox);
 
-        javafx.scene.control.Label label = new javafx.scene.control.Label("Line [ : column ]");
+        Label label = new Label("Line [ : column ]");
         lineNumberBox.getChildren().add(label);
 
-        javafx.scene.control.TextField lineNumber = new TextField();
+        TextField lineNumber = new TextField();
         lineNumber.setPromptText("Enter line number");
         HBox.setHgrow(lineNumber, Priority.ALWAYS);
         lineNumber.setText(currentLine + " : " + currentColumn);
         lineNumberBox.getChildren().add(lineNumber);
 
         alert.getDialogPane().setContent(vBox);
+        alert.getDialogPane().setMinWidth(300);
 
         alert.initOwner(currentTab.getTab().getTabPane().getScene().getWindow());
 
@@ -275,10 +280,134 @@ public class Utils {
         }
     }
 
-    public static Alert setDefaultButton(Alert alert, ButtonType defBtn) {
+    public static void convertNumber(TabData currentTab) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION, null, ButtonType.OK, ButtonType.CANCEL);
+
+        Utils.setDefaultButton(alert, ButtonType.OK);
+        Utils.setButtonText(alert, ButtonType.OK, "Insert");
+
+        alert.setTitle(Constants.APPLICATION_NAME);
+        alert.setHeaderText("Convert Number");
+
+        VBox vBox = new VBox();
+        vBox.setAlignment(Pos.CENTER_LEFT);
+        vBox.setSpacing(15);
+
+        HBox numberBox = new HBox();
+        numberBox.setSpacing(10);
+        numberBox.setAlignment(Pos.CENTER_LEFT);
+        vBox.getChildren().add(numberBox);
+
+        Label numberLabel = new Label("Number");
+        numberBox.getChildren().add(numberLabel);
+
+        TextField numberField = new TextField();
+        numberField.setPromptText("Enter a number");
+        HBox.setHgrow(numberField, Priority.ALWAYS);
+        numberField.textProperty().addListener((obs, oldVal, newVal) -> {
+            if (!newVal.matches("(\\+|\\-)?\\d*")) {
+                newVal = newVal.replaceAll("(?!^)\\D", "");
+                newVal = newVal.replaceAll("^[^\\+\\-\\d]", "");
+                numberField.setText(newVal);
+            }
+        });
+        numberBox.getChildren().add(numberField);
+
+        alert.getDialogPane().setContent(vBox);
+        alert.getDialogPane().setPrefWidth(300);
+
+        alert.initOwner(currentTab.getTab().getTabPane().getScene().getWindow());
+
+        while (true) {
+            alert.setResult(null);
+            alert.showAndWait();
+
+            ButtonType buttonType = alert.getResult();
+            if (buttonType == ButtonType.OK) {
+                try {
+                    String text = numberField.getText();
+
+                    if (text.matches("\\+|\\-")) continue;
+
+                    Integer number = Integer.valueOf(text);
+
+                    String converted = Number.convertToBrainfuck(number);
+                    converted = Utils.formatBrainfuck(converted);
+
+                    currentTab.getCodeArea().insertText(currentTab.getCodeArea().getCaretPosition(), converted);
+
+                    break;
+                } catch (NumberFormatException e) { }
+            }
+            else break;
+        }
+    }
+
+    public static void convertText(TabData currentTab) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION, null, ButtonType.OK, ButtonType.CANCEL);
+
+        Utils.setDefaultButton(alert, ButtonType.OK);
+        Utils.setButtonText(alert, ButtonType.OK, "Insert");
+
+        alert.setTitle(Constants.APPLICATION_NAME);
+        alert.setHeaderText("Convert Text");
+
+        VBox vBox = new VBox();
+        vBox.setAlignment(Pos.CENTER_LEFT);
+        vBox.setSpacing(15);
+
+        TextArea textArea = new TextArea();
+        textArea.setPromptText("Enter the text");
+        textArea.prefWidthProperty().bind(vBox.widthProperty());
+        textArea.prefHeightProperty().bind(vBox.heightProperty());
+        vBox.getChildren().add(textArea);
+
+        alert.getDialogPane().setContent(vBox);
+
+        alert.setResizable(true);
+        alert.getDialogPane().setPrefWidth(500);
+        alert.getDialogPane().setPrefHeight(350);
+
+        ((Stage) alert.getDialogPane().getScene().getWindow()).setMinWidth(350);
+        ((Stage) alert.getDialogPane().getScene().getWindow()).setMinHeight(300);
+
+        alert.initOwner(currentTab.getTab().getTabPane().getScene().getWindow());
+
+        while (true) {
+            alert.setResult(null);
+            alert.showAndWait();
+
+            ButtonType buttonType = alert.getResult();
+            if (buttonType == ButtonType.OK) {
+                try {
+                    String text = textArea.getText();
+
+                    String converted = Text.convertToBrainfuck(text);
+                    converted = Utils.formatBrainfuck(converted);
+
+                    currentTab.getCodeArea().insertText(currentTab.getCodeArea().getCaretPosition(), converted);
+
+                    break;
+                } catch (NumberFormatException e) { }
+            }
+            else break;
+        }
+    }
+
+    public static Alert setDefaultButton(Alert alert, ButtonType btnTyp) {
         DialogPane pane = alert.getDialogPane();
         for (ButtonType t : alert.getButtonTypes()) {
-            ((Button) pane.lookupButton(t)).setDefaultButton(t == defBtn);
+            ((Button) pane.lookupButton(t)).setDefaultButton(t == btnTyp);
+        }
+        return alert;
+    }
+
+    public static Alert setButtonText(Alert alert, ButtonType btnTyp, String text) {
+        DialogPane pane = alert.getDialogPane();
+        for (ButtonType t : alert.getButtonTypes()) {
+            if (t == btnTyp) {
+                ((Button) pane.lookupButton(t)).setText(text);
+            }
         }
         return alert;
     }

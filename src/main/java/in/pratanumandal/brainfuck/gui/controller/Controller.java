@@ -119,6 +119,7 @@ public class Controller {
     @FXML private Button debugButton;
     @FXML private Button interpretButton;
     @FXML private MenuButton exportButton;
+    @FXML private MenuButton toolsButton;
 
     @FXML private ComboBox<String> fontSizeChooser;
 
@@ -233,6 +234,7 @@ public class Controller {
         debugButton.disableProperty().bind(emptyTabPaneBinding);
         interpretButton.disableProperty().bind(emptyTabPaneBinding);
         exportButton.disableProperty().bind(emptyTabPaneBinding);
+        toolsButton.disableProperty().bind(emptyTabPaneBinding);
         searchButton.disableProperty().bind(emptyTabPaneBinding);
 
         // update status if no tabs are open
@@ -1702,6 +1704,28 @@ public class Controller {
             }
         });
         thread.start();
+    }
+
+    @FXML
+    private void formatFile() {
+        String formatted = Utils.formatBrainfuck(currentTab.getCodeArea().getText());
+        currentTab.getCodeArea().replaceText(formatted);
+    }
+
+    @FXML
+    private void formatSelected() {
+        String formatted = Utils.formatBrainfuck(currentTab.getCodeArea().getSelectedText());
+        currentTab.getCodeArea().replaceText(currentTab.getCodeArea().getSelection(), formatted);
+    }
+
+    @FXML
+    private void convertNumber() {
+        Utils.convertNumber(currentTab);
+    }
+
+    @FXML
+    private void convertText() {
+        Utils.convertText(currentTab);
     }
 
     @FXML

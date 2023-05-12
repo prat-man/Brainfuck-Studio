@@ -302,6 +302,20 @@
     -fx-pref-height: 32px;
 }
 
+.text-area {
+    -fx-background-color: #6C717A;
+    -fx-background-radius: 2px;
+}
+.text-area .scroll-pane {
+    -fx-background-color: transparent;
+}
+.text-area .scroll-pane .viewport{
+    -fx-background-color: transparent;
+}
+.text-area .scroll-pane .content{
+    -fx-background-color: transparent;
+}
+
 .split-pane-divider {
     -fx-background-color: #4E535C;
 }
