@@ -35,10 +35,10 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.IndexRange;
 import javafx.scene.control.Label;
-import javafx.scene.control.MenuButton;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Slider;
-import javafx.scene.control.SplitMenuButton;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
@@ -115,11 +115,12 @@ public class Controller {
     @FXML private TabPane tabPane;
     @FXML private VBox placeHolder;
 
-    @FXML private SplitMenuButton saveFileButton;
     @FXML private Button debugButton;
     @FXML private Button interpretButton;
-    @FXML private MenuButton exportButton;
-    @FXML private MenuButton toolsButton;
+
+    @FXML private MenuItem saveMenu;
+    @FXML private MenuItem saveAsMenu;
+    @FXML private Menu toolsMenu;
 
     @FXML private ComboBox<String> fontSizeChooser;
 
@@ -230,12 +231,12 @@ public class Controller {
         placeHolder.managedProperty().bind(emptyTabPaneBinding);
 
         // disable buttons if no tabs are open
-        saveFileButton.disableProperty().bind(emptyTabPaneBinding);
         debugButton.disableProperty().bind(emptyTabPaneBinding);
         interpretButton.disableProperty().bind(emptyTabPaneBinding);
-        exportButton.disableProperty().bind(emptyTabPaneBinding);
-        toolsButton.disableProperty().bind(emptyTabPaneBinding);
         searchButton.disableProperty().bind(emptyTabPaneBinding);
+        saveMenu.disableProperty().bind(emptyTabPaneBinding);
+        saveAsMenu.disableProperty().bind(emptyTabPaneBinding);
+        toolsMenu.disableProperty().bind(emptyTabPaneBinding);
 
         // update status if no tabs are open
         emptyTabPaneBinding.addListener((obs, oldVal, newVal) -> {
@@ -565,7 +566,7 @@ public class Controller {
         debugSpeedControls.getChildren().add(debugSpeedLabel);
 
         Slider debugSpeed = new Slider(0, 500, 350);
-        debugSpeed.setMajorTickUnit(1);
+        debugSpeed.setMajorTickUnit(10);
         debugSpeed.setMinorTickCount(0);
         debugSpeed.setSnapToTicks(true);
         HBox.setHgrow(debugSpeed, Priority.ALWAYS);
@@ -630,7 +631,7 @@ public class Controller {
 
         TableColumn<Memory, Integer> column3 = new TableColumn<>("Data");
         column3.setCellValueFactory(new PropertyValueFactory<>("data"));
-        String format2 = "%03d";
+        String format2 = "%05d";
         column3.setCellFactory(column -> {
             TableCell<Memory, Integer> cell = new TableCell<>() {
                 @Override

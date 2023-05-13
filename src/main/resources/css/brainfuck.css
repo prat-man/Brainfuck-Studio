@@ -96,8 +96,10 @@
 }
 
 .tool-bar {
-    -fx-background-color: #444952;
+    -fx-background-color: #4E535C;
     -fx-spacing: 7px;
+    -fx-border-width: 1px 0 0 0;
+    -fx-border-color: #585D66;
 }
 
 .label {
@@ -164,12 +166,9 @@
     -fx-background-color: #00A0CA;
 }
 
-.separator *.line {
-    -fx-border-color: gray;
+.separator .line {
     -fx-border-style: solid;
     -fx-border-width: 1px;
-}
-.tool-bar .separator *.line {
     -fx-border-color: #585D66;
 }
 
@@ -207,10 +206,13 @@
     -fx-background-color: #D73D3D;
 }
 
-.status-bar,
 .tab-header-background,
 .tab-pane {
     -fx-background-color: #626770;
+}
+
+.status-bar {
+    -fx-background-color: #4E535C;
 }
 
 .tab-down-button {
@@ -256,6 +258,16 @@
     -fx-mark-color: white;
 }
 
+.menu-bar {
+    -fx-background-color: #4E535C;
+}
+.menu-bar > .container > .menu-button {
+    -fx-background-color: transparent;
+}
+.menu-bar > .container > .menu-button:showing {
+    -fx-background-color: #00B1DB;
+}
+
 .context-menu {
     -fx-background-color: #626770;
     -fx-text-fill: white;
@@ -268,6 +280,14 @@
 
 .menu-item .label {
     -fx-text-fill: white;
+}
+
+.menu-item > .graphic-container {
+    -fx-padding: 0em 10px 0em 0em;
+}
+
+.menu-item .right-container {
+    -fx-min-width: 150px;
 }
 
 .check-menu-item:checked > .left-container > .check,

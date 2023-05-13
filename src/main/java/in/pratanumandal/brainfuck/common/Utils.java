@@ -7,6 +7,7 @@ import in.pratanumandal.brainfuck.gui.component.TabData;
 import in.pratanumandal.brainfuck.tool.Number;
 import in.pratanumandal.brainfuck.tool.Text;
 import javafx.application.Platform;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -16,8 +17,10 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.fxmisc.richtext.CodeArea;
@@ -283,6 +286,16 @@ public class Utils {
     public static void convertNumber(TabData currentTab) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION, null, ButtonType.OK, ButtonType.CANCEL);
 
+        Image image = new Image(Utils.class.getClassLoader().getResourceAsStream("images/tools.png"));
+        ImageView imageView = new ImageView();
+        imageView.setImage(image);
+        imageView.setFitHeight(32);
+        imageView.setFitWidth(32);
+        StackPane imagePane = new StackPane();
+        imagePane.setPadding(new Insets(5));
+        imagePane.getChildren().add(imageView);
+        alert.setGraphic(imagePane);
+
         Utils.setDefaultButton(alert, ButtonType.OK);
         Utils.setButtonText(alert, ButtonType.OK, "Insert");
 
@@ -345,6 +358,16 @@ public class Utils {
 
     public static void convertText(TabData currentTab) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION, null, ButtonType.OK, ButtonType.CANCEL);
+
+        Image image = new Image(Utils.class.getClassLoader().getResourceAsStream("images/tools.png"));
+        ImageView imageView = new ImageView();
+        imageView.setImage(image);
+        imageView.setFitHeight(32);
+        imageView.setFitWidth(32);
+        StackPane imagePane = new StackPane();
+        imagePane.setPadding(new Insets(5));
+        imagePane.getChildren().add(imageView);
+        alert.setGraphic(imagePane);
 
         Utils.setDefaultButton(alert, ButtonType.OK);
         Utils.setButtonText(alert, ButtonType.OK, "Insert");
