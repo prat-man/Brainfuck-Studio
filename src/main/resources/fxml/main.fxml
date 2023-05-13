@@ -31,7 +31,7 @@
         <children>
             <MenuBar>
                 <menus>
-                    <Menu mnemonicParsing="false" text="File">
+                    <Menu text="_File">
                         <items>
                             <MenuItem mnemonicParsing="false" onAction="#addNewFile" text="New">
                                 <graphic>
@@ -72,7 +72,7 @@
                             </MenuItem>
                         </items>
                     </Menu>
-                    <Menu fx:id="toolsMenu" mnemonicParsing="false" text="Tools">
+                    <Menu fx:id="toolsMenu" text="_Tools">
                         <items>
                             <Menu mnemonicParsing="false" text="Convert">
                                 <items>
@@ -125,7 +125,7 @@
                             </Menu>
                         </items>
                     </Menu>
-                    <Menu mnemonicParsing="false" text="Help">
+                    <Menu text="_Help">
                         <items>
                             <MenuItem mnemonicParsing="false" onAction="#about" text="About">
                                 <graphic>

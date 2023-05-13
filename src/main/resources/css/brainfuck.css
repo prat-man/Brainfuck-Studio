@@ -258,6 +258,10 @@
     -fx-mark-color: white;
 }
 
+:show-mnemonics > .mnemonic-underline {
+    -fx-stroke: white;
+}
+
 .menu-bar {
     -fx-background-color: #4E535C;
 }
