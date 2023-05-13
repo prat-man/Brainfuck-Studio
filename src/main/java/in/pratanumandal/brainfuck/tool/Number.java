@@ -117,12 +117,4 @@ public class Number {
         return strings.stream().min(Comparator.comparingInt(String::length)).get();
     }
 
-    public static void main(String[] args) {
-        int n = 32;
-
-        String converted = convertToBrainfuck(n);
-        converted = Utils.formatBrainfuck(converted);
-        System.out.println(converted);
-    }
-
 }

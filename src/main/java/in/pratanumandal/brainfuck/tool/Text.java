@@ -46,12 +46,4 @@ public class Text {
         return convertToBrainfuck(text, true);
     }
 
-    public static void main(String[] args) {
-        String text = "Hello World!";
-
-        String converted = convertToBrainfuck(text);
-        converted = Utils.formatBrainfuck(converted);
-        System.out.println(converted);
-    }
-
 }

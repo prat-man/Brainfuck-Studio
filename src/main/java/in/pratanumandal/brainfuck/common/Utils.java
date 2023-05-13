@@ -571,10 +571,10 @@ public class Utils {
         }
     }
 
-    public static void convertNumber(TabData currentTab) {
+    public static void generateNumber(TabData currentTab) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION, null, ButtonType.OK, ButtonType.CANCEL);
 
-        Image image = new Image(Utils.class.getClassLoader().getResourceAsStream("images/convert.png"));
+        Image image = new Image(Utils.class.getClassLoader().getResourceAsStream("images/generate.png"));
         ImageView imageView = new ImageView();
         imageView.setImage(image);
         imageView.setFitHeight(32);
@@ -588,19 +588,14 @@ public class Utils {
         Utils.setButtonText(alert, ButtonType.OK, "Insert");
 
         alert.setTitle(Constants.APPLICATION_NAME);
-        alert.setHeaderText("Convert Number");
+        alert.setHeaderText("Generate");
 
         VBox vBox = new VBox();
         vBox.setAlignment(Pos.CENTER_LEFT);
         vBox.setSpacing(15);
 
-        HBox numberBox = new HBox();
-        numberBox.setSpacing(10);
-        numberBox.setAlignment(Pos.CENTER_LEFT);
-        vBox.getChildren().add(numberBox);
-
-        Label numberLabel = new Label("Number");
-        numberBox.getChildren().add(numberLabel);
+        Label label = new Label("Generate brainfuck code for a number");
+        vBox.getChildren().add(label);
 
         TextField numberField = new TextField();
         numberField.setPromptText("Enter a number");
@@ -612,7 +607,7 @@ public class Utils {
                 numberField.setText(newVal);
             }
         });
-        numberBox.getChildren().add(numberField);
+        vBox.getChildren().add(numberField);
 
         alert.getDialogPane().setContent(vBox);
         alert.getDialogPane().setPrefWidth(300);
@@ -620,6 +615,8 @@ public class Utils {
         Utils.setStyle((Stage) alert.getDialogPane().getScene().getWindow());
 
         alert.initOwner(currentTab.getTab().getTabPane().getScene().getWindow());
+
+        alert.setOnShown(event -> Platform.runLater(() -> numberField.requestFocus()));
 
         while (true) {
             alert.setResult(null);
@@ -646,10 +643,10 @@ public class Utils {
         }
     }
 
-    public static void convertText(TabData currentTab) {
+    public static void generateText(TabData currentTab) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION, null, ButtonType.OK, ButtonType.CANCEL);
 
-        Image image = new Image(Utils.class.getClassLoader().getResourceAsStream("images/convert.png"));
+        Image image = new Image(Utils.class.getClassLoader().getResourceAsStream("images/generate.png"));
         ImageView imageView = new ImageView();
         imageView.setImage(image);
         imageView.setFitHeight(32);
@@ -663,11 +660,14 @@ public class Utils {
         Utils.setButtonText(alert, ButtonType.OK, "Insert");
 
         alert.setTitle(Constants.APPLICATION_NAME);
-        alert.setHeaderText("Convert Text");
+        alert.setHeaderText("Generate");
 
         VBox vBox = new VBox();
         vBox.setAlignment(Pos.CENTER_LEFT);
         vBox.setSpacing(15);
+
+        Label label = new Label("Generate brainfuck code for a text");
+        vBox.getChildren().add(label);
 
         TextArea textArea = new TextArea();
         textArea.setPromptText("Enter the text");
@@ -679,7 +679,7 @@ public class Utils {
 
         alert.setResizable(true);
         alert.getDialogPane().setPrefWidth(500);
-        alert.getDialogPane().setPrefHeight(350);
+        alert.getDialogPane().setPrefHeight(400);
 
         ((Stage) alert.getDialogPane().getScene().getWindow()).setMinWidth(350);
         ((Stage) alert.getDialogPane().getScene().getWindow()).setMinHeight(300);
@@ -687,6 +687,8 @@ public class Utils {
         Utils.setStyle((Stage) alert.getDialogPane().getScene().getWindow());
 
         alert.initOwner(currentTab.getTab().getTabPane().getScene().getWindow());
+
+        alert.setOnShown(event -> Platform.runLater(() -> textArea.requestFocus()));
 
         while (true) {
             alert.setResult(null);

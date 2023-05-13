@@ -90,38 +90,6 @@
                     </Menu>
                     <Menu fx:id="toolsMenu" text="_Tools">
                         <items>
-                            <Menu mnemonicParsing="false" text="Convert">
-                                <items>
-                                    <MenuItem mnemonicParsing="false" onAction="#convertNumber" text="Number">
-                                        <graphic>
-                                            <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true"
-                                                       preserveRatio="true">
-                                                <image>
-                                                    <Image url="@../images/empty.png"/>
-                                                </image>
-                                            </ImageView>
-                                        </graphic>
-                                    </MenuItem>
-                                    <MenuItem mnemonicParsing="false" onAction="#convertText" text="Text">
-                                        <graphic>
-                                            <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true"
-                                                       preserveRatio="true">
-                                                <image>
-                                                    <Image url="@../images/empty.png"/>
-                                                </image>
-                                            </ImageView>
-                                        </graphic>
-                                    </MenuItem>
-                                </items>
-                                <graphic>
-                                    <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true"
-                                               preserveRatio="true">
-                                        <image>
-                                            <Image url="@../images/convert.png"/>
-                                        </image>
-                                    </ImageView>
-                                </graphic>
-                            </Menu>
                             <Menu mnemonicParsing="false" text="Export">
                                 <items>
                                     <MenuItem mnemonicParsing="false" onAction="#exportToC" text="C">
@@ -160,6 +128,38 @@
                                                preserveRatio="true">
                                         <image>
                                             <Image url="@../images/export.png"/>
+                                        </image>
+                                    </ImageView>
+                                </graphic>
+                            </Menu>
+                            <Menu mnemonicParsing="false" text="Generate">
+                                <items>
+                                    <MenuItem mnemonicParsing="false" onAction="#generateNumber" text="Number">
+                                        <graphic>
+                                            <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true"
+                                                       preserveRatio="true">
+                                                <image>
+                                                    <Image url="@../images/empty.png"/>
+                                                </image>
+                                            </ImageView>
+                                        </graphic>
+                                    </MenuItem>
+                                    <MenuItem mnemonicParsing="false" onAction="#generateText" text="Text">
+                                        <graphic>
+                                            <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true"
+                                                       preserveRatio="true">
+                                                <image>
+                                                    <Image url="@../images/empty.png"/>
+                                                </image>
+                                            </ImageView>
+                                        </graphic>
+                                    </MenuItem>
+                                </items>
+                                <graphic>
+                                    <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true"
+                                               preserveRatio="true">
+                                        <image>
+                                            <Image url="@../images/generate.png"/>
                                         </image>
                                     </ImageView>
                                 </graphic>

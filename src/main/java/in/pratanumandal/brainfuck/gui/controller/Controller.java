@@ -1472,13 +1472,13 @@ public class Controller {
     }
 
     @FXML
-    private void convertNumber() {
-        Utils.convertNumber(currentTab);
+    private void generateNumber() {
+        Utils.generateNumber(currentTab);
     }
 
     @FXML
-    private void convertText() {
-        Utils.convertText(currentTab);
+    private void generateText() {
+        Utils.generateText(currentTab);
     }
 
     @FXML
