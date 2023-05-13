@@ -33,7 +33,7 @@
                 <menus>
                     <Menu text="_File">
                         <items>
-                            <MenuItem mnemonicParsing="false" onAction="#addNewFile" text="New">
+                            <MenuItem mnemonicParsing="false" accelerator="Shortcut+N" onAction="#addNewFile" text="New">
                                 <graphic>
                                     <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                                         <image>
@@ -42,7 +42,7 @@
                                     </ImageView>
                                 </graphic>
                             </MenuItem>
-                            <MenuItem mnemonicParsing="false" onAction="#openFile" text="Open">
+                            <MenuItem mnemonicParsing="false" accelerator="Shortcut+O" onAction="#openFile" text="Open">
                                 <graphic>
                                     <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                                         <image>
@@ -52,7 +52,7 @@
                                 </graphic>
                             </MenuItem>
                             <SeparatorMenuItem mnemonicParsing="false" />
-                            <MenuItem fx:id="saveMenu" mnemonicParsing="false" onAction="#saveFile" text="Save">
+                            <MenuItem fx:id="saveMenu" mnemonicParsing="false" accelerator="Shortcut+S" onAction="#saveFile" text="Save">
                                 <graphic>
                                     <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                                         <image>
@@ -61,7 +61,7 @@
                                     </ImageView>
                                 </graphic>
                             </MenuItem>
-                            <MenuItem fx:id="saveAsMenu" mnemonicParsing="false" onAction="#saveAsFile" text="Save as">
+                            <MenuItem fx:id="saveAsMenu" mnemonicParsing="false" accelerator="Shortcut+Shift+O" onAction="#saveAsFile" text="Save as">
                                 <graphic>
                                     <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                                         <image>
@@ -76,8 +76,24 @@
                         <items>
                             <Menu mnemonicParsing="false" text="Convert">
                                 <items>
-                                    <MenuItem mnemonicParsing="false" onAction="#convertNumber" text="Number" />
-                                    <MenuItem mnemonicParsing="false" onAction="#convertText" text="Text" />
+                                    <MenuItem mnemonicParsing="false" onAction="#convertNumber" text="Number">
+                                        <graphic>
+                                            <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                                <image>
+                                                    <Image url="@../images/empty.png" />
+                                                </image>
+                                            </ImageView>
+                                        </graphic>
+                                    </MenuItem>
+                                    <MenuItem mnemonicParsing="false" onAction="#convertText" text="Text">
+                                        <graphic>
+                                            <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                                <image>
+                                                    <Image url="@../images/empty.png" />
+                                                </image>
+                                            </ImageView>
+                                        </graphic>
+                                    </MenuItem>
                                 </items>
                                 <graphic>
                                     <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
@@ -89,7 +105,15 @@
                             </Menu>
                             <Menu mnemonicParsing="false" text="Export">
                                 <items>
-                                    <MenuItem mnemonicParsing="false" onAction="#exportToC" text="C" />
+                                    <MenuItem mnemonicParsing="false" onAction="#exportToC" text="C">
+                                        <graphic>
+                                            <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                                <image>
+                                                    <Image url="@../images/empty.png" />
+                                                </image>
+                                            </ImageView>
+                                        </graphic>
+                                    </MenuItem>
                                     <MenuItem mnemonicParsing="false" onAction="#exportToJava" text="Java">
                                         <graphic>
                                             <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
@@ -119,9 +143,32 @@
                             </Menu>
                             <Menu mnemonicParsing="false" text="Format">
                                 <items>
-                                    <MenuItem mnemonicParsing="false" onAction="#formatFile" text="Entire file" />
-                                    <MenuItem mnemonicParsing="false" onAction="#formatSelected" text="Selected text" />
+                                    <MenuItem mnemonicParsing="false" onAction="#formatFile" text="Entire file">
+                                        <graphic>
+                                            <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                                <image>
+                                                    <Image url="@../images/empty.png" />
+                                                </image>
+                                            </ImageView>
+                                        </graphic>
+                                    </MenuItem>
+                                    <MenuItem mnemonicParsing="false" onAction="#formatSelected" text="Selected text">
+                                        <graphic>
+                                            <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                                <image>
+                                                    <Image url="@../images/empty.png" />
+                                                </image>
+                                            </ImageView>
+                                        </graphic>
+                                    </MenuItem>
                                 </items>
+                                <graphic>
+                                    <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                        <image>
+                                            <Image url="@../images/empty.png" />
+                                        </image>
+                                    </ImageView>
+                                </graphic>
                             </Menu>
                         </items>
                     </Menu>
@@ -136,7 +183,15 @@
                                     </ImageView>
                                 </graphic>
                             </MenuItem>
-                            <MenuItem mnemonicParsing="false" onAction="#keymapReference" text="Keymap Reference" />
+                            <MenuItem mnemonicParsing="false" onAction="#keymapReference" text="Keymap Reference">
+                                <graphic>
+                                    <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                        <image>
+                                            <Image url="@../images/empty.png" />
+                                        </image>
+                                    </ImageView>
+                                </graphic>
+                            </MenuItem>
                             <SeparatorMenuItem mnemonicParsing="false" />
                             <MenuItem mnemonicParsing="false" onAction="#settings" text="Settings">
                                 <graphic>
