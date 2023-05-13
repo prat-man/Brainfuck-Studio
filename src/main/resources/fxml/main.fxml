@@ -33,39 +33,55 @@
                 <menus>
                     <Menu text="_File">
                         <items>
-                            <MenuItem mnemonicParsing="false" accelerator="Shortcut+N" onAction="#addNewFile" text="New">
+                            <MenuItem accelerator="Shortcut+N" mnemonicParsing="false" onAction="#addNewFile"
+                                      text="New">
                                 <graphic>
-                                    <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true"
+                                               preserveRatio="true">
                                         <image>
-                                            <Image url="@../images/add.png" />
+                                            <Image url="@../images/add.png"/>
                                         </image>
                                     </ImageView>
                                 </graphic>
                             </MenuItem>
-                            <MenuItem mnemonicParsing="false" accelerator="Shortcut+O" onAction="#openFile" text="Open">
+                            <MenuItem accelerator="Shortcut+O" mnemonicParsing="false" onAction="#openFile" text="Open">
                                 <graphic>
-                                    <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true"
+                                               preserveRatio="true">
                                         <image>
-                                            <Image url="@../images/open.png" />
+                                            <Image url="@../images/open.png"/>
                                         </image>
                                     </ImageView>
                                 </graphic>
                             </MenuItem>
-                            <SeparatorMenuItem mnemonicParsing="false" />
-                            <MenuItem fx:id="saveMenu" mnemonicParsing="false" accelerator="Shortcut+S" onAction="#saveFile" text="Save">
+                            <SeparatorMenuItem mnemonicParsing="false"/>
+                            <MenuItem fx:id="saveMenu" accelerator="Shortcut+S" mnemonicParsing="false"
+                                      onAction="#saveFile" text="Save">
                                 <graphic>
-                                    <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true"
+                                               preserveRatio="true">
                                         <image>
-                                            <Image url="@../images/save.png" />
+                                            <Image url="@../images/save.png"/>
                                         </image>
                                     </ImageView>
                                 </graphic>
                             </MenuItem>
-                            <MenuItem fx:id="saveAsMenu" mnemonicParsing="false" accelerator="Shortcut+Shift+O" onAction="#saveAsFile" text="Save as">
+                            <MenuItem fx:id="saveAsMenu" accelerator="Shortcut+Shift+O" mnemonicParsing="false"
+                                      onAction="#saveAsFile" text="Save as">
                                 <graphic>
                                     <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                                         <image>
-                                            <Image url="@../images/save-as.png" />
+                                            <Image url="@../images/empty.png" />
+                                        </image>
+                                    </ImageView>
+                                </graphic>
+                            </MenuItem>
+                            <SeparatorMenuItem mnemonicParsing="false"/>
+                            <MenuItem mnemonicParsing="false" onAction="#exit" text="Exit">
+                                <graphic>
+                                    <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                        <image>
+                                            <Image url="@../images/empty.png" />
                                         </image>
                                     </ImageView>
                                 </graphic>
@@ -78,27 +94,30 @@
                                 <items>
                                     <MenuItem mnemonicParsing="false" onAction="#convertNumber" text="Number">
                                         <graphic>
-                                            <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                            <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true"
+                                                       preserveRatio="true">
                                                 <image>
-                                                    <Image url="@../images/empty.png" />
+                                                    <Image url="@../images/empty.png"/>
                                                 </image>
                                             </ImageView>
                                         </graphic>
                                     </MenuItem>
                                     <MenuItem mnemonicParsing="false" onAction="#convertText" text="Text">
                                         <graphic>
-                                            <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                            <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true"
+                                                       preserveRatio="true">
                                                 <image>
-                                                    <Image url="@../images/empty.png" />
+                                                    <Image url="@../images/empty.png"/>
                                                 </image>
                                             </ImageView>
                                         </graphic>
                                     </MenuItem>
                                 </items>
                                 <graphic>
-                                    <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true"
+                                               preserveRatio="true">
                                         <image>
-                                            <Image url="@../images/convert.png" />
+                                            <Image url="@../images/convert.png"/>
                                         </image>
                                     </ImageView>
                                 </graphic>
@@ -107,36 +126,40 @@
                                 <items>
                                     <MenuItem mnemonicParsing="false" onAction="#exportToC" text="C">
                                         <graphic>
-                                            <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                            <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true"
+                                                       preserveRatio="true">
                                                 <image>
-                                                    <Image url="@../images/empty.png" />
+                                                    <Image url="@../images/empty.png"/>
                                                 </image>
                                             </ImageView>
                                         </graphic>
                                     </MenuItem>
                                     <MenuItem mnemonicParsing="false" onAction="#exportToJava" text="Java">
                                         <graphic>
-                                            <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                            <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true"
+                                                       preserveRatio="true">
                                                 <image>
-                                                    <Image url="@../images/java.png" />
+                                                    <Image url="@../images/java.png"/>
                                                 </image>
                                             </ImageView>
                                         </graphic>
                                     </MenuItem>
                                     <MenuItem mnemonicParsing="false" onAction="#exportToPython" text="Python">
                                         <graphic>
-                                            <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                            <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true"
+                                                       preserveRatio="true">
                                                 <image>
-                                                    <Image url="@../images/python.png" />
+                                                    <Image url="@../images/python.png"/>
                                                 </image>
                                             </ImageView>
                                         </graphic>
                                     </MenuItem>
                                 </items>
                                 <graphic>
-                                    <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true"
+                                               preserveRatio="true">
                                         <image>
-                                            <Image url="@../images/export.png" />
+                                            <Image url="@../images/export.png"/>
                                         </image>
                                     </ImageView>
                                 </graphic>
@@ -145,27 +168,30 @@
                                 <items>
                                     <MenuItem mnemonicParsing="false" onAction="#formatFile" text="Entire file">
                                         <graphic>
-                                            <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                            <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true"
+                                                       preserveRatio="true">
                                                 <image>
-                                                    <Image url="@../images/empty.png" />
+                                                    <Image url="@../images/empty.png"/>
                                                 </image>
                                             </ImageView>
                                         </graphic>
                                     </MenuItem>
                                     <MenuItem mnemonicParsing="false" onAction="#formatSelected" text="Selected text">
                                         <graphic>
-                                            <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                            <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true"
+                                                       preserveRatio="true">
                                                 <image>
-                                                    <Image url="@../images/empty.png" />
+                                                    <Image url="@../images/empty.png"/>
                                                 </image>
                                             </ImageView>
                                         </graphic>
                                     </MenuItem>
                                 </items>
                                 <graphic>
-                                    <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true"
+                                               preserveRatio="true">
                                         <image>
-                                            <Image url="@../images/empty.png" />
+                                            <Image url="@../images/empty.png"/>
                                         </image>
                                     </ImageView>
                                 </graphic>
@@ -176,28 +202,31 @@
                         <items>
                             <MenuItem mnemonicParsing="false" onAction="#about" text="About">
                                 <graphic>
-                                    <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true"
+                                               preserveRatio="true">
                                         <image>
-                                            <Image url="@../images/about.png" />
+                                            <Image url="@../images/about.png"/>
                                         </image>
                                     </ImageView>
                                 </graphic>
                             </MenuItem>
                             <MenuItem mnemonicParsing="false" onAction="#keymapReference" text="Keymap Reference">
                                 <graphic>
-                                    <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true"
+                                               preserveRatio="true">
                                         <image>
-                                            <Image url="@../images/empty.png" />
+                                            <Image url="@../images/empty.png"/>
                                         </image>
                                     </ImageView>
                                 </graphic>
                             </MenuItem>
-                            <SeparatorMenuItem mnemonicParsing="false" />
+                            <SeparatorMenuItem mnemonicParsing="false"/>
                             <MenuItem mnemonicParsing="false" onAction="#settings" text="Settings">
                                 <graphic>
-                                    <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                    <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true"
+                                               preserveRatio="true">
                                         <image>
-                                            <Image url="@../images/settings.png" />
+                                            <Image url="@../images/settings.png"/>
                                         </image>
                                     </ImageView>
                                 </graphic>
@@ -208,123 +237,133 @@
             </MenuBar>
             <ToolBar prefHeight="40.0" prefWidth="200.0">
                 <items>
-                    <Button fx:id="interpretButton" layoutX="10.0" layoutY="10.0" mnemonicParsing="false" onAction="#interpret" text="Run">
+                    <Button fx:id="interpretButton" layoutX="10.0" layoutY="10.0" mnemonicParsing="false"
+                            onAction="#interpret" text="Run">
                         <graphic>
                             <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                                 <image>
-                                    <Image url="@../images/run.png" />
+                                    <Image url="@../images/run.png"/>
                                 </image>
                             </ImageView>
                         </graphic>
                     </Button>
-                    <Button fx:id="debugButton" layoutX="253.0" layoutY="10.0" mnemonicParsing="false" onAction="#debug" text="Debug">
+                    <Button fx:id="debugButton" layoutX="253.0" layoutY="10.0" mnemonicParsing="false" onAction="#debug"
+                            text="Debug">
                         <graphic>
                             <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                                 <image>
-                                    <Image url="@../images/debug.png" />
+                                    <Image url="@../images/debug.png"/>
                                 </image>
                             </ImageView>
                         </graphic>
                     </Button>
-                    <Pane HBox.hgrow="ALWAYS" />
+                    <Pane HBox.hgrow="ALWAYS"/>
                     <ToggleButton fx:id="searchButton" mnemonicParsing="false">
                         <graphic>
                             <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                                 <image>
-                                    <Image url="@../images/search.png" />
+                                    <Image url="@../images/search.png"/>
                                 </image>
                             </ImageView>
                         </graphic>
                         <tooltip>
-                            <Tooltip showDelay="300ms" text="Find and Replace" />
+                            <Tooltip showDelay="300ms" text="Find and Replace"/>
                         </tooltip>
                     </ToggleButton>
-                    <Separator layoutX="721.0" layoutY="10.0" />
+                    <Separator layoutX="721.0" layoutY="10.0"/>
                     <HBox alignment="CENTER" spacing="5.0">
                         <children>
                             <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                                 <image>
-                                    <Image url="@../images/font-size.png" />
+                                    <Image url="@../images/font-size.png"/>
                                 </image>
                             </ImageView>
                             <ComboBox fx:id="fontSizeChooser" value="16px">
                                 <items>
                                     <FXCollections fx:factory="observableArrayList">
-                                        <String fx:value="10px" />
-                                        <String fx:value="12px" />
-                                        <String fx:value="14px" />
-                                        <String fx:value="16px" />
-                                        <String fx:value="18px" />
-                                        <String fx:value="20px" />
-                                        <String fx:value="22px" />
-                                        <String fx:value="24px" />
-                                        <String fx:value="26px" />
-                                        <String fx:value="28px" />
-                                        <String fx:value="30px" />
-                                        <String fx:value="32px" />
-                                        <String fx:value="34px" />
-                                        <String fx:value="36px" />
-                                        <String fx:value="38px" />
-                                        <String fx:value="40px" />
+                                        <String fx:value="10px"/>
+                                        <String fx:value="12px"/>
+                                        <String fx:value="14px"/>
+                                        <String fx:value="16px"/>
+                                        <String fx:value="18px"/>
+                                        <String fx:value="20px"/>
+                                        <String fx:value="22px"/>
+                                        <String fx:value="24px"/>
+                                        <String fx:value="26px"/>
+                                        <String fx:value="28px"/>
+                                        <String fx:value="30px"/>
+                                        <String fx:value="32px"/>
+                                        <String fx:value="34px"/>
+                                        <String fx:value="36px"/>
+                                        <String fx:value="38px"/>
+                                        <String fx:value="40px"/>
                                     </FXCollections>
                                 </items>
                             </ComboBox>
                         </children>
                     </HBox>
-                    <Separator />
+                    <Separator/>
                     <Button mnemonicParsing="false" onAction="#addNewFile">
                         <graphic>
                             <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                                 <image>
-                                    <Image url="@../images/add.png" />
+                                    <Image url="@../images/add.png"/>
                                 </image>
                             </ImageView>
                         </graphic>
                         <tooltip>
-                            <Tooltip showDelay="300ms" text="New file" />
+                            <Tooltip showDelay="300ms" text="New file"/>
                         </tooltip>
                     </Button>
                 </items>
                 <padding>
-                    <Insets bottom="9.0" left="7.0" right="7.0" top="8.0" />
+                    <Insets bottom="9.0" left="7.0" right="7.0" top="8.0"/>
                 </padding>
             </ToolBar>
             <StackPane VBox.vgrow="ALWAYS">
                 <children>
-                    <TabPane fx:id="tabPane" tabClosingPolicy="ALL_TABS" />
+                    <TabPane fx:id="tabPane" tabClosingPolicy="ALL_TABS"/>
                     <VBox fx:id="placeHolder" alignment="CENTER" fillWidth="false">
                         <children>
                             <GridPane hgap="10.0" vgap="10.0">
                                 <columnConstraints>
-                                    <ColumnConstraints hgrow="SOMETIMES" />
+                                    <ColumnConstraints hgrow="SOMETIMES"/>
                                 </columnConstraints>
                                 <rowConstraints>
-                                    <RowConstraints vgrow="SOMETIMES" />
-                                    <RowConstraints vgrow="SOMETIMES" />
+                                    <RowConstraints vgrow="SOMETIMES"/>
+                                    <RowConstraints vgrow="SOMETIMES"/>
                                 </rowConstraints>
                                 <children>
-                                    <Button alignment="BASELINE_LEFT" graphicTextGap="10.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#addNewFile" styleClass="secondary" text="Open a new untitled tab">
+                                    <Button alignment="BASELINE_LEFT" graphicTextGap="10.0"
+                                            maxWidth="1.7976931348623157E308" mnemonicParsing="false"
+                                            onAction="#addNewFile" styleClass="secondary"
+                                            text="Open a new untitled tab">
                                         <graphic>
-                                            <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                            <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true"
+                                                       preserveRatio="true">
                                                 <image>
-                                                    <Image url="@../images/add.png" />
+                                                    <Image url="@../images/add.png"/>
                                                 </image>
                                             </ImageView>
                                         </graphic>
                                         <padding>
-                                            <Insets bottom="10.0" left="15.0" right="15.0" top="10.0" />
+                                            <Insets bottom="10.0" left="15.0" right="15.0" top="10.0"/>
                                         </padding>
                                     </Button>
-                                    <Button alignment="BASELINE_LEFT" graphicTextGap="10.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#openFile" styleClass="secondary" text="Open from file" GridPane.rowIndex="1">
+                                    <Button alignment="BASELINE_LEFT" graphicTextGap="10.0"
+                                            maxWidth="1.7976931348623157E308" mnemonicParsing="false"
+                                            onAction="#openFile" styleClass="secondary" text="Open from file"
+                                            GridPane.rowIndex="1">
                                         <graphic>
-                                            <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                            <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true"
+                                                       preserveRatio="true">
                                                 <image>
-                                                    <Image url="@../images/open.png" />
+                                                    <Image url="@../images/open.png"/>
                                                 </image>
                                             </ImageView>
                                         </graphic>
                                         <padding>
-                                            <Insets bottom="10.0" left="15.0" right="15.0" top="10.0" />
+                                            <Insets bottom="10.0" left="15.0" right="15.0" top="10.0"/>
                                         </padding>
                                     </Button>
                                 </children>
@@ -335,121 +374,123 @@
             </StackPane>
             <HBox fx:id="findAndReplace" spacing="7.0" styleClass="find-and-replace" visible="false">
                 <children>
-                    <TextField fx:id="findField" promptText="Find text" HBox.hgrow="ALWAYS" />
-                    <TextField fx:id="replaceField" promptText="Replace text" HBox.hgrow="ALWAYS" />
+                    <TextField fx:id="findField" promptText="Find text" HBox.hgrow="ALWAYS"/>
+                    <TextField fx:id="replaceField" promptText="Replace text" HBox.hgrow="ALWAYS"/>
                     <ToggleButton contentDisplay="RIGHT" mnemonicParsing="false" onAction="#toggleRegex">
                         <graphic>
                             <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                                 <image>
-                                    <Image url="@../images/regex.png" />
+                                    <Image url="@../images/regex.png"/>
                                 </image>
                             </ImageView>
                         </graphic>
                         <tooltip>
-                            <Tooltip showDelay="300ms" text="Regex" />
+                            <Tooltip showDelay="300ms" text="Regex"/>
                         </tooltip>
                     </ToggleButton>
-                    <ToggleButton contentDisplay="RIGHT" layoutX="475.0" layoutY="18.0" mnemonicParsing="false" onAction="#toggleCaseSensitive">
+                    <ToggleButton contentDisplay="RIGHT" layoutX="475.0" layoutY="18.0" mnemonicParsing="false"
+                                  onAction="#toggleCaseSensitive">
                         <graphic>
                             <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                                 <image>
-                                    <Image url="@../images/case-sensitive.png" />
+                                    <Image url="@../images/case-sensitive.png"/>
                                 </image>
                             </ImageView>
                         </graphic>
                         <tooltip>
-                            <Tooltip showDelay="300ms" text="Case Sensitive" />
+                            <Tooltip showDelay="300ms" text="Case Sensitive"/>
                         </tooltip>
                     </ToggleButton>
                     <Button contentDisplay="RIGHT" mnemonicParsing="false" onAction="#findNext">
                         <graphic>
                             <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                                 <image>
-                                    <Image url="@../images/next.png" />
+                                    <Image url="@../images/next.png"/>
                                 </image>
                             </ImageView>
                         </graphic>
                         <tooltip>
-                            <Tooltip showDelay="300ms" text="Find Next" />
+                            <Tooltip showDelay="300ms" text="Find Next"/>
                         </tooltip>
                     </Button>
                     <Button contentDisplay="RIGHT" mnemonicParsing="false" onAction="#findPrevious">
                         <graphic>
                             <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                                 <image>
-                                    <Image url="@../images/previous.png" />
+                                    <Image url="@../images/previous.png"/>
                                 </image>
                             </ImageView>
                         </graphic>
                         <tooltip>
-                            <Tooltip showDelay="300ms" text="Find Previous" />
+                            <Tooltip showDelay="300ms" text="Find Previous"/>
                         </tooltip>
                     </Button>
-                    <Button contentDisplay="RIGHT" mnemonicParsing="false" onAction="#replace" text="Replace" />
-                    <Button contentDisplay="RIGHT" mnemonicParsing="false" onAction="#replaceAll" text="Replace All" />
+                    <Button contentDisplay="RIGHT" mnemonicParsing="false" onAction="#replace" text="Replace"/>
+                    <Button contentDisplay="RIGHT" mnemonicParsing="false" onAction="#replaceAll" text="Replace All"/>
                     <Button mnemonicParsing="false" onAction="#toggleSearch" styleClass="secondary">
                         <graphic>
                             <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                                 <image>
-                                    <Image url="@../images/close.png" />
+                                    <Image url="@../images/close.png"/>
                                 </image>
                             </ImageView>
                         </graphic>
                         <tooltip>
-                            <Tooltip showDelay="300ms" text="Close" />
+                            <Tooltip showDelay="300ms" text="Close"/>
                         </tooltip>
                     </Button>
                 </children>
                 <padding>
-                    <Insets bottom="7.0" left="7.0" right="7.0" top="8.0" />
+                    <Insets bottom="7.0" left="7.0" right="7.0" top="8.0"/>
                 </padding>
             </HBox>
             <GridPane minHeight="-Infinity" minWidth="-Infinity">
                 <columnConstraints>
-                    <ColumnConstraints hgrow="SOMETIMES" />
-                    <ColumnConstraints hgrow="SOMETIMES" />
+                    <ColumnConstraints hgrow="SOMETIMES"/>
+                    <ColumnConstraints hgrow="SOMETIMES"/>
                 </columnConstraints>
                 <rowConstraints>
-                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
                 </rowConstraints>
                 <children>
                     <HBox alignment="CENTER_LEFT" layoutX="331.0" layoutY="17.0" styleClass="status-bar">
                         <children>
-                            <Label fx:id="caretPosition" text="Position" />
+                            <Label fx:id="caretPosition" text="Position"/>
                             <Separator orientation="VERTICAL">
                                 <padding>
-                                    <Insets left="10.0" right="10.0" />
+                                    <Insets left="10.0" right="10.0"/>
                                 </padding>
                             </Separator>
-                            <Label fx:id="caretRow" layoutX="17.0" layoutY="17.0" text="Line" />
+                            <Label fx:id="caretRow" layoutX="17.0" layoutY="17.0" text="Line"/>
                             <Separator layoutX="91.0" layoutY="17.0" orientation="VERTICAL">
                                 <padding>
-                                    <Insets left="10.0" right="10.0" />
+                                    <Insets left="10.0" right="10.0"/>
                                 </padding>
                             </Separator>
-                            <Label fx:id="caretColumn" layoutX="91.0" layoutY="17.0" text="Column" />
+                            <Label fx:id="caretColumn" layoutX="91.0" layoutY="17.0" text="Column"/>
                         </children>
                         <padding>
-                            <Insets bottom="7.0" left="7.0" right="7.0" top="7.0" />
+                            <Insets bottom="7.0" left="7.0" right="7.0" top="7.0"/>
                         </padding>
                     </HBox>
                     <HBox alignment="CENTER_RIGHT" styleClass="status-bar" GridPane.columnIndex="1">
                         <children>
-                            <Label fx:id="charCount" text="Characters" />
+                            <Label fx:id="charCount" text="Characters"/>
                             <Separator orientation="VERTICAL">
                                 <padding>
-                                    <Insets left="10.0" right="10.0" />
+                                    <Insets left="10.0" right="10.0"/>
                                 </padding>
                             </Separator>
-                            <Label fx:id="lineCount" layoutX="691.0" layoutY="17.0" text="Lines" />
+                            <Label fx:id="lineCount" layoutX="691.0" layoutY="17.0" text="Lines"/>
                         </children>
                         <padding>
-                            <Insets bottom="7.0" left="7.0" right="7.0" top="7.0" />
+                            <Insets bottom="7.0" left="7.0" right="7.0" top="7.0"/>
                         </padding>
                     </HBox>
                 </children>
             </GridPane>
         </children>
     </VBox>
-    <VBox fx:id="notificationPane" alignment="BOTTOM_RIGHT" spacing="10.0" AnchorPane.bottomAnchor="50.0" AnchorPane.rightAnchor="20.0" />
+    <VBox fx:id="notificationPane" alignment="BOTTOM_RIGHT" spacing="10.0" AnchorPane.bottomAnchor="50.0"
+          AnchorPane.rightAnchor="20.0"/>
 </AnchorPane>

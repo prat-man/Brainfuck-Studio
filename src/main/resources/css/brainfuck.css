@@ -282,6 +282,10 @@
     /*-fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.8), 15, 0, 0, 0);*/
 }
 
+.menu-item > .accelerator-text {
+    -fx-padding: 0 0 0 30px;
+}
+
 .menu-item .label {
     -fx-text-fill: white;
 }

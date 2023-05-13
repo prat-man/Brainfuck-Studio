@@ -63,6 +63,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import javafx.util.Duration;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.fxmisc.flowless.VirtualizedScrollPane;
@@ -1570,6 +1571,11 @@ public class Controller {
         tabData.getCodeArea().setStyle("-fx-font-size: " + fontSize + "px");
         tabData.getDebugTerminal().setStyle("-fx-font-size: " + fontSize + "px");
         tabData.getInterpretTerminal().setStyle("-fx-font-size: " + fontSize + "px");
+    }
+
+    @FXML
+    private void exit() {
+        stage.fireEvent(new WindowEvent(stage, WindowEvent.WINDOW_CLOSE_REQUEST));
     }
 
     public boolean exitApplication() {
