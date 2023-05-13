@@ -10,6 +10,7 @@ import in.pratanumandal.brainfuck.gui.component.TabData;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 
 import java.io.BufferedWriter;
@@ -54,6 +55,7 @@ public abstract class Translator extends Processor {
                 Configuration.flush();
             } catch (ConfigurationException | IOException e) {
                 Alert error = new Alert(Alert.AlertType.ERROR, "Failed to save configuration!");
+                Utils.setStyle((Stage) error.getDialogPane().getScene().getWindow());
                 error.initOwner(tabData.getTab().getTabPane().getScene().getWindow());
                 error.showAndWait();
             }
@@ -66,13 +68,15 @@ public abstract class Translator extends Processor {
                 super.start();
             } catch (UnmatchedBracketException e) {
                 Platform.runLater(() -> {
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle(Constants.APPLICATION_NAME);
-                    alert.setHeaderText("Translator Error");
-                    alert.setContentText(e.getMessage() + "\n\n");
+                    Alert error = new Alert(Alert.AlertType.ERROR);
+                    error.setTitle(Constants.APPLICATION_NAME);
+                    error.setHeaderText("Translator Error");
+                    error.setContentText(e.getMessage() + "\n\n");
 
-                    alert.initOwner(tabData.getTab().getTabPane().getScene().getWindow());
-                    alert.showAndWait();
+                    Utils.setStyle((Stage) error.getDialogPane().getScene().getWindow());
+
+                    error.initOwner(tabData.getTab().getTabPane().getScene().getWindow());
+                    error.showAndWait();
                 });
             }
         }

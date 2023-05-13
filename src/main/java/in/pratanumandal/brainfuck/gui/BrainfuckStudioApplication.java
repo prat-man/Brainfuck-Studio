@@ -52,6 +52,7 @@ public class BrainfuckStudioApplication extends Application {
 
         Utils.setStageIcon(primaryStage);
         Utils.setStylesheet(primaryStage);
+        Utils.setStyle(primaryStage);
 
         primaryStage.setOnCloseRequest((event) -> {
             if (controller.exitApplication()) {

@@ -30,14 +30,11 @@ import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.Hyperlink;
 import javafx.scene.control.IndexRange;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.RadioButton;
 import javafx.scene.control.Slider;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
@@ -46,9 +43,7 @@ import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.TitledPane;
 import javafx.scene.control.ToggleButton;
-import javafx.scene.control.ToggleGroup;
 import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
@@ -61,7 +56,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
@@ -798,6 +792,8 @@ public class Controller {
 
                 Utils.setDefaultButton(alert, ButtonType.NO);
 
+                Utils.setStyle((Stage) alert.getDialogPane().getScene().getWindow());
+
                 alert.initOwner(tabPane.getScene().getWindow());
                 alert.showAndWait();
 
@@ -903,6 +899,7 @@ public class Controller {
                 Configuration.flush();
             } catch (ConfigurationException | IOException e) {
                 Alert error = new Alert(Alert.AlertType.ERROR, "Failed to save configuration!");
+                Utils.setStyle((Stage) error.getDialogPane().getScene().getWindow());
                 error.initOwner(tabPane.getScene().getWindow());
                 error.showAndWait();
             }
@@ -912,12 +909,14 @@ public class Controller {
 
                 for (TabData data : tabDataList) {
                     if (filePath.equals(data.getFilePath())) {
-                        Alert alert = new Alert(Alert.AlertType.ERROR);
-                        alert.setTitle(Constants.APPLICATION_NAME);
-                        alert.setContentText("The file is already open in Brainfuck Studio!\n\n");
+                        Alert error = new Alert(Alert.AlertType.ERROR);
+                        error.setTitle(Constants.APPLICATION_NAME);
+                        error.setContentText("The file is already open in Brainfuck Studio!\n\n");
 
-                        alert.initOwner(tabPane.getScene().getWindow());
-                        alert.showAndWait();
+                        Utils.setStyle((Stage) error.getDialogPane().getScene().getWindow());
+
+                        error.initOwner(tabPane.getScene().getWindow());
+                        error.showAndWait();
 
                         Tab tab = data.getTab();
                         tabPane.getSelectionModel().select(tab);
@@ -940,12 +939,14 @@ public class Controller {
             } catch (IOException e) {
                 e.printStackTrace();
 
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle(Constants.APPLICATION_NAME);
-                alert.setContentText("Failed to load file!\n\n");
+                Alert error = new Alert(Alert.AlertType.ERROR);
+                error.setTitle(Constants.APPLICATION_NAME);
+                error.setContentText("Failed to load file!\n\n");
 
-                alert.initOwner(tabPane.getScene().getWindow());
-                alert.showAndWait();
+                Utils.setStyle((Stage) error.getDialogPane().getScene().getWindow());
+
+                error.initOwner(tabPane.getScene().getWindow());
+                error.showAndWait();
             }
         }
     }
@@ -992,6 +993,7 @@ public class Controller {
                 Configuration.flush();
             } catch (ConfigurationException | IOException e) {
                 Alert error = new Alert(Alert.AlertType.ERROR, "Failed to save configuration!");
+                Utils.setStyle((Stage) error.getDialogPane().getScene().getWindow());
                 error.initOwner(tabPane.getScene().getWindow());
                 error.showAndWait();
             }
@@ -1003,12 +1005,14 @@ public class Controller {
 
             for (TabData data : tabDataList) {
                 if (data != tabData && filePath.equals(data.getFilePath())) {
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle(Constants.APPLICATION_NAME);
-                    alert.setContentText("The file is already open in Brainfuck Studio!\n\n");
+                    Alert error = new Alert(Alert.AlertType.ERROR);
+                    error.setTitle(Constants.APPLICATION_NAME);
+                    error.setContentText("The file is already open in Brainfuck Studio!\n\n");
 
-                    alert.initOwner(tabPane.getScene().getWindow());
-                    alert.showAndWait();
+                    Utils.setStyle((Stage) error.getDialogPane().getScene().getWindow());
+
+                    error.initOwner(tabPane.getScene().getWindow());
+                    error.showAndWait();
 
                     Tab tab = data.getTab();
                     tabPane.getSelectionModel().select(tab);
@@ -1382,265 +1386,12 @@ public class Controller {
 
     @FXML
     private void settings() {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION, null, ButtonType.APPLY, ButtonType.CANCEL);
-
-        Utils.setDefaultButton(alert, ButtonType.APPLY);
-
-        alert.setTitle(Constants.APPLICATION_NAME);
-        alert.setHeaderText("Settings");
-
-        Image image = new Image(getClass().getClassLoader().getResourceAsStream("images/settings.png"));
-        ImageView imageView = new ImageView();
-        imageView.setImage(image);
-        imageView.setFitHeight(32);
-        imageView.setFitWidth(32);
-        StackPane imagePane = new StackPane();
-        imagePane.setPadding(new Insets(5));
-        imagePane.getChildren().add(imageView);
-        alert.setGraphic(imagePane);
-
-        GridPane gridPane = new GridPane();
-        gridPane.setHgap(10);
-        gridPane.setVgap(10);
-
-        TitledPane interpreter = new TitledPane();
-        interpreter.setText("Interpreter");
-        interpreter.setCollapsible(false);
-
-        interpreter.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-        GridPane.setFillWidth(interpreter, true);
-        GridPane.setFillHeight(interpreter, true);
-        gridPane.add(interpreter, 0, 0);
-
-        VBox vBox1 = new VBox();
-        vBox1.setSpacing(15);
-        interpreter.setContent(vBox1);
-
-        HBox cellSizeBox = new HBox();
-        cellSizeBox.setSpacing(10);
-        cellSizeBox.setAlignment(Pos.CENTER_LEFT);
-        vBox1.getChildren().add(cellSizeBox);
-
-        Label cellSizeLabel = new Label("Cell size");
-        cellSizeBox.getChildren().add(cellSizeLabel);
-
-        ToggleGroup cellSizeGroup = new ToggleGroup();
-        int selectedCellSize = Configuration.getCellSize();
-
-        RadioButton cellSize8 = new RadioButton("8 bits");
-        cellSize8.setToggleGroup(cellSizeGroup);
-        cellSize8.setSelected(selectedCellSize == 8);
-        cellSizeBox.getChildren().add(cellSize8);
-
-        RadioButton cellSize16 = new RadioButton("16 bits");
-        cellSize16.setToggleGroup(cellSizeGroup);
-        cellSize16.setSelected(selectedCellSize == 16);
-        cellSizeBox.getChildren().add(cellSize16);
-
-        HBox memorySizeBox = new HBox();
-        memorySizeBox.setSpacing(10);
-        memorySizeBox.setAlignment(Pos.CENTER_LEFT);
-        vBox1.getChildren().add(memorySizeBox);
-
-        Label memorySizeLabel = new Label("Memory size");
-        memorySizeBox.getChildren().add(memorySizeLabel);
-
-        TextField memorySize = new TextField();
-        memorySize.setPromptText("In range 1000 to 50000");
-        HBox.setHgrow(memorySize, Priority.ALWAYS);
-        memorySize.textProperty().addListener((obs, oldVal, newVal) -> {
-            if (!newVal.matches("\\d*")) {
-                memorySize.setText(newVal.replaceAll("[^\\d]", ""));
-            }
-        });
-        memorySize.setText(String.valueOf(Configuration.getMemorySize()));
-        memorySizeBox.getChildren().add(memorySize);
-
-        TitledPane editing = new TitledPane();
-        editing.setText("Code Editing");
-        editing.setCollapsible(false);
-
-        editing.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-        GridPane.setFillWidth(editing, true);
-        GridPane.setFillHeight(editing, true);
-        GridPane.setRowSpan(editing, 2);
-        gridPane.add(editing, 1, 0);
-
-        VBox vBox2 = new VBox();
-        vBox2.setSpacing(10);
-        editing.setContent(vBox2);
-
-        CheckBox wrapText = new CheckBox("Wrap text in code area");
-        wrapText.setSelected(Configuration.getWrapText());
-        vBox2.getChildren().add(wrapText);
-
-        CheckBox autoComplete = new CheckBox("Automatically complete brackets [ ]");
-        autoComplete.setSelected(Configuration.getAutoComplete());
-        vBox2.getChildren().add(autoComplete);
-
-        CheckBox syntaxHighlighting = new CheckBox("Highlight brainfuck syntax");
-        syntaxHighlighting.setSelected(Configuration.getSyntaxHighlighting());
-        vBox2.getChildren().add(syntaxHighlighting);
-
-        CheckBox bracketHighlighting = new CheckBox("Highlight matching brackets");
-        bracketHighlighting.setSelected(Configuration.getBracketHighlighting());
-        vBox2.getChildren().add(bracketHighlighting);
-
-        TitledPane miscellaneous = new TitledPane();
-        miscellaneous.setText("Miscellaneous");
-        miscellaneous.setCollapsible(false);
-
-        miscellaneous.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-        GridPane.setFillWidth(miscellaneous, true);
-        GridPane.setFillHeight(miscellaneous, true);
-        gridPane.add(miscellaneous, 0, 1);
-
-        VBox vBox3 = new VBox();
-        vBox3.setSpacing(10);
-        miscellaneous.setContent(vBox3);
-
-        CheckBox autoSave = new CheckBox("Automatically save files every few seconds");
-        autoSave.setSelected(Configuration.getAutoSave());
-        vBox3.getChildren().add(autoSave);
-
-        CheckBox showTips = new CheckBox("Show tips at startup");
-        showTips.setSelected(Configuration.getShowTips());
-        vBox3.getChildren().add(showTips);
-
-        alert.getDialogPane().setContent(gridPane);
-
-        alert.initOwner(tabPane.getScene().getWindow());
-
-        boolean valid = false;
-
-        do {
-            alert.setResult(null);
-            alert.showAndWait();
-
-            ButtonType buttonType = alert.getResult();
-            if (buttonType == ButtonType.APPLY) {
-                try {
-                    Integer memory = Integer.valueOf(memorySize.getText());
-                    if (memory < 1000 || memory > 50000) throw new NumberFormatException("Invalid memory size");
-                    valid = true;
-                }
-                catch (NumberFormatException e) {
-                    Alert error = new Alert(Alert.AlertType.ERROR, "Memory size must be in range 1000 to 50000");
-                    error.initOwner(tabPane.getScene().getWindow());
-                    error.showAndWait();
-                    valid = false;
-                }
-            }
-            else break;
-        }
-        while (!valid);
-
-        if (valid) {
-            if (cellSize8.isSelected()) Configuration.setCellSize(8);
-            else Configuration.setCellSize(16);
-            Configuration.setMemorySize(Integer.valueOf(memorySize.getText()));
-            Configuration.setWrapText(wrapText.isSelected());
-            Configuration.setAutoComplete(autoComplete.isSelected());
-            Configuration.setSyntaxHighlighting(syntaxHighlighting.isSelected());
-            Configuration.setBracketHighlighting(bracketHighlighting.isSelected());
-            Configuration.setAutoSave(autoSave.isSelected());
-            Configuration.setShowTips(showTips.isSelected());
-
-            try {
-                Configuration.flush();
-
-                for (TabData tabData : tabDataList) {
-                    tabData.getCodeArea().setWrapText(Configuration.getWrapText());
-
-                    if (Configuration.getSyntaxHighlighting()) Highlighter.refreshHighlighting(tabData);
-                    else Highlighter.clearHighlighting(tabData);
-
-                    if (Configuration.getBracketHighlighting()) tabData.getBracketHighlighter().highlightBracket();
-                    else tabData.getBracketHighlighter().clearBracket();
-                }
-            } catch (ConfigurationException | IOException e) {
-                Alert error = new Alert(Alert.AlertType.ERROR, "Failed to save configuration!");
-                error.initOwner(tabPane.getScene().getWindow());
-                error.showAndWait();
-            }
-        }
+        Utils.settings(stage, tabDataList);
     }
 
     @FXML
     private void about() {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle(Constants.APPLICATION_NAME);
-
-        alert.setHeaderText(null);
-        alert.setGraphic(null);
-        alert.getDialogPane().lookupButton(ButtonType.OK).setVisible(false);
-        alert.getDialogPane().lookupButton(ButtonType.OK).setManaged(false);
-
-        VBox vBox = new VBox();
-        vBox.getStyleClass().add("about");
-        vBox.setAlignment(Pos.CENTER);
-
-        ImageView imageView1 = new ImageView();
-        Image image1 = new Image(getClass().getClassLoader().getResourceAsStream("images/icon/icon_128.png"));
-        imageView1.setImage(image1);
-        imageView1.setFitHeight(96);
-        imageView1.setFitWidth(96);
-        imageView1.getStyleClass().add("icon");
-        vBox.getChildren().add(imageView1);
-
-        Label label1 = new Label(Constants.APPLICATION_NAME + " " + Constants.APPLICATION_VERSION);
-        label1.getStyleClass().add("title");
-        vBox.getChildren().add(label1);
-
-        Hyperlink hyperlink1 = new Hyperlink("https://brainfuck.pratanumandal.in/");
-        hyperlink1.getStyleClass().add("hyperlink");
-        hyperlink1.setOnAction(event -> {
-            Utils.browseURL("https://prat-man.github.io/Brainfuck-Studio/");
-        });
-        vBox.getChildren().add(hyperlink1);
-
-        Label label2 = new Label("from");
-        label2.getStyleClass().add("subheading1");
-        vBox.getChildren().add(label2);
-
-        Label label3 = new Label("Pratanu Mandal");
-        label3.getStyleClass().add("subheading2");
-        vBox.getChildren().add(label3);
-
-        Hyperlink hyperlink2 = new Hyperlink("https://pratanumandal.in/");
-        hyperlink2.getStyleClass().add("hyperlink");
-        hyperlink2.setOnAction(event -> {
-            Utils.browseURL("https://pratanumandal.in/");
-        });
-        vBox.getChildren().add(hyperlink2);
-
-        Label label4 = new Label("with");
-        label4.getStyleClass().add("subheading3");
-        vBox.getChildren().add(label4);
-
-        ImageView imageView2 = new ImageView();
-        Image image2 = new Image(getClass().getClassLoader().getResourceAsStream("images/heart.png"));
-        imageView2.setImage(image2);
-        imageView2.setFitWidth(48);
-        imageView2.setFitHeight(48);
-        vBox.getChildren().add(imageView2);
-
-        HBox hBox = new HBox();
-        hBox.setAlignment(Pos.CENTER);
-        vBox.getChildren().add(hBox);
-
-        Hyperlink hyperlink3 = new Hyperlink("Licensed under GPL v3.0");
-        hyperlink3.getStyleClass().add("subheading4");
-        hyperlink3.setOnAction(event -> {
-            Utils.browseURL("https://github.com/prat-man/Brainfuck-Studio/blob/master/LICENSE");
-        });
-        vBox.getChildren().add(hyperlink3);
-
-        alert.getDialogPane().setContent(vBox);
-        alert.getDialogPane().getStyleClass().add("about-dialog");
-
-        alert.initOwner(tabPane.getScene().getWindow());
-        alert.showAndWait();
+        Utils.about(stage);
     }
 
     @FXML
@@ -1761,12 +1512,14 @@ public class Controller {
         } catch (IOException e) {
             e.printStackTrace();
 
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle(Constants.APPLICATION_NAME);
-            alert.setContentText("Failed to load file!\n\n");
+            Alert error = new Alert(Alert.AlertType.ERROR);
+            error.setTitle(Constants.APPLICATION_NAME);
+            error.setContentText("Failed to load file!\n\n");
 
-            alert.initOwner(tabPane.getScene().getWindow());
-            alert.showAndWait();
+            Utils.setStyle((Stage) error.getDialogPane().getScene().getWindow());
+
+            error.initOwner(tabPane.getScene().getWindow());
+            error.showAndWait();
 
             return false;
         }

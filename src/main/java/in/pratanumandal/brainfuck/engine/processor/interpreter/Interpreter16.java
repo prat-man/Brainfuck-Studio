@@ -8,6 +8,7 @@ import in.pratanumandal.brainfuck.gui.component.NotificationManager;
 import in.pratanumandal.brainfuck.gui.component.TabData;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
+import javafx.stage.Stage;
 
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicReference;
@@ -32,13 +33,15 @@ public class Interpreter16 extends Interpreter {
             super.start();
         } catch (UnmatchedBracketException e) {
             Platform.runLater(() -> {
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle(Constants.APPLICATION_NAME);
-                alert.setHeaderText("Interpreter Error");
-                alert.setContentText(e.getMessage() + "\n\n");
+                Alert error = new Alert(Alert.AlertType.ERROR);
+                error.setTitle(Constants.APPLICATION_NAME);
+                error.setHeaderText("Interpreter Error");
+                error.setContentText(e.getMessage() + "\n\n");
 
-                alert.initOwner(tabData.getTab().getTabPane().getScene().getWindow());
-                alert.showAndWait();
+                Utils.setStyle((Stage) error.getDialogPane().getScene().getWindow());
+
+                error.initOwner(tabData.getTab().getTabPane().getScene().getWindow());
+                error.showAndWait();
             });
 
             return;

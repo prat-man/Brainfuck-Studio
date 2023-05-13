@@ -8,6 +8,7 @@ import in.pratanumandal.brainfuck.gui.component.TabData;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.scene.control.Alert;
+import javafx.stage.Stage;
 import org.fxmisc.richtext.CodeArea;
 
 import java.util.HashMap;
@@ -200,13 +201,15 @@ public abstract class Debugger implements Runnable {
 
     protected void showUnmatchedBrackets(UnmatchedBracketException e) {
         Platform.runLater(() -> {
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle(Constants.APPLICATION_NAME);
-            alert.setHeaderText("Debug Error");
-            alert.setContentText(e.getMessage() + "\n\n");
+            Alert error = new Alert(Alert.AlertType.ERROR);
+            error.setTitle(Constants.APPLICATION_NAME);
+            error.setHeaderText("Debug Error");
+            error.setContentText(e.getMessage() + "\n\n");
 
-            alert.initOwner(tabData.getTab().getTabPane().getScene().getWindow());
-            alert.showAndWait();
+            Utils.setStyle((Stage) error.getDialogPane().getScene().getWindow());
+
+            error.initOwner(tabData.getTab().getTabPane().getScene().getWindow());
+            error.showAndWait();
         });
     }
 

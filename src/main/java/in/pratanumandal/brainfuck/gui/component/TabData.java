@@ -25,6 +25,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.File;
@@ -389,6 +390,8 @@ public class TabData {
                     Alert alert = new Alert(Alert.AlertType.WARNING);
                     alert.setTitle(Constants.APPLICATION_NAME);
                     alert.setContentText("Highlighting has been disabled for this tab due to heavy load. This is usually done for files that are very complex to process.\n\n");
+
+                    Utils.setStyle((Stage) alert.getDialogPane().getScene().getWindow());
 
                     alert.initOwner(tab.getTabPane().getScene().getWindow());
                     alert.showAndWait();
