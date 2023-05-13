@@ -286,7 +286,7 @@ public class Utils {
     public static void convertNumber(TabData currentTab) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION, null, ButtonType.OK, ButtonType.CANCEL);
 
-        Image image = new Image(Utils.class.getClassLoader().getResourceAsStream("images/tools.png"));
+        Image image = new Image(Utils.class.getClassLoader().getResourceAsStream("images/convert.png"));
         ImageView imageView = new ImageView();
         imageView.setImage(image);
         imageView.setFitHeight(32);
@@ -359,7 +359,7 @@ public class Utils {
     public static void convertText(TabData currentTab) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION, null, ButtonType.OK, ButtonType.CANCEL);
 
-        Image image = new Image(Utils.class.getClassLoader().getResourceAsStream("images/tools.png"));
+        Image image = new Image(Utils.class.getClassLoader().getResourceAsStream("images/convert.png"));
         ImageView imageView = new ImageView();
         imageView.setImage(image);
         imageView.setFitHeight(32);
