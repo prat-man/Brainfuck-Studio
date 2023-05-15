@@ -1,0 +1,4 @@
+jdeps --multi-release 17 -s brainfuck-studio-1.0.jar
+
+
+jlink --add-modules java.base,java.datatransfer,java.desktop,java.desktop,java.xml,java.scripting,java.sql,jdk.unsupported --output runtime
