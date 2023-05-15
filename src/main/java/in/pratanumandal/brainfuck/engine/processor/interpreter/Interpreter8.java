@@ -6,6 +6,7 @@ import in.pratanumandal.brainfuck.common.Utils;
 import in.pratanumandal.brainfuck.engine.UnmatchedBracketException;
 import in.pratanumandal.brainfuck.gui.component.NotificationManager;
 import in.pratanumandal.brainfuck.gui.component.TabData;
+import in.pratanumandal.brainfuck.os.windows.WindowsUtils;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.stage.Stage;
@@ -38,7 +39,7 @@ public class Interpreter8 extends Interpreter {
                 error.setHeaderText("Interpreter Error");
                 error.setContentText(e.getMessage() + "\n\n");
 
-                Utils.setStyle((Stage) error.getDialogPane().getScene().getWindow());
+                WindowsUtils.setStageStyle((Stage) error.getDialogPane().getScene().getWindow());
 
                 error.initOwner(tabData.getTab().getTabPane().getScene().getWindow());
                 error.showAndWait();

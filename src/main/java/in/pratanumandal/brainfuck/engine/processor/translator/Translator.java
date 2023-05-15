@@ -7,6 +7,7 @@ import in.pratanumandal.brainfuck.engine.UnmatchedBracketException;
 import in.pratanumandal.brainfuck.engine.processor.Processor;
 import in.pratanumandal.brainfuck.gui.component.NotificationManager;
 import in.pratanumandal.brainfuck.gui.component.TabData;
+import in.pratanumandal.brainfuck.os.windows.WindowsUtils;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 import javafx.stage.FileChooser;
@@ -55,7 +56,7 @@ public abstract class Translator extends Processor {
                 Configuration.flush();
             } catch (ConfigurationException | IOException e) {
                 Alert error = new Alert(Alert.AlertType.ERROR, "Failed to save configuration!");
-                Utils.setStyle((Stage) error.getDialogPane().getScene().getWindow());
+                WindowsUtils.setStageStyle((Stage) error.getDialogPane().getScene().getWindow());
                 error.initOwner(tabData.getTab().getTabPane().getScene().getWindow());
                 error.showAndWait();
             }
@@ -73,7 +74,7 @@ public abstract class Translator extends Processor {
                     error.setHeaderText("Translator Error");
                     error.setContentText(e.getMessage() + "\n\n");
 
-                    Utils.setStyle((Stage) error.getDialogPane().getScene().getWindow());
+                    WindowsUtils.setStageStyle((Stage) error.getDialogPane().getScene().getWindow());
 
                     error.initOwner(tabData.getTab().getTabPane().getScene().getWindow());
                     error.showAndWait();

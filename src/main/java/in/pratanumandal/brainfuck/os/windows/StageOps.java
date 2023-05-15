@@ -1,4 +1,4 @@
-package in.pratanumandal.brainfuck.gui.windows;
+package in.pratanumandal.brainfuck.os.windows;
 
 import com.sun.jna.Library;
 import com.sun.jna.Native;

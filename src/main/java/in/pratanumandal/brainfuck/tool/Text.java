@@ -1,7 +1,5 @@
 package in.pratanumandal.brainfuck.tool;
 
-import in.pratanumandal.brainfuck.common.Utils;
-
 import java.util.ArrayList;
 import java.util.List;
 

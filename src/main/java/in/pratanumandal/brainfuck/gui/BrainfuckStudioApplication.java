@@ -3,6 +3,7 @@ package in.pratanumandal.brainfuck.gui;
 import in.pratanumandal.brainfuck.common.Constants;
 import in.pratanumandal.brainfuck.common.Utils;
 import in.pratanumandal.brainfuck.gui.controller.Controller;
+import in.pratanumandal.brainfuck.os.windows.WindowsUtils;
 import javafx.application.Application;
 import javafx.application.HostServices;
 import javafx.fxml.FXMLLoader;
@@ -52,7 +53,7 @@ public class BrainfuckStudioApplication extends Application {
 
         Utils.setStageIcon(primaryStage);
         Utils.setStylesheet(primaryStage);
-        Utils.setStyle(primaryStage);
+        WindowsUtils.setStageStyle(primaryStage);
 
         primaryStage.setOnCloseRequest((event) -> {
             if (controller.exitApplication()) {

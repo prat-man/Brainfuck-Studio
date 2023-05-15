@@ -5,7 +5,7 @@ import in.pratanumandal.brainfuck.gui.BrainfuckStudioApplication;
 import in.pratanumandal.brainfuck.gui.component.NotificationManager;
 import in.pratanumandal.brainfuck.gui.component.TabData;
 import in.pratanumandal.brainfuck.gui.highlight.Highlighter;
-import in.pratanumandal.brainfuck.gui.windows.StageOps;
+import in.pratanumandal.brainfuck.os.windows.WindowsUtils;
 import in.pratanumandal.brainfuck.tool.Number;
 import in.pratanumandal.brainfuck.tool.Text;
 import javafx.application.Platform;
@@ -30,7 +30,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.fxmisc.richtext.CodeArea;
@@ -185,20 +184,12 @@ public class Utils {
                 new Image(Utils.class.getClassLoader().getResourceAsStream("images/icon/icon_32.png")),
                 new Image(Utils.class.getClassLoader().getResourceAsStream("images/icon/icon_64.png")),
                 new Image(Utils.class.getClassLoader().getResourceAsStream("images/icon/icon_128.png")),
-                new Image(Utils.class.getClassLoader().getResourceAsStream("images/icon/icon_256.png")),
-                new Image(Utils.class.getClassLoader().getResourceAsStream("images/icon/icon_512.png")));
+                new Image(Utils.class.getClassLoader().getResourceAsStream("images/icon/icon_256.png")));
     }
 
     public static void setStylesheet(Stage stage) {
         stage.getScene().getStylesheets()
                 .add(Utils.class.getClassLoader().getResource("css/brainfuck.css").toExternalForm());
-    }
-
-    public static void setStyle(Stage stage) {
-        Platform.runLater(() -> {
-            StageOps.WindowHandle handle = StageOps.findWindowHandle(stage);
-            StageOps.setCaptionColor(handle, Color.rgb(78, 83, 92));
-        });
     }
 
     private static int countNewlines(String text) {
@@ -354,7 +345,7 @@ public class Utils {
 
         alert.getDialogPane().setContent(gridPane);
 
-        Utils.setStyle((Stage) alert.getDialogPane().getScene().getWindow());
+        WindowsUtils.setStageStyle((Stage) alert.getDialogPane().getScene().getWindow());
 
         alert.initOwner(stage);
 
@@ -373,7 +364,7 @@ public class Utils {
                 }
                 catch (NumberFormatException e) {
                     Alert error = new Alert(Alert.AlertType.ERROR, "Memory size must be in range 1000 to 50000");
-                    Utils.setStyle((Stage) error.getDialogPane().getScene().getWindow());
+                    WindowsUtils.setStageStyle((Stage) error.getDialogPane().getScene().getWindow());
                     error.initOwner(stage);
                     error.showAndWait();
                     valid = false;
@@ -408,7 +399,7 @@ public class Utils {
                 }
             } catch (ConfigurationException | IOException e) {
                 Alert error = new Alert(Alert.AlertType.ERROR, "Failed to save configuration!");
-                Utils.setStyle((Stage) error.getDialogPane().getScene().getWindow());
+                WindowsUtils.setStageStyle((Stage) error.getDialogPane().getScene().getWindow());
                 error.initOwner(stage);
                 error.showAndWait();
             }
@@ -487,7 +478,7 @@ public class Utils {
         alert.getDialogPane().setContent(vBox);
         alert.getDialogPane().getStyleClass().add("about-dialog");
 
-        Utils.setStyle((Stage) alert.getDialogPane().getScene().getWindow());
+        WindowsUtils.setStageStyle((Stage) alert.getDialogPane().getScene().getWindow());
 
         alert.initOwner(stage);
         alert.showAndWait();
@@ -528,7 +519,7 @@ public class Utils {
         alert.getDialogPane().setContent(vBox);
         alert.getDialogPane().setMinWidth(300);
 
-        Utils.setStyle((Stage) alert.getDialogPane().getScene().getWindow());
+        WindowsUtils.setStageStyle((Stage) alert.getDialogPane().getScene().getWindow());
 
         alert.initOwner(currentTab.getTab().getTabPane().getScene().getWindow());
 
@@ -612,7 +603,7 @@ public class Utils {
         alert.getDialogPane().setContent(vBox);
         alert.getDialogPane().setPrefWidth(300);
 
-        Utils.setStyle((Stage) alert.getDialogPane().getScene().getWindow());
+        WindowsUtils.setStageStyle((Stage) alert.getDialogPane().getScene().getWindow());
 
         alert.initOwner(currentTab.getTab().getTabPane().getScene().getWindow());
 
@@ -684,7 +675,7 @@ public class Utils {
         ((Stage) alert.getDialogPane().getScene().getWindow()).setMinWidth(350);
         ((Stage) alert.getDialogPane().getScene().getWindow()).setMinHeight(300);
 
-        Utils.setStyle((Stage) alert.getDialogPane().getScene().getWindow());
+        WindowsUtils.setStageStyle((Stage) alert.getDialogPane().getScene().getWindow());
 
         alert.initOwner(currentTab.getTab().getTabPane().getScene().getWindow());
 

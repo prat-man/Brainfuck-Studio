@@ -5,6 +5,7 @@ import in.pratanumandal.brainfuck.common.Constants;
 import in.pratanumandal.brainfuck.common.Utils;
 import in.pratanumandal.brainfuck.engine.UnmatchedBracketException;
 import in.pratanumandal.brainfuck.gui.component.TabData;
+import in.pratanumandal.brainfuck.os.windows.WindowsUtils;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.scene.control.Alert;
@@ -206,7 +207,7 @@ public abstract class Debugger implements Runnable {
             error.setHeaderText("Debug Error");
             error.setContentText(e.getMessage() + "\n\n");
 
-            Utils.setStyle((Stage) error.getDialogPane().getScene().getWindow());
+            WindowsUtils.setStageStyle((Stage) error.getDialogPane().getScene().getWindow());
 
             error.initOwner(tabData.getTab().getTabPane().getScene().getWindow());
             error.showAndWait();

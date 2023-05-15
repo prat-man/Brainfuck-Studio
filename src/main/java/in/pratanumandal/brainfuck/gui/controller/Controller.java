@@ -14,6 +14,8 @@ import in.pratanumandal.brainfuck.gui.component.NotificationManager;
 import in.pratanumandal.brainfuck.gui.component.TabData;
 import in.pratanumandal.brainfuck.gui.highlight.BracketHighlighter;
 import in.pratanumandal.brainfuck.gui.highlight.Highlighter;
+import in.pratanumandal.brainfuck.os.mac.MacUtils;
+import in.pratanumandal.brainfuck.os.windows.WindowsUtils;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
@@ -34,6 +36,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.IndexRange;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Slider;
 import javafx.scene.control.SplitPane;
@@ -113,6 +116,7 @@ public class Controller {
     @FXML private Button debugButton;
     @FXML private Button interpretButton;
 
+    @FXML private MenuBar menuBar;
     @FXML private MenuItem saveMenu;
     @FXML private MenuItem saveAsMenu;
     @FXML private Menu toolsMenu;
@@ -163,6 +167,9 @@ public class Controller {
                 e.printStackTrace();
             }
         }
+
+        // set menu bar style for Mac OS
+        MacUtils.setMenuStyle(menuBar);
 
         // allow reordering of tabs
         tabPane.setTabDragPolicy(TabPane.TabDragPolicy.REORDER);
@@ -793,7 +800,7 @@ public class Controller {
 
                 Utils.setDefaultButton(alert, ButtonType.NO);
 
-                Utils.setStyle((Stage) alert.getDialogPane().getScene().getWindow());
+                WindowsUtils.setStageStyle((Stage) alert.getDialogPane().getScene().getWindow());
 
                 alert.initOwner(tabPane.getScene().getWindow());
                 alert.showAndWait();
@@ -900,7 +907,7 @@ public class Controller {
                 Configuration.flush();
             } catch (ConfigurationException | IOException e) {
                 Alert error = new Alert(Alert.AlertType.ERROR, "Failed to save configuration!");
-                Utils.setStyle((Stage) error.getDialogPane().getScene().getWindow());
+                WindowsUtils.setStageStyle((Stage) error.getDialogPane().getScene().getWindow());
                 error.initOwner(tabPane.getScene().getWindow());
                 error.showAndWait();
             }
@@ -914,7 +921,7 @@ public class Controller {
                         error.setTitle(Constants.APPLICATION_NAME);
                         error.setContentText("The file is already open in Brainfuck Studio!\n\n");
 
-                        Utils.setStyle((Stage) error.getDialogPane().getScene().getWindow());
+                        WindowsUtils.setStageStyle((Stage) error.getDialogPane().getScene().getWindow());
 
                         error.initOwner(tabPane.getScene().getWindow());
                         error.showAndWait();
@@ -944,7 +951,7 @@ public class Controller {
                 error.setTitle(Constants.APPLICATION_NAME);
                 error.setContentText("Failed to load file!\n\n");
 
-                Utils.setStyle((Stage) error.getDialogPane().getScene().getWindow());
+                WindowsUtils.setStageStyle((Stage) error.getDialogPane().getScene().getWindow());
 
                 error.initOwner(tabPane.getScene().getWindow());
                 error.showAndWait();
@@ -994,7 +1001,7 @@ public class Controller {
                 Configuration.flush();
             } catch (ConfigurationException | IOException e) {
                 Alert error = new Alert(Alert.AlertType.ERROR, "Failed to save configuration!");
-                Utils.setStyle((Stage) error.getDialogPane().getScene().getWindow());
+                WindowsUtils.setStageStyle((Stage) error.getDialogPane().getScene().getWindow());
                 error.initOwner(tabPane.getScene().getWindow());
                 error.showAndWait();
             }
@@ -1010,7 +1017,7 @@ public class Controller {
                     error.setTitle(Constants.APPLICATION_NAME);
                     error.setContentText("The file is already open in Brainfuck Studio!\n\n");
 
-                    Utils.setStyle((Stage) error.getDialogPane().getScene().getWindow());
+                    WindowsUtils.setStageStyle((Stage) error.getDialogPane().getScene().getWindow());
 
                     error.initOwner(tabPane.getScene().getWindow());
                     error.showAndWait();
@@ -1517,7 +1524,7 @@ public class Controller {
             error.setTitle(Constants.APPLICATION_NAME);
             error.setContentText("Failed to load file!\n\n");
 
-            Utils.setStyle((Stage) error.getDialogPane().getScene().getWindow());
+            WindowsUtils.setStageStyle((Stage) error.getDialogPane().getScene().getWindow());
 
             error.initOwner(tabPane.getScene().getWindow());
             error.showAndWait();

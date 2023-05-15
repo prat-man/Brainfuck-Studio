@@ -10,6 +10,7 @@ import in.pratanumandal.brainfuck.gui.codearea.CustomCodeArea;
 import in.pratanumandal.brainfuck.gui.codearea.FXTerminal;
 import in.pratanumandal.brainfuck.gui.highlight.BracketHighlighter;
 import in.pratanumandal.brainfuck.gui.highlight.Highlighter;
+import in.pratanumandal.brainfuck.os.windows.WindowsUtils;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
@@ -391,7 +392,7 @@ public class TabData {
                     alert.setTitle(Constants.APPLICATION_NAME);
                     alert.setContentText("Highlighting has been disabled for this tab due to heavy load. This is usually done for files that are very complex to process.\n\n");
 
-                    Utils.setStyle((Stage) alert.getDialogPane().getScene().getWindow());
+                    WindowsUtils.setStageStyle((Stage) alert.getDialogPane().getScene().getWindow());
 
                     alert.initOwner(tab.getTabPane().getScene().getWindow());
                     alert.showAndWait();

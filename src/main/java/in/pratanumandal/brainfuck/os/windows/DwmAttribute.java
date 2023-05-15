@@ -1,4 +1,4 @@
-package in.pratanumandal.brainfuck.gui.windows;
+package in.pratanumandal.brainfuck.os.windows;
 
 /** Some DWM enum variants and constants. */
 @SuppressWarnings("unused")
