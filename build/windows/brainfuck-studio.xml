@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch4jConfig>
+  <dontWrapJar>true</dontWrapJar>
+  <headerType>gui</headerType>
+  <jar>brainfuck-studio-1.0.jar</jar>
+  <outfile>..\..\bin\brainfuck-studio.exe</outfile>
+  <errTitle></errTitle>
+  <cmdLine></cmdLine>
+  <chdir>.</chdir>
+  <priority>normal</priority>
+  <downloadUrl></downloadUrl>
+  <supportUrl></supportUrl>
+  <stayAlive>false</stayAlive>
+  <restartOnCrash>false</restartOnCrash>
+  <manifest></manifest>
+  <icon>C:\Users\prata\Files\IntelliJ_Projects\Brainfuck-Studio\icon.ico</icon>
+  <jre>
+    <path>runtime</path>
+    <requiresJdk>false</requiresJdk>
+    <requires64Bit>false</requires64Bit>
+    <minVersion></minVersion>
+    <maxVersion></maxVersion>
+  </jre>
+  <versionInfo>
+    <fileVersion>0.0.0.0</fileVersion>
+    <txtFileVersion>0.0.0.0</txtFileVersion>
+    <fileDescription>Brainfuck Studio</fileDescription>
+    <copyright>Pratanu Mandal © 2023</copyright>
+    <productVersion>1.0.0.0</productVersion>
+    <txtProductVersion>1.0</txtProductVersion>
+    <productName>Brainfuck Studio</productName>
+    <companyName>Pratanu Mandal</companyName>
+    <internalName>Brainfuck Studio</internalName>
+    <originalFilename>brainfuck-studio.exe</originalFilename>
+    <trademarks></trademarks>
+    <language>ENGLISH_US</language>
+  </versionInfo>
+</launch4jConfig>

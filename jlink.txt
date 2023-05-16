@@ -1,1 +1,0 @@
-jlink --no-header-files --no-man-pages --compress=1 --strip-debug --add-modules java.se,jdk.unsupported --output java-runtime
