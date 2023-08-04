@@ -740,7 +740,7 @@ public class Utils {
         VBox.setVgrow(tableView, Priority.ALWAYS);
 
         tableView.setEditable(true);
-        tableView.setPrefSize(500, 300);
+        tableView.setPrefSize(600, 300);
 
         Snippets snippets = Snippets.loadSnippets();
         tableView.setItems(snippets.getSnippets());
