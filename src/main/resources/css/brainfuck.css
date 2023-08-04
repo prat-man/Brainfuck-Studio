@@ -434,19 +434,22 @@
 }
 
 .table-column {
-    -fx-alignment: CENTER;
+    -fx-alignment: center-left;
 }
 .table-view {
-    -fx-background-color: #535861;
+    -fx-background-color: #676C75;
     -fx-background-insets: 0;
     -fx-background-radius: 0;
     -fx-padding: 0;
-    -fx-border-color: #535861;
+    -fx-border-color: #676C75;
     -fx-border-width: 0;
     -fx-border-radius: 0;
 }
 .table-view .column-header, .table-view .column-header-background {
     -fx-background-color: #444952;
+}
+.table-row-cell {
+    -fx-pref-height: 33px;
 }
 .table-row-cell:odd {
     -fx-table-cell-border-color: #5D626B;
@@ -456,6 +459,10 @@
     -fx-table-cell-border-color: #535861;
     -fx-background-color: #5D626B;
 }
+.table-row-cell:empty {
+    -fx-table-cell-border-color: #676C75;
+    -fx-background-color: #676C75;
+}
 .table-row-cell .table-cell {
     -fx-text-fill: white;
 }
@@ -464,6 +471,9 @@
 }
 .table-row-cell .table-cell:even {
     -fx-background-color: #5D626B;
+}
+.table-row-cell .table-cell:empty {
+    -fx-background-color: #676C75;
 }
 .table-row-cell:selected, .table-row-cell:filled:hover {
     -fx-table-cell-border-color: #008CB6;
@@ -477,6 +487,11 @@
 .table-row-cell:selected:hover .table-cell {
     -fx-background-color: #14B4DE;
 }
+.table-row-cell .text-field {
+    -fx-background-insets: 1 0 0 0;
+    -fx-pref-height: 25px;
+}
+
 .table-view .placeholder .label {
     -fx-text-fill: #AAA;
 }

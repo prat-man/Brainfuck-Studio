@@ -9,20 +9,27 @@ import in.pratanumandal.brainfuck.os.windows.WindowsUtils;
 import in.pratanumandal.brainfuck.tool.Number;
 import in.pratanumandal.brainfuck.tool.Text;
 import javafx.application.Platform;
+import javafx.collections.ListChangeListener;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.DialogPane;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.SelectionMode;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
@@ -702,10 +709,139 @@ public class Utils {
         }
     }
 
+    public static Snippets.Snippet showSnippets(Stage stage, boolean allowInsert) {
+        ButtonType ADD = new ButtonType("Add", ButtonBar.ButtonData.LEFT);
+        ButtonType DELETE = new ButtonType("Delete", ButtonBar.ButtonData.LEFT);
+        ButtonType INSERT = new ButtonType("Insert", ButtonBar.ButtonData.RIGHT);
+
+        Alert alert = new Alert(Alert.AlertType.INFORMATION, null, ADD, DELETE, INSERT, ButtonType.CANCEL);
+
+        Image image = new Image(Utils.class.getClassLoader().getResourceAsStream("images/snippets.png"));
+        ImageView imageView = new ImageView();
+        imageView.setImage(image);
+        imageView.setFitHeight(32);
+        imageView.setFitWidth(32);
+        StackPane imagePane = new StackPane();
+        imagePane.setPadding(new Insets(5));
+        imagePane.getChildren().add(imageView);
+        alert.setGraphic(imagePane);
+
+        alert.setTitle(Constants.APPLICATION_NAME);
+        alert.setHeaderText("Snippets");
+
+        Utils.setDefaultButton(alert, INSERT);
+        Utils.hideCancelButton(alert);
+
+        VBox vBox = new VBox();
+        vBox.setSpacing(15);
+
+        TableView<Snippets.Snippet> tableView = new TableView<>();
+        vBox.getChildren().add(tableView);
+        VBox.setVgrow(tableView, Priority.ALWAYS);
+
+        tableView.setEditable(true);
+        tableView.setPrefSize(500, 300);
+
+        Snippets snippets = Snippets.loadSnippets();
+        tableView.setItems(snippets.getSnippets());
+
+        TableColumn<Snippets.Snippet, String> nameCol = new TableColumn<>("Name");
+        nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
+        nameCol.setCellFactory(TextFieldTableCell.forTableColumn());
+        nameCol.setOnEditCommit(e -> {
+            e.getTableView().getItems().get(e.getTablePosition().getRow()).setName(e.getNewValue());
+            Snippets.saveSnippets(snippets);
+        });
+        nameCol.setMinWidth(100);
+
+        TableColumn<Snippets.Snippet, String> descriptionCol = new TableColumn<>("Description");
+        descriptionCol.setCellValueFactory(new PropertyValueFactory<>("description"));
+        descriptionCol.setCellFactory(TextFieldTableCell.forTableColumn());
+        descriptionCol.setOnEditCommit(e -> {
+            e.getTableView().getItems().get(e.getTablePosition().getRow()).setDescription(e.getNewValue());
+            Snippets.saveSnippets(snippets);
+        });
+        descriptionCol.setMinWidth(100);
+
+        TableColumn<Snippets.Snippet, String> codeCol = new TableColumn<>("Code");
+        codeCol.setCellValueFactory(new PropertyValueFactory<>("code"));
+        codeCol.setCellFactory(TextFieldTableCell.forTableColumn());
+        codeCol.setOnEditCommit(e -> {
+            e.getTableView().getItems().get(e.getTablePosition().getRow()).setCode(e.getNewValue());
+            Snippets.saveSnippets(snippets);
+        });
+        codeCol.setMinWidth(100);
+
+        tableView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
+        tableView.getColumns().addAll(nameCol, descriptionCol, codeCol);
+
+        nameCol.setSortType(TableColumn.SortType.ASCENDING);
+        tableView.getSortOrder().add(nameCol);
+        tableView.sort();
+
+        Label label = new Label("No snippets added");
+        tableView.setPlaceholder(label);
+
+        alert.getDialogPane().setContent(vBox);
+
+        snippets.getSnippets().addListener((ListChangeListener<? super Snippets.Snippet>) change -> Snippets.saveSnippets(snippets));
+
+        // disable insert and delete buttons if no row is selected
+        alert.getDialogPane().lookupButton(INSERT).setDisable(true);
+        alert.getDialogPane().lookupButton(DELETE).setDisable(true);
+        tableView.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
+            alert.getDialogPane().lookupButton(INSERT).setDisable(!allowInsert || newVal == null);
+            alert.getDialogPane().lookupButton(DELETE).setDisable(newVal == null);
+        });
+
+        alert.setOnCloseRequest(event -> {
+            ButtonType result = alert.getResult();
+
+            if (result == ADD) {
+                event.consume();
+                alert.setResult(null);
+
+                Snippets.Snippet snippet = new Snippets.Snippet();
+                snippets.getSnippets().add(snippet);
+            }
+            else if (result == DELETE) {
+                event.consume();
+                alert.setResult(null);
+
+                Snippets.Snippet snippet = tableView.getSelectionModel().getSelectedItem();
+                snippets.getSnippets().remove(snippet);
+            }
+        });
+
+        alert.setResizable(true);
+
+        WindowsUtils.setStageStyle((Stage) alert.getDialogPane().getScene().getWindow());
+
+        alert.initOwner(stage);
+        alert.showAndWait();
+
+        ButtonType result = alert.getResult();
+        if (result == INSERT) {
+            return tableView.getSelectionModel().getSelectedItem();
+        }
+
+        return null;
+    }
+
     public static Alert setDefaultButton(Alert alert, ButtonType btnTyp) {
         DialogPane pane = alert.getDialogPane();
         for (ButtonType t : alert.getButtonTypes()) {
             ((Button) pane.lookupButton(t)).setDefaultButton(t == btnTyp);
+        }
+        return alert;
+    }
+
+    public static Alert hideCancelButton(Alert alert) {
+        DialogPane pane = alert.getDialogPane();
+        for (ButtonType t : alert.getButtonTypes()) {
+            pane.lookupButton(t).setVisible(t != ButtonType.CANCEL);
+            pane.lookupButton(t).setManaged(t != ButtonType.CANCEL);
         }
         return alert;
     }
@@ -724,6 +860,12 @@ public class Utils {
         brainfuck = brainfuck.replaceAll("\\s+", "");
         brainfuck = brainfuck.replaceAll("(.{5})", "$1 ").trim();
         brainfuck = brainfuck.replaceAll("((?:\\S*\\s){9}.*?)\\s", "$1\n").trim();
+        return brainfuck;
+    }
+
+    public static String minifyBrainfuck(String brainfuck) {
+        brainfuck = brainfuck.replaceAll("\\s+", "");
+        brainfuck = brainfuck.replaceAll("[^><+\\-.,\\[\\]]", "").trim();
         return brainfuck;
     }
 

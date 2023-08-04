@@ -90,9 +90,31 @@ public class CustomCodeArea extends CodeArea {
     }
 
     private void registerShortcuts() {
-        this.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
+        this.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
             if (event.isControlDown() && event.getCode() == KeyCode.L) {
+                event.consume();
                 Utils.goToLine(tabData);
+            }
+            else if (event.getCode() == KeyCode.TAB && this.getSelection().getLength() > 0) {
+                event.consume();
+                if (event.isShiftDown()) {
+                    String text = this.getSelectedText();
+                    text = text.replaceAll("\n\t", "\n");
+                    text = text.replaceAll("^\t", "");
+
+                    int start = this.getSelection().getStart();
+                    this.replaceText(this.getSelection(), text);
+                    this.selectRange(start, start + text.length());
+                }
+                else {
+                    String text = this.getSelectedText();
+                    text = text.replaceAll("\n", "\n\t");
+                    text = text.replaceAll("^", "\t");
+
+                    int start = this.getSelection().getStart();
+                    this.replaceText(this.getSelection(), text);
+                    this.selectRange(start, start + text.length());
+                }
             }
         });
     }

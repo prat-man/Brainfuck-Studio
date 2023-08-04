@@ -84,7 +84,7 @@
                     </Menu>
                     <Menu fx:id="toolsMenu" text="_Tools">
                         <items>
-                            <Menu mnemonicParsing="false" text="Export">
+                            <Menu fx:id="exportMenu" mnemonicParsing="false" text="Export">
                                 <items>
                                     <MenuItem mnemonicParsing="false" onAction="#exportToC" text="C">
                                         <graphic>
@@ -122,7 +122,7 @@
                                     </ImageView>
                                 </graphic>
                             </Menu>
-                            <Menu mnemonicParsing="false" text="Generate">
+                            <Menu fx:id="generateMenu" mnemonicParsing="false" text="Generate">
                                 <items>
                                     <MenuItem mnemonicParsing="false" onAction="#generateNumber" text="Number">
                                         <graphic>
@@ -151,7 +151,7 @@
                                     </ImageView>
                                 </graphic>
                             </Menu>
-                            <Menu mnemonicParsing="false" text="Format">
+                            <Menu fx:id="formatMenu" mnemonicParsing="false" text="Format">
                                 <items>
                                     <MenuItem mnemonicParsing="false" onAction="#formatFile" text="Entire file">
                                         <graphic>
@@ -162,7 +162,7 @@
                                             </ImageView>
                                         </graphic>
                                     </MenuItem>
-                                    <MenuItem mnemonicParsing="false" onAction="#formatSelected" text="Selected text">
+                                    <MenuItem fx:id="formatSelectedMenu" mnemonicParsing="false" onAction="#formatSelected" text="Selected text">
                                         <graphic>
                                             <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
                                                 <image>
@@ -180,6 +180,44 @@
                                     </ImageView>
                                 </graphic>
                             </Menu>
+                            <Menu fx:id="minifyMenu" mnemonicParsing="false" text="Minify">
+                                <items>
+                                   <MenuItem mnemonicParsing="false" onAction="#minifyFile" text="Entire file">
+                                      <graphic>
+                                         <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                            <image>
+                                               <Image url="@../images/empty.png" />
+                                            </image>
+                                         </ImageView>
+                                      </graphic>
+                                   </MenuItem>
+                                   <MenuItem fx:id="minifySelectedMenu" mnemonicParsing="false" onAction="#minifySelected" text="Selected text">
+                                      <graphic>
+                                         <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                            <image>
+                                               <Image url="@../images/empty.png" />
+                                            </image>
+                                         </ImageView>
+                                      </graphic>
+                                   </MenuItem>
+                                </items>
+                                <graphic>
+                                   <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                      <image>
+                                         <Image url="@../images/empty.png" />
+                                      </image>
+                                   </ImageView>
+                                </graphic>
+                            </Menu>
+                            <MenuItem mnemonicParsing="false" onAction="#showSnippets" text="Snippets">
+                                <graphic>
+                                   <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                       <image>
+                                           <Image url="@../images/snippets.png" />
+                                       </image>
+                                   </ImageView>
+                                </graphic>
+                            </MenuItem>
                         </items>
                     </Menu>
                     <Menu text="_Help">

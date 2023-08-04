@@ -10,6 +10,8 @@ public class Constants {
 
     public static final String CONFIG_FILE = CONFIG_DIR + File.separator + "config.properties";
 
+    public static final String SNIPPETS_FILE = CONFIG_DIR + File.separator + "snippets.xml";
+
     public static final String WELCOME_FILE = CONFIG_DIR + File.separator + "welcome.bf";
 
     public static final String APPLICATION_NAME = "Brainfuck Studio";

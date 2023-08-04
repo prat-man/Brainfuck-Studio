@@ -2,6 +2,7 @@ package in.pratanumandal.brainfuck.gui.controller;
 
 import in.pratanumandal.brainfuck.common.Configuration;
 import in.pratanumandal.brainfuck.common.Constants;
+import in.pratanumandal.brainfuck.common.Snippets;
 import in.pratanumandal.brainfuck.common.Utils;
 import in.pratanumandal.brainfuck.engine.Memory;
 import in.pratanumandal.brainfuck.engine.processor.translator.CTranslator;
@@ -35,7 +36,6 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.IndexRange;
 import javafx.scene.control.Label;
-import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Slider;
@@ -119,7 +119,13 @@ public class Controller {
     @FXML private MenuBar menuBar;
     @FXML private MenuItem saveMenu;
     @FXML private MenuItem saveAsMenu;
-    @FXML private Menu toolsMenu;
+    @FXML private MenuItem exportMenu;
+    @FXML private MenuItem generateMenu;
+    @FXML private MenuItem formatMenu;
+    @FXML private MenuItem minifyMenu;
+
+    @FXML private MenuItem formatSelectedMenu;
+    @FXML private MenuItem minifySelectedMenu;
 
     @FXML private ComboBox<String> fontSizeChooser;
 
@@ -238,7 +244,10 @@ public class Controller {
         searchButton.disableProperty().bind(emptyTabPaneBinding);
         saveMenu.disableProperty().bind(emptyTabPaneBinding);
         saveAsMenu.disableProperty().bind(emptyTabPaneBinding);
-        toolsMenu.disableProperty().bind(emptyTabPaneBinding);
+        exportMenu.disableProperty().bind(emptyTabPaneBinding);
+        generateMenu.disableProperty().bind(emptyTabPaneBinding);
+        formatMenu.disableProperty().bind(emptyTabPaneBinding);
+        minifyMenu.disableProperty().bind(emptyTabPaneBinding);
 
         // update status if no tabs are open
         emptyTabPaneBinding.addListener((obs, oldVal, newVal) -> {
@@ -830,6 +839,11 @@ public class Controller {
 
                 currentTab.getCodeArea().textProperty().addListener(charCountListener);
                 currentTab.getCodeArea().caretPositionProperty().addListener(caretPositionListener);
+
+                BooleanBinding emptySelectionBinding = Bindings.selectBoolean(
+                        currentTab.getCodeArea().selectedTextProperty().map(text -> text.isEmpty()));
+                formatSelectedMenu.disableProperty().bind(emptySelectionBinding);
+                minifySelectedMenu.disableProperty().bind(emptySelectionBinding);
             }
         });
 
@@ -1475,7 +1489,33 @@ public class Controller {
     @FXML
     private void formatSelected() {
         String formatted = Utils.formatBrainfuck(currentTab.getCodeArea().getSelectedText());
+
+        int start = currentTab.getCodeArea().getSelection().getStart();
         currentTab.getCodeArea().replaceText(currentTab.getCodeArea().getSelection(), formatted);
+        currentTab.getCodeArea().selectRange(start, start + formatted.length());
+    }
+
+    @FXML
+    private void minifyFile() {
+        String formatted = Utils.minifyBrainfuck(currentTab.getCodeArea().getText());
+        currentTab.getCodeArea().replaceText(formatted);
+    }
+
+    @FXML
+    private void minifySelected() {
+        String formatted = Utils.minifyBrainfuck(currentTab.getCodeArea().getSelectedText());
+
+        int start = currentTab.getCodeArea().getSelection().getStart();
+        currentTab.getCodeArea().replaceText(currentTab.getCodeArea().getSelection(), formatted);
+        currentTab.getCodeArea().selectRange(start, start + formatted.length());
+    }
+
+    @FXML
+    private void showSnippets() {
+        Snippets.Snippet snippet = Utils.showSnippets(stage, !tabPane.getTabs().isEmpty());
+        if (snippet != null) {
+            currentTab.getCodeArea().replaceText(currentTab.getCodeArea().getSelection(), snippet.getCode());
+        }
     }
 
     @FXML
