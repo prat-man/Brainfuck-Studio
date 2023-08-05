@@ -714,11 +714,3 @@
     -fx-scale-shape: false;
     -fx-effect: dropshadow(two-pass-box , rgba(180, 180, 180, 0.4), 1, 0.0 , 0, 1);
 }
-
-.tooltip {
-    -fx-background-color: #585D66;
-    -fx-background-radius: 0.5em;
-    -fx-padding: 10px 10px 10px 15px;
-    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.4), 10, 0, 0, 0);
-    -fx-wrap-text: true;
-}
