@@ -4,16 +4,15 @@ import in.pratanumandal.brainfuck.engine.UnmatchedBracketException;
 import in.pratanumandal.brainfuck.gui.BrainfuckStudioApplication;
 import in.pratanumandal.brainfuck.gui.component.NotificationManager;
 import in.pratanumandal.brainfuck.gui.component.TabData;
-import in.pratanumandal.brainfuck.gui.component.TextAreaTableCell;
 import in.pratanumandal.brainfuck.gui.highlight.Highlighter;
 import in.pratanumandal.brainfuck.os.windows.WindowsUtils;
 import in.pratanumandal.brainfuck.tool.Number;
 import in.pratanumandal.brainfuck.tool.Text;
 import javafx.application.Platform;
-import javafx.beans.binding.Bindings;
 import javafx.collections.ListChangeListener;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
+import javafx.css.PseudoClass;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
@@ -26,6 +25,8 @@ import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.SelectionMode;
+import javafx.scene.control.SplitPane;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
@@ -33,9 +34,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.ToggleGroup;
-import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
@@ -45,11 +44,10 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import javafx.util.Duration;
+import javafx.util.Callback;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.fxmisc.richtext.CodeArea;
 
-import javax.tools.Tool;
 import java.awt.Taskbar;
 import java.awt.Toolkit;
 import java.io.IOException;
@@ -511,7 +509,7 @@ public class Utils {
         Utils.setDefaultButton(alert, ButtonType.OK);
 
         alert.setTitle(Constants.APPLICATION_NAME);
-        alert.setHeaderText("Go to line");
+        alert.setHeaderText("Go to Line");
 
         VBox vBox = new VBox();
         vBox.setAlignment(Pos.CENTER_LEFT);
@@ -717,16 +715,134 @@ public class Utils {
         }
     }
 
+    public static Snippets.Snippet modifySnippet(Snippets.Snippet snippet, Stage stage) {
+        boolean isNewSnippet = false;
+        if (snippet == null) {
+            isNewSnippet = true;
+            snippet = new Snippets.Snippet();
+        }
+
+        Alert alert = new Alert(Alert.AlertType.INFORMATION, null, ButtonType.OK, ButtonType.CANCEL);
+
+        Image image = new Image(Utils.class.getClassLoader().getResourceAsStream("images/snippets.png"));
+        ImageView imageView = new ImageView();
+        imageView.setImage(image);
+        imageView.setFitHeight(32);
+        imageView.setFitWidth(32);
+        StackPane imagePane = new StackPane();
+        imagePane.setPadding(new Insets(5));
+        imagePane.getChildren().add(imageView);
+        alert.setGraphic(imagePane);
+
+        alert.setTitle(Constants.APPLICATION_NAME);
+
+        if (isNewSnippet) {
+            alert.setHeaderText("Create Snippet");
+        }
+        else {
+            alert.setHeaderText("Modify Snippet");
+        }
+
+        Utils.setButtonText(alert, ButtonType.OK, "Save");
+
+        VBox vBox = new VBox();
+        vBox.setSpacing(10);
+
+        // name
+        TitledPane namePane = new TitledPane();
+        namePane.setText("Name");
+        namePane.setCollapsible(false);
+        vBox.getChildren().add(namePane);
+
+        HBox nameBox = new HBox();
+        nameBox.setPadding(new Insets(7, 5, 5, 5));
+        namePane.setContent(nameBox);
+
+        TextField nameField = new TextField(snippet.getName());
+        nameField.setPromptText("Enter name of snippet");
+        HBox.setHgrow(nameField, Priority.ALWAYS);
+        nameBox.getChildren().add(nameField);
+
+        // split pane
+        SplitPane splitPane = new SplitPane();
+        vBox.getChildren().add(splitPane);
+
+        splitPane.getStyleClass().add("snippet");
+
+        VBox.setVgrow(splitPane, Priority.ALWAYS);
+        splitPane.setPrefSize(600, 300);
+
+        splitPane.setDividerPositions(0.3);
+
+        // description
+        TitledPane descriptionPane = new TitledPane();
+        descriptionPane.setText("Description");
+        descriptionPane.setCollapsible(false);
+        splitPane.getItems().add(descriptionPane);
+
+        descriptionPane.prefHeightProperty().bind(splitPane.heightProperty());
+        HBox.setHgrow(descriptionPane, Priority.ALWAYS);
+
+        HBox descriptionBox = new HBox();
+        descriptionBox.setPadding(new Insets(7, 6, 7, 5));
+        descriptionPane.setContent(descriptionBox);
+
+        TextArea descriptionField = new TextArea(snippet.getDescription());
+        descriptionField.setPromptText("Enter description of snippet");
+        HBox.setHgrow(descriptionField, Priority.ALWAYS);
+        descriptionBox.getChildren().add(descriptionField);
+
+        // code
+        TitledPane codePane = new TitledPane();
+        codePane.setText("Code");
+        codePane.setCollapsible(false);
+        splitPane.getItems().add(codePane);
+
+        codePane.prefHeightProperty().bind(splitPane.heightProperty());
+        HBox.setHgrow(codePane, Priority.ALWAYS);
+
+        HBox codeBox = new HBox();
+        codeBox.setPadding(new Insets(7, 6, 7, 5));
+        codePane.setContent(codeBox);
+
+        TextArea codeField = new TextArea(snippet.getCode());
+        codeField.setPromptText("Enter code of snippet");
+        HBox.setHgrow(codeField, Priority.ALWAYS);
+        codeBox.getChildren().add(codeField);
+        codeField.getStyleClass().add("code");
+
+        alert.getDialogPane().setContent(vBox);
+
+        // make alert resizable
+        alert.setResizable(true);
+
+        WindowsUtils.setStageStyle((Stage) alert.getDialogPane().getScene().getWindow());
+
+        alert.initOwner(stage);
+        alert.showAndWait();
+
+        if (alert.getResult() == ButtonType.OK) {
+            snippet.setName(nameField.getText());
+            snippet.setDescription(descriptionField.getText());
+            snippet.setCode(codeField.getText());
+
+            return snippet;
+        }
+
+        return null;
+    }
+
     public static Snippets.Snippet showSnippets(Stage stage, boolean allowInsert) {
         Snippets snippets = Snippets.loadSnippets();
         FilteredList<Snippets.Snippet> filteredSnippets = new FilteredList<>(snippets.getSnippets());
         SortedList<Snippets.Snippet> sortedSnippets = new SortedList<>(filteredSnippets);
 
-        ButtonType ADD = new ButtonType("Add", ButtonBar.ButtonData.LEFT);
+        ButtonType CREATE = new ButtonType("Create", ButtonBar.ButtonData.LEFT);
+        ButtonType MODIFY = new ButtonType("Modify", ButtonBar.ButtonData.LEFT);
         ButtonType DELETE = new ButtonType("Delete", ButtonBar.ButtonData.LEFT);
         ButtonType INSERT = new ButtonType("Insert", ButtonBar.ButtonData.RIGHT);
 
-        Alert alert = new Alert(Alert.AlertType.INFORMATION, null, ADD, DELETE, INSERT, ButtonType.CANCEL);
+        Alert alert = new Alert(Alert.AlertType.INFORMATION, null, CREATE, MODIFY, DELETE, INSERT, ButtonType.CANCEL);
 
         Image image = new Image(Utils.class.getClassLoader().getResourceAsStream("images/snippets.png"));
         ImageView imageView = new ImageView();
@@ -743,6 +859,7 @@ public class Utils {
 
         Utils.setDefaultButton(alert, INSERT);
         Utils.hideButton(alert, ButtonType.CANCEL);
+        alert.getDialogPane().lookupButton(DELETE).pseudoClassStateChanged(PseudoClass.getPseudoClass("cancel"), true);
 
         VBox vBox = new VBox();
         vBox.setSpacing(15);
@@ -778,36 +895,58 @@ public class Utils {
 
         tableView.setItems(sortedSnippets);
 
+        // table cell factory
+        Callback cellFactory = snippet -> new TableCell<Snippets.Snippet, String>() {
+            @Override
+            protected void updateItem(String text, boolean empty) {
+                super.updateItem(text, empty);
+
+                if (empty || text == null) {
+                    setText(null);
+                }
+                else {
+                    text = text.replaceAll("\n", " ");
+                    setText(text);
+                }
+            }
+        };
+
+        // name column
         TableColumn<Snippets.Snippet, String> nameCol = new TableColumn<>("Name");
         nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
-        nameCol.setCellFactory(TextFieldTableCell.forTableColumn());
-        nameCol.setOnEditCommit(e -> {
-            e.getTableView().getItems().get(e.getTablePosition().getRow()).setName(e.getNewValue());
-            Snippets.saveSnippets(snippets);
-        });
+        nameCol.setCellFactory(cellFactory);
         nameCol.setMinWidth(100);
         nameCol.setPrefWidth(100);
 
+        // description column
         TableColumn<Snippets.Snippet, String> descriptionCol = new TableColumn<>("Description");
         descriptionCol.setCellValueFactory(new PropertyValueFactory<>("description"));
-        descriptionCol.setCellFactory(TextAreaTableCell.forTableColumn());
-        descriptionCol.setOnEditCommit(e -> {
-            e.getTableView().getItems().get(e.getTablePosition().getRow()).setDescription(e.getNewValue());
-            Snippets.saveSnippets(snippets);
-        });
+        descriptionCol.setCellFactory(cellFactory);
         descriptionCol.setMinWidth(100);
         descriptionCol.setPrefWidth(200);
 
+        // code column
         TableColumn<Snippets.Snippet, String> codeCol = new TableColumn<>("Code");
         codeCol.setCellValueFactory(new PropertyValueFactory<>("code"));
-        codeCol.setCellFactory(TextAreaTableCell.forTableColumn());
-        codeCol.setOnEditCommit(e -> {
-            e.getTableView().getItems().get(e.getTablePosition().getRow()).setCode(e.getNewValue());
-            Snippets.saveSnippets(snippets);
-        });
+        codeCol.setCellFactory(cellFactory);
         codeCol.setMinWidth(100);
         codeCol.setPrefWidth(300);
-        codeCol.getStyleClass().add("code-column");
+        codeCol.getStyleClass().add("code");
+
+        // table row factory
+        tableView.setRowFactory(t -> {
+            TableRow<Snippets.Snippet> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2) {
+                    Snippets.Snippet snippet = tableView.getSelectionModel().getSelectedItem();
+                    snippet = modifySnippet(snippet, stage);
+                    if (snippet != null) {
+                        Snippets.saveSnippets(snippets);
+                    }
+                }
+            });
+            return row;
+        });
 
         tableView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
@@ -825,11 +964,13 @@ public class Utils {
 
         snippets.getSnippets().addListener((ListChangeListener<? super Snippets.Snippet>) change -> Snippets.saveSnippets(snippets));
 
-        // disable insert and delete buttons if no row is selected
+        // disable insert, modify, and delete buttons if no row is selected
         alert.getDialogPane().lookupButton(INSERT).setDisable(true);
+        alert.getDialogPane().lookupButton(MODIFY).setDisable(true);
         alert.getDialogPane().lookupButton(DELETE).setDisable(true);
         tableView.getSelectionModel().selectedItemProperty().addListener((obs, oldVal, newVal) -> {
             alert.getDialogPane().lookupButton(INSERT).setDisable(!allowInsert || newVal == null);
+            alert.getDialogPane().lookupButton(MODIFY).setDisable(newVal == null);
             alert.getDialogPane().lookupButton(DELETE).setDisable(newVal == null);
         });
 
@@ -837,20 +978,45 @@ public class Utils {
         alert.setOnCloseRequest(event -> {
             ButtonType result = alert.getResult();
 
-            if (result == ADD) {
+            if (result == CREATE) {
                 event.consume();
                 alert.setResult(null);
 
-                Snippets.Snippet snippet = new Snippets.Snippet();
-                snippets.getSnippets().add(snippet);
-                tableView.getSelectionModel().select(snippet);
+                Snippets.Snippet snippet = modifySnippet(null, stage);
+                if (snippet != null) {
+                    snippets.getSnippets().add(snippet);
+                    tableView.getSelectionModel().select(snippet);
+                }
+            }
+            else if (result == MODIFY) {
+                event.consume();
+                alert.setResult(null);
+
+                Snippets.Snippet snippet = tableView.getSelectionModel().getSelectedItem();
+                snippet = modifySnippet(snippet, stage);
+                if (snippet != null) {
+                    Snippets.saveSnippets(snippets);
+                }
             }
             else if (result == DELETE) {
                 event.consume();
                 alert.setResult(null);
 
-                Snippets.Snippet snippet = tableView.getSelectionModel().getSelectedItem();
-                snippets.getSnippets().remove(snippet);
+                Alert deleteAlert = new Alert(Alert.AlertType.CONFIRMATION, null, ButtonType.YES, ButtonType.NO);
+
+                deleteAlert.setTitle(Constants.APPLICATION_NAME);
+                deleteAlert.setHeaderText("Delete Snippet");
+                deleteAlert.setContentText("Are you sure you want to delete the snippet?\n\n");
+
+                WindowsUtils.setStageStyle((Stage) deleteAlert.getDialogPane().getScene().getWindow());
+
+                deleteAlert.initOwner(stage);
+                deleteAlert.showAndWait();
+
+                if (deleteAlert.getResult() == ButtonType.YES) {
+                    Snippets.Snippet snippet = tableView.getSelectionModel().getSelectedItem();
+                    snippets.getSnippets().remove(snippet);
+                }
             }
         });
 
@@ -864,7 +1030,7 @@ public class Utils {
         tableView.setOnKeyPressed(event -> {
             if (event.getCode() == KeyCode.ESCAPE) {
                 tableView.getSelectionModel().clearSelection();
-                alert.getDialogPane().lookupButton(ADD).requestFocus();
+                alert.getDialogPane().lookupButton(CREATE).requestFocus();
             }
         });
 

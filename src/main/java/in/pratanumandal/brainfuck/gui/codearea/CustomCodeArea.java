@@ -80,7 +80,7 @@ public class CustomCodeArea extends CodeArea {
 
     @Override
     public void setContextMenu(ContextMenu menu) {
-        MenuItem goToLine = new MenuItem("Go to line");
+        MenuItem goToLine = new MenuItem("Go to Line");
         goToLine.setOnAction(event -> Utils.goToLine(this.tabData));
         menu.getItems().add(goToLine);
 

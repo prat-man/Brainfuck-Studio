@@ -356,6 +356,18 @@
     -fx-background-color: #4E535C;
 }
 
+.split-pane.snippet {
+    -fx-border-width: 0;
+    -fx-border-radius: 0;
+    -fx-background-insets: 0;
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.split-pane.snippet .split-pane-divider {
+    -fx-background-color: transparent;
+}
+
 .hyperlink {
     -fx-border-color: transparent;
     -fx-padding: 4 0 4 0;
@@ -457,7 +469,7 @@
     -fx-background-color: #444952;
 }
 .table-row-cell {
-    -fx-min-height: 33px;
+    -fx-pref-height: 30px;
 }
 .table-row-cell:odd {
     -fx-table-cell-border-color: #5D626B;
@@ -500,7 +512,8 @@
     -fx-pref-height: 25px;
 }
 
-.code-column .text-area {
+.table-cell.code,
+.text-area.code {
     -fx-font-family: 'Bitstream Vera Sans Mono';
 }
 

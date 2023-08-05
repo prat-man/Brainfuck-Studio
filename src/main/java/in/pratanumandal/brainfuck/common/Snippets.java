@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.util.DefaultIndenter;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -43,32 +45,50 @@ public class Snippets {
 
     public static class Snippet {
 
-        private String name;
-        private String description;
-        private String code;
+        private final SimpleStringProperty name;
+        private final SimpleStringProperty description;
+        private final SimpleStringProperty code;
+
+        public Snippet() {
+            name = new SimpleStringProperty();
+            description = new SimpleStringProperty();
+            code = new SimpleStringProperty();
+        }
 
         public String getName() {
-            return name;
+            return name.get();
         }
 
         public void setName(String name) {
-            this.name = name;
+            this.name.set(name);
+        }
+
+        public StringProperty nameProperty() {
+            return name;
         }
 
         public String getDescription() {
-            return description;
+            return description.get();
         }
 
         public void setDescription(String description) {
-            this.description = description;
+            this.description.set(description);
+        }
+
+        public StringProperty descriptionProperty() {
+            return description;
         }
 
         public String getCode() {
-            return code;
+            return code.get();
         }
 
         public void setCode(String code) {
-            this.code = code;
+            this.code.set(code);
+        }
+
+        public StringProperty codeProperty() {
+            return code;
         }
 
         @Override
