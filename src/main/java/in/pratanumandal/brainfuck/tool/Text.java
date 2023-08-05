@@ -34,6 +34,7 @@ public class Text {
             }
             else {
                 sb.append(Number.convertToBrainfuck(n));
+                sb.append(".");
             }
         }
 

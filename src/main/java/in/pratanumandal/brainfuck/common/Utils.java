@@ -715,7 +715,7 @@ public class Utils {
         }
     }
 
-    public static Snippets.Snippet modifySnippet(Snippets.Snippet snippet, Stage stage) {
+    private static Snippets.Snippet modifySnippet(Snippets.Snippet snippet, Stage stage) {
         boolean isNewSnippet = false;
         if (snippet == null) {
             isNewSnippet = true;
@@ -917,6 +917,7 @@ public class Utils {
         nameCol.setCellFactory(cellFactory);
         nameCol.setMinWidth(100);
         nameCol.setPrefWidth(100);
+        nameCol.getStyleClass().add("left");
 
         // description column
         TableColumn<Snippets.Snippet, String> descriptionCol = new TableColumn<>("Description");
@@ -924,6 +925,7 @@ public class Utils {
         descriptionCol.setCellFactory(cellFactory);
         descriptionCol.setMinWidth(100);
         descriptionCol.setPrefWidth(200);
+        descriptionCol.getStyleClass().add("left");
 
         // code column
         TableColumn<Snippets.Snippet, String> codeCol = new TableColumn<>("Code");
@@ -931,6 +933,7 @@ public class Utils {
         codeCol.setCellFactory(cellFactory);
         codeCol.setMinWidth(100);
         codeCol.setPrefWidth(300);
+        codeCol.getStyleClass().add("left");
         codeCol.getStyleClass().add("code");
 
         // table row factory

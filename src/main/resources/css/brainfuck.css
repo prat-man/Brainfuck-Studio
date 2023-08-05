@@ -454,6 +454,9 @@
 }
 
 .table-column {
+    -fx-alignment: center;
+}
+.table-column.left {
     -fx-alignment: center-left;
 }
 .table-view {
