@@ -4,11 +4,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 
-public class SortedList<E> extends LinkedList<E>
+public class SortedLinkedList<E> extends LinkedList<E>
 {
     private Comparator<E> comparator;
 
-    public SortedList(final Comparator<E> comparator) {
+    public SortedLinkedList(final Comparator<E> comparator) {
         this.comparator = comparator;
     }
 

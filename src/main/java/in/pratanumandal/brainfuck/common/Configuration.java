@@ -9,6 +9,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.List;
 
@@ -35,7 +37,11 @@ public class Configuration {
             File file = new File(Constants.CONFIG_FILE);
             if (!file.exists()) {
                 firstRun = true;
+
                 file.createNewFile();
+
+                Path path = Paths.get(Constants.WELCOME_FILE);
+                Files.copy(getClass().getClassLoader().getResourceAsStream("bf/welcome.bf"), path, StandardCopyOption.REPLACE_EXISTING);
             }
 
             PropertiesConfiguration config = configs.properties(file);

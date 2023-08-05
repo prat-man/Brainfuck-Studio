@@ -78,8 +78,6 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -154,11 +152,7 @@ public class Controller {
         // show basic info for first run
         if (Configuration.isFirstRun()) {
             try {
-                Path path = Paths.get(Constants.WELCOME_FILE);
-
-                Files.copy(getClass().getClassLoader().getResourceAsStream("bf/welcome.bf"), path, StandardCopyOption.REPLACE_EXISTING);
-
-                TabData tabData = createTab(path.toFile().getAbsolutePath());
+                TabData tabData = createTab(Constants.WELCOME_FILE);
 
                 Tab tab = tabData.getTab();
 

@@ -4,12 +4,15 @@ import in.pratanumandal.brainfuck.engine.UnmatchedBracketException;
 import in.pratanumandal.brainfuck.gui.BrainfuckStudioApplication;
 import in.pratanumandal.brainfuck.gui.component.NotificationManager;
 import in.pratanumandal.brainfuck.gui.component.TabData;
+import in.pratanumandal.brainfuck.gui.component.TextAreaTableCell;
 import in.pratanumandal.brainfuck.gui.highlight.Highlighter;
 import in.pratanumandal.brainfuck.os.windows.WindowsUtils;
 import in.pratanumandal.brainfuck.tool.Number;
 import in.pratanumandal.brainfuck.tool.Text;
 import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Alert;
@@ -32,6 +35,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -419,8 +423,7 @@ public class Utils {
 
         alert.setHeaderText(null);
         alert.setGraphic(null);
-        alert.getDialogPane().lookupButton(ButtonType.OK).setVisible(false);
-        alert.getDialogPane().lookupButton(ButtonType.OK).setManaged(false);
+        Utils.hideButton(alert, ButtonType.OK);
 
         VBox vBox = new VBox();
         vBox.getStyleClass().add("about");
@@ -710,6 +713,10 @@ public class Utils {
     }
 
     public static Snippets.Snippet showSnippets(Stage stage, boolean allowInsert) {
+        Snippets snippets = Snippets.loadSnippets();
+        FilteredList<Snippets.Snippet> filteredSnippets = new FilteredList<>(snippets.getSnippets());
+        SortedList<Snippets.Snippet> sortedSnippets = new SortedList<>(filteredSnippets);
+
         ButtonType ADD = new ButtonType("Add", ButtonBar.ButtonData.LEFT);
         ButtonType DELETE = new ButtonType("Delete", ButtonBar.ButtonData.LEFT);
         ButtonType INSERT = new ButtonType("Insert", ButtonBar.ButtonData.RIGHT);
@@ -730,10 +737,32 @@ public class Utils {
         alert.setHeaderText("Snippets");
 
         Utils.setDefaultButton(alert, INSERT);
-        Utils.hideCancelButton(alert);
+        Utils.hideButton(alert, ButtonType.CANCEL);
 
         VBox vBox = new VBox();
         vBox.setSpacing(15);
+
+        TextField search = new TextField();
+        vBox.getChildren().add(search);
+
+        search.getStyleClass().add("search");
+        search.setPromptText("Search name");
+
+        search.textProperty().addListener((obs, oldVal, newVal) -> {
+            if (newVal.isEmpty()) {
+                filteredSnippets.setPredicate(null);
+            }
+            else {
+                filteredSnippets.setPredicate(snippet ->
+                        snippet.getName().toLowerCase().contains(search.getText().toLowerCase()));
+            }
+        });
+        search.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ESCAPE && !search.getText().isEmpty()) {
+                event.consume();
+                search.clear();
+            }
+        });
 
         TableView<Snippets.Snippet> tableView = new TableView<>();
         vBox.getChildren().add(tableView);
@@ -742,8 +771,7 @@ public class Utils {
         tableView.setEditable(true);
         tableView.setPrefSize(600, 300);
 
-        Snippets snippets = Snippets.loadSnippets();
-        tableView.setItems(snippets.getSnippets());
+        tableView.setItems(sortedSnippets);
 
         TableColumn<Snippets.Snippet, String> nameCol = new TableColumn<>("Name");
         nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -753,6 +781,7 @@ public class Utils {
             Snippets.saveSnippets(snippets);
         });
         nameCol.setMinWidth(100);
+        nameCol.setPrefWidth(100);
 
         TableColumn<Snippets.Snippet, String> descriptionCol = new TableColumn<>("Description");
         descriptionCol.setCellValueFactory(new PropertyValueFactory<>("description"));
@@ -762,20 +791,23 @@ public class Utils {
             Snippets.saveSnippets(snippets);
         });
         descriptionCol.setMinWidth(100);
+        descriptionCol.setPrefWidth(200);
 
         TableColumn<Snippets.Snippet, String> codeCol = new TableColumn<>("Code");
         codeCol.setCellValueFactory(new PropertyValueFactory<>("code"));
-        codeCol.setCellFactory(TextFieldTableCell.forTableColumn());
+        codeCol.setCellFactory(TextAreaTableCell.forTableColumn());
         codeCol.setOnEditCommit(e -> {
             e.getTableView().getItems().get(e.getTablePosition().getRow()).setCode(e.getNewValue());
             Snippets.saveSnippets(snippets);
         });
         codeCol.setMinWidth(100);
+        codeCol.setPrefWidth(300);
 
         tableView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
         tableView.getColumns().addAll(nameCol, descriptionCol, codeCol);
 
+        sortedSnippets.comparatorProperty().bind(tableView.comparatorProperty());
         nameCol.setSortType(TableColumn.SortType.ASCENDING);
         tableView.getSortOrder().add(nameCol);
         tableView.sort();
@@ -795,6 +827,7 @@ public class Utils {
             alert.getDialogPane().lookupButton(DELETE).setDisable(newVal == null);
         });
 
+        // handle close request
         alert.setOnCloseRequest(event -> {
             ButtonType result = alert.getResult();
 
@@ -814,6 +847,21 @@ public class Utils {
             }
         });
 
+        // enable escape button
+        alert.getDialogPane().setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ESCAPE) {
+                alert.close();
+            }
+        });
+
+        tableView.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ESCAPE) {
+                tableView.getSelectionModel().clearSelection();
+                alert.getDialogPane().lookupButton(ADD).requestFocus();
+            }
+        });
+
+        // make alert resizable
         alert.setResizable(true);
 
         WindowsUtils.setStageStyle((Stage) alert.getDialogPane().getScene().getWindow());
@@ -837,11 +885,19 @@ public class Utils {
         return alert;
     }
 
-    public static Alert hideCancelButton(Alert alert) {
+    public static Alert setCancelButton(Alert alert, ButtonType btnTyp) {
         DialogPane pane = alert.getDialogPane();
         for (ButtonType t : alert.getButtonTypes()) {
-            pane.lookupButton(t).setVisible(t != ButtonType.CANCEL);
-            pane.lookupButton(t).setManaged(t != ButtonType.CANCEL);
+            ((Button) pane.lookupButton(t)).setCancelButton(t == btnTyp);
+        }
+        return alert;
+    }
+
+    public static Alert hideButton(Alert alert, ButtonType btnTyp) {
+        DialogPane pane = alert.getDialogPane();
+        for (ButtonType t : alert.getButtonTypes()) {
+            pane.lookupButton(t).setVisible(t != btnTyp);
+            pane.lookupButton(t).setManaged(t != btnTyp);
         }
         return alert;
     }

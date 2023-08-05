@@ -1,6 +1,6 @@
 package in.pratanumandal.brainfuck.gui.codearea;
 
-import in.pratanumandal.brainfuck.common.SortedList;
+import in.pratanumandal.brainfuck.common.SortedLinkedList;
 import javafx.application.Platform;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.ContextMenu;
@@ -92,7 +92,7 @@ public class FXTerminal extends CodeArea {
         });
 
         this.writeBuffer = new StringBuilder();
-        this.styleList = new SortedList<>(Comparator.comparingInt(obj -> obj.start));
+        this.styleList = new SortedLinkedList<>(Comparator.comparingInt(obj -> obj.start));
 
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
         this.future = scheduler.scheduleWithFixedDelay(() -> {

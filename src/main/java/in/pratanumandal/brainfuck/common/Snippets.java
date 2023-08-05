@@ -1,30 +1,37 @@
 package in.pratanumandal.brainfuck.common;
 
-import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.Marshaller;
-import jakarta.xml.bind.Unmarshaller;
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlRootElement;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.core.util.DefaultIndenter;
+import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.List;
 
-@XmlRootElement(name = "snippets")
-@XmlAccessorType(XmlAccessType.FIELD)
 public class Snippets {
 
-    @XmlElement(name = "snippet")
-    private ObservableList<Snippet> snippets;
+    private List<Snippet> snippets;
+
+    @JsonIgnore
+    private ObservableList<Snippet> observableSnippets;
 
     public Snippets() {
-        this.snippets = FXCollections.observableArrayList();
+        this.snippets = new ArrayList<>();
     }
 
     public ObservableList<Snippet> getSnippets() {
-        return snippets;
+        if (observableSnippets == null) {
+            observableSnippets = FXCollections.observableList(snippets);
+        }
+        return observableSnippets;
     }
 
     @Override
@@ -34,8 +41,6 @@ public class Snippets {
                 '}';
     }
 
-    @XmlRootElement(name = "snippet")
-    @XmlAccessorType (XmlAccessType.FIELD)
     public static class Snippet {
 
         private String name;
@@ -79,49 +84,36 @@ public class Snippets {
 
     public static Snippets loadSnippets() {
         try {
-            JAXBContext jaxbContext = JAXBContext.newInstance(Snippets.class);
-            Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
+            File file = new File(Constants.SNIPPETS_FILE);
+            if (!file.exists()) {
+                Path path = Paths.get(Constants.SNIPPETS_FILE);
+                Files.copy(Snippets.class.getClassLoader().getResourceAsStream("json/snippets.json"), path, StandardCopyOption.REPLACE_EXISTING);
+            }
 
-            return (Snippets) jaxbUnmarshaller.unmarshal(new File(Constants.SNIPPETS_FILE));
+            ObjectMapper objectMapper = new ObjectMapper();
+            return objectMapper.readValue(file, Snippets.class);
         }
-        catch (Exception e) {
-            Snippets snippets = defaultSnippets();
-            saveSnippets(snippets);
-            return snippets;
+        catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
     public static void saveSnippets(Snippets snippets) {
         try {
-            JAXBContext jaxbContext = JAXBContext.newInstance(Snippets.class);
-            Marshaller jaxbMarshaller = jaxbContext.createMarshaller();
+            DefaultPrettyPrinter.Indenter indenter = new DefaultIndenter("    ", DefaultIndenter.SYS_LF);
+            DefaultPrettyPrinter printer = new DefaultPrettyPrinter();
+            printer.indentObjectsWith(indenter);
+            printer.indentArraysWith(indenter);
 
-            jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-
-            jaxbMarshaller.marshal(snippets, new File(Constants.SNIPPETS_FILE));
+            File file = new File(Constants.SNIPPETS_FILE);
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.writer(printer).writeValue(file, snippets);
         }
-        catch (Exception e) {
+        catch (IOException e) {
+            e.printStackTrace();
             throw new RuntimeException(e);
         }
-    }
-
-    private static Snippets defaultSnippets() {
-        Snippets snippets = new Snippets();
-
-        Snippet snippet;
-
-        snippet = new Snippet();
-        snippet.setName("Print newline");
-        snippet.setCode("[-]++++++++++.");
-        snippets.getSnippets().add(snippet);
-
-        snippet = new Snippet();
-        snippet.setName("Print number");
-        snippet.setDescription("Prints value in current cell as decimal number. Requires 7 empty cells to the right. Leaves starting cell unchanged.");
-        snippet.setCode(">[-]>[-]+>[-]+<[>[-<-<<[->+>+<<]>[-<+>]>>]++++++++++>[-]+>[-]>[-]>[-]<<<<<[->-[>+>>]>[[-<+>]+>+>>]<<<<<]>>-[-<<+>>]<[-]++++++++[-<++++++>]>>[-<<+>>]<<]<[.[-]<]<");
-        snippets.getSnippets().add(snippet);
-
-        return snippets;
     }
 
 }

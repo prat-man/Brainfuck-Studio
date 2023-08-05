@@ -81,7 +81,7 @@ public class Number {
             sb.append(decrement.repeat(-adjustment));
         }
 
-        sb.append(".");
+        //sb.append(".");
 
         return sb.toString();
     }

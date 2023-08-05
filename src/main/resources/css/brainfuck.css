@@ -330,6 +330,14 @@
     -fx-pref-height: 32px;
 }
 
+.text-field.search {
+    -fx-background-image: url('../images/search.png');
+    -fx-background-size: 16px;
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: right 8px center;
+    -fx-padding: 4px 30px 4px 7px;
+}
+
 .text-area {
     -fx-background-color: #6C717A;
     -fx-background-radius: 2px;
@@ -449,7 +457,7 @@
     -fx-background-color: #444952;
 }
 .table-row-cell {
-    -fx-pref-height: 33px;
+    -fx-min-height: 33px;
 }
 .table-row-cell:odd {
     -fx-table-cell-border-color: #5D626B;
@@ -490,6 +498,10 @@
 .table-row-cell .text-field {
     -fx-background-insets: 1 0 0 0;
     -fx-pref-height: 25px;
+}
+
+.text-area-table-cell {
+    -fx-font-family: 'Bitstream Vera Sans Mono';
 }
 
 .table-view .placeholder .label {
