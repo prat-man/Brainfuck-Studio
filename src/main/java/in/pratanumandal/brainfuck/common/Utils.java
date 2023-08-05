@@ -10,6 +10,7 @@ import in.pratanumandal.brainfuck.os.windows.WindowsUtils;
 import in.pratanumandal.brainfuck.tool.Number;
 import in.pratanumandal.brainfuck.tool.Text;
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.collections.ListChangeListener;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
@@ -26,11 +27,13 @@ import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TitledPane;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.image.Image;
@@ -42,9 +45,11 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.fxmisc.richtext.CodeArea;
 
+import javax.tools.Tool;
 import java.awt.Taskbar;
 import java.awt.Toolkit;
 import java.io.IOException;
@@ -785,7 +790,7 @@ public class Utils {
 
         TableColumn<Snippets.Snippet, String> descriptionCol = new TableColumn<>("Description");
         descriptionCol.setCellValueFactory(new PropertyValueFactory<>("description"));
-        descriptionCol.setCellFactory(TextFieldTableCell.forTableColumn());
+        descriptionCol.setCellFactory(TextAreaTableCell.forTableColumn());
         descriptionCol.setOnEditCommit(e -> {
             e.getTableView().getItems().get(e.getTablePosition().getRow()).setDescription(e.getNewValue());
             Snippets.saveSnippets(snippets);
@@ -802,6 +807,7 @@ public class Utils {
         });
         codeCol.setMinWidth(100);
         codeCol.setPrefWidth(300);
+        codeCol.getStyleClass().add("code-column");
 
         tableView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         tableView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
@@ -837,6 +843,7 @@ public class Utils {
 
                 Snippets.Snippet snippet = new Snippets.Snippet();
                 snippets.getSnippets().add(snippet);
+                tableView.getSelectionModel().select(snippet);
             }
             else if (result == DELETE) {
                 event.consume();

@@ -12,7 +12,7 @@
         },
         {
             "name" : "Print number",
-            "description" : "Prints value in current cell as decimal number. Requires empty cells to the right and leaves starting cell unchanged.",
+            "description" : "Prints value in current cell as decimal number.\nRequires empty cells to the right and leaves starting cell unchanged.",
             "code" : ">[-]>[-]+>[-]+<[>[-<-<<[->+>+<<]>[-<+>]>>]++++++++++>[-]+>[-]>[-]>[-]<<<<<[->-[>+>>]>[[-<+>]+>+>>]<<<<<]>>-[-<<+>>]<[-]++++++++[-<++++++>]>>[-<<+>>]<<]<[.[-]<]<"
         }
     ]

@@ -500,7 +500,7 @@
     -fx-pref-height: 25px;
 }
 
-.text-area-table-cell {
+.code-column .text-area {
     -fx-font-family: 'Bitstream Vera Sans Mono';
 }
 
@@ -697,4 +697,12 @@
     -fx-shape: "M 0,0 H1 L 4,3 7,0 H8 V1 L 5,4 8,7 V8 H7 L 4,5 1,8 H0 V7 L 3,4 0,1 Z";
     -fx-scale-shape: false;
     -fx-effect: dropshadow(two-pass-box , rgba(180, 180, 180, 0.4), 1, 0.0 , 0, 1);
+}
+
+.tooltip {
+    -fx-background-color: #585D66;
+    -fx-background-radius: 0.5em;
+    -fx-padding: 10px 10px 10px 15px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.4), 10, 0, 0, 0);
+    -fx-wrap-text: true;
 }
