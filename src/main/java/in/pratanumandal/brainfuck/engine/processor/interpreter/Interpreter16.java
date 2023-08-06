@@ -86,7 +86,12 @@ public class Interpreter16 extends Interpreter {
             if (ch == ADDRESS) {
                 int sum = jumps[i];
                 dataPointer += sum;
-                if (dataPointer < 0 || dataPointer >= this.memory.length) {
+
+                if (Configuration.getWrapMemory()) {
+                    if (dataPointer < 0) dataPointer += this.memory.length;
+                    else if (dataPointer >= this.memory.length) dataPointer -= this.memory.length;
+                }
+                else if (dataPointer < 0 || dataPointer >= this.memory.length) {
                     tabData.getInterpretTerminal().writeError("\nError: Memory index out of bounds " + dataPointer + "\n");
                     this.stop(false);
                 }
