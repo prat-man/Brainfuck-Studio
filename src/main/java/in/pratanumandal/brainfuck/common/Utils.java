@@ -15,6 +15,8 @@ import javafx.collections.transformation.SortedList;
 import javafx.css.PseudoClass;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.geometry.Side;
+import javafx.scene.Group;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
@@ -26,6 +28,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.SplitPane;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableRow;
@@ -38,7 +42,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
@@ -249,22 +252,17 @@ public class Utils {
         imagePane.getChildren().add(imageView);
         alert.setGraphic(imagePane);
 
-        GridPane gridPane = new GridPane();
-        gridPane.setHgap(10);
-        gridPane.setVgap(10);
+        TabPane tabPane = new TabPane();
+        tabPane.setMinHeight(200);
 
-        TitledPane interpreter = new TitledPane();
-        interpreter.setText("Interpreter");
-        interpreter.setCollapsible(false);
-
-        interpreter.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-        GridPane.setFillWidth(interpreter, true);
-        GridPane.setFillHeight(interpreter, true);
-        gridPane.add(interpreter, 0, 0);
+        // execution
+        Tab execution = new Tab("Execution");
+        execution.setClosable(false);
+        tabPane.getTabs().add(execution);
 
         VBox vBox1 = new VBox();
         vBox1.setSpacing(15);
-        interpreter.setContent(vBox1);
+        execution.setContent(vBox1);
 
         HBox cellSizeBox = new HBox();
         cellSizeBox.setSpacing(10);
@@ -306,21 +304,20 @@ public class Utils {
         memorySize.setText(String.valueOf(Configuration.getMemorySize()));
         memorySizeBox.getChildren().add(memorySize);
 
-        TitledPane editing = new TitledPane();
-        editing.setText("Code Editing");
-        editing.setCollapsible(false);
+        CheckBox wrapMemory = new CheckBox("Wrap memory");
+        wrapMemory.setSelected(Configuration.getWrapMemory());
+        vBox1.getChildren().add(wrapMemory);
 
-        editing.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-        GridPane.setFillWidth(editing, true);
-        GridPane.setFillHeight(editing, true);
-        GridPane.setRowSpan(editing, 2);
-        gridPane.add(editing, 1, 0);
+        // editor
+        Tab editor = new Tab("Editor");
+        editor.setClosable(false);
+        tabPane.getTabs().add(editor);
 
         VBox vBox2 = new VBox();
         vBox2.setSpacing(10);
-        editing.setContent(vBox2);
+        editor.setContent(vBox2);
 
-        CheckBox wrapText = new CheckBox("Wrap text in code area");
+        CheckBox wrapText = new CheckBox("Wrap text in editor");
         wrapText.setSelected(Configuration.getWrapText());
         vBox2.getChildren().add(wrapText);
 
@@ -336,18 +333,18 @@ public class Utils {
         bracketHighlighting.setSelected(Configuration.getBracketHighlighting());
         vBox2.getChildren().add(bracketHighlighting);
 
-        TitledPane miscellaneous = new TitledPane();
-        miscellaneous.setText("Miscellaneous");
-        miscellaneous.setCollapsible(false);
+        CheckBox useSpaces = new CheckBox("Use spaces instead of tabs");
+        useSpaces.setSelected(Configuration.getUseSpaces());
+        vBox2.getChildren().add(useSpaces);
 
-        miscellaneous.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-        GridPane.setFillWidth(miscellaneous, true);
-        GridPane.setFillHeight(miscellaneous, true);
-        gridPane.add(miscellaneous, 0, 1);
+        // general
+        Tab general = new Tab("General");
+        general.setClosable(false);
+        tabPane.getTabs().add(general);
 
         VBox vBox3 = new VBox();
         vBox3.setSpacing(10);
-        miscellaneous.setContent(vBox3);
+        general.setContent(vBox3);
 
         CheckBox autoSave = new CheckBox("Automatically save files every few seconds");
         autoSave.setSelected(Configuration.getAutoSave());
@@ -357,7 +354,11 @@ public class Utils {
         showTips.setSelected(Configuration.getShowTips());
         vBox3.getChildren().add(showTips);
 
-        alert.getDialogPane().setContent(gridPane);
+        Utils.setTabPaneLeftTabsHorizontal(tabPane);
+
+        alert.getDialogPane().setContent(tabPane);
+
+        alert.setResizable(true);
 
         WindowsUtils.setStageStyle((Stage) alert.getDialogPane().getScene().getWindow());
 
@@ -392,10 +393,12 @@ public class Utils {
             if (cellSize8.isSelected()) Configuration.setCellSize(8);
             else Configuration.setCellSize(16);
             Configuration.setMemorySize(Integer.valueOf(memorySize.getText()));
+            Configuration.setWrapMemory(wrapMemory.isSelected());
             Configuration.setWrapText(wrapText.isSelected());
             Configuration.setAutoComplete(autoComplete.isSelected());
             Configuration.setSyntaxHighlighting(syntaxHighlighting.isSelected());
             Configuration.setBracketHighlighting(bracketHighlighting.isSelected());
+            Configuration.setUseSpaces(useSpaces.isSelected());
             Configuration.setAutoSave(autoSave.isSelected());
             Configuration.setShowTips(showTips.isSelected());
 
@@ -418,6 +421,26 @@ public class Utils {
                 error.showAndWait();
             }
         }
+    }
+
+    public static void setTabPaneLeftTabsHorizontal(TabPane tabPane){
+        tabPane.setSide(Side.LEFT);
+        tabPane.setRotateGraphic(true);
+
+        int labelWidth = 80;
+
+        for (Tab tab : tabPane.getTabs()) {
+            Label label = new Label(tab.getText());
+            label.setPrefWidth(labelWidth);
+            label.setRotate(90);
+            StackPane stackPane = new StackPane(new Group(label));
+            tab.setGraphic(stackPane);
+            tab.setText(null);
+            tab.getContent().getStyleClass().add("tab-content");
+        }
+
+        tabPane.setTabMinHeight(labelWidth + 20);
+        tabPane.setTabMaxHeight(labelWidth + 20);
     }
 
     public static void about(Stage stage) {

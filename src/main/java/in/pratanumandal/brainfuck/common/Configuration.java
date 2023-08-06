@@ -22,11 +22,14 @@ public class Configuration {
 
     private Integer cellSize;
     private Integer memorySize;
+    private Boolean wrapMemory;
     private Integer fontSize;
     private Boolean wrapText;
     private Boolean autoComplete;
     private Boolean syntaxHighlighting;
     private Boolean bracketHighlighting;
+
+    private Boolean useSpaces;
     private Boolean autoSave;
     private Boolean showTips;
     private String initialDirectory;
@@ -48,11 +51,13 @@ public class Configuration {
 
             this.cellSize = config.getInteger("cellSize", 8);
             this.memorySize = config.getInteger("memorySize", 30000);
+            this.wrapMemory = config.getBoolean("wrapMemory", false);
             this.fontSize = config.getInteger("fontSize", 14);
             this.wrapText = config.getBoolean("wrapText", false);
             this.autoComplete = config.getBoolean("autoComplete", true);
             this.syntaxHighlighting = config.getBoolean("syntaxHighlighting", true);
             this.bracketHighlighting = config.getBoolean("bracketHighlighting", true);
+            this.useSpaces = config.getBoolean("useSpaces", true);
             this.autoSave = config.getBoolean("autoSave", true);
             this.showTips = config.getBoolean("showTips", true);
             this.initialDirectory = config.getString("initialDirectory", System.getProperty("user.home"));
@@ -62,11 +67,13 @@ public class Configuration {
 
             this.cellSize = 8;
             this.memorySize = 30000;
+            this.wrapMemory = false;
             this.fontSize = 14;
             this.wrapText = false;
             this.autoComplete = true;
             this.syntaxHighlighting = true;
             this.bracketHighlighting = true;
+            this.useSpaces = true;
             this.autoSave = true;
             this.showTips = true;
             this.initialDirectory = System.getProperty("user.home");
@@ -82,11 +89,13 @@ public class Configuration {
 
         if (instance.cellSize == null || (instance.cellSize != 8 && instance.cellSize != 16)) instance.cellSize = 8;
         if (instance.memorySize == null || (instance.memorySize < 1000 || instance.memorySize > 50000)) instance.memorySize = 30000;
+        if (instance.wrapMemory == null) instance.wrapMemory = false;
         if (instance.fontSize == null || (!FONT_SIZES.contains(instance.fontSize))) instance.fontSize = 14;
         if (instance.wrapText == null) instance.wrapText = false;
         if (instance.autoComplete == null) instance.autoComplete = true;
         if (instance.syntaxHighlighting == null) instance.syntaxHighlighting = true;
         if (instance.bracketHighlighting == null) instance.bracketHighlighting = true;
+        if (instance.useSpaces == null) instance.useSpaces = true;
         if (instance.autoSave == null) instance.autoSave = true;
         if (instance.showTips == null) instance.showTips = true;
         if (instance.initialDirectory == null || !Files.isDirectory(Path.of(instance.initialDirectory))) instance.initialDirectory = System.getProperty("user.home");
@@ -108,6 +117,11 @@ public class Configuration {
     public static Integer getMemorySize() {
         sanitize();
         return instance.memorySize;
+    }
+
+    public static Boolean getWrapMemory() {
+        sanitize();
+        return instance.wrapMemory;
     }
 
     public static Integer getFontSize() {
@@ -135,6 +149,11 @@ public class Configuration {
         return instance.bracketHighlighting;
     }
 
+    public static Boolean getUseSpaces() {
+        sanitize();
+        return instance.useSpaces;
+    }
+
     public static Boolean getAutoSave() {
         sanitize();
         return instance.autoSave;
@@ -160,6 +179,11 @@ public class Configuration {
         instance.memorySize = memorySize;
     }
 
+    public static void setWrapMemory(Boolean wrapMemory) {
+        sanitize();
+        instance.wrapMemory = wrapMemory;
+    }
+
     public static void setFontSize(Integer fontSize) {
         sanitize();
         instance.fontSize = fontSize;
@@ -183,6 +207,11 @@ public class Configuration {
     public static void setBracketHighlighting(Boolean bracketHighlighting) {
         sanitize();
         instance.bracketHighlighting = bracketHighlighting;
+    }
+
+    public static void setUseSpaces(Boolean useSpaces) {
+        sanitize();
+        instance.useSpaces = useSpaces;
     }
 
     public static void setAutoSave(Boolean autoSave) {
@@ -221,11 +250,13 @@ public class Configuration {
 
         config.addProperty("cellSize", instance.cellSize);
         config.addProperty("memorySize", instance.memorySize);
+        config.addProperty("wrapMemory", instance.wrapMemory);
         config.addProperty("fontSize", instance.fontSize);
         config.addProperty("wrapText", instance.wrapText);
         config.addProperty("autoComplete", instance.autoComplete);
         config.addProperty("syntaxHighlighting", instance.syntaxHighlighting);
         config.addProperty("bracketHighlighting", instance.bracketHighlighting);
+        config.addProperty("useSpaces", instance.useSpaces);
         config.addProperty("autoSave", instance.autoSave);
         config.addProperty("showTips", instance.showTips);
         config.addProperty("initialDirectory", instance.initialDirectory);
