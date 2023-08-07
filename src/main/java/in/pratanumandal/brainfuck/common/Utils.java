@@ -253,7 +253,6 @@ public class Utils {
         alert.setGraphic(imagePane);
 
         TabPane tabPane = new TabPane();
-        tabPane.setMinHeight(200);
 
         // execution
         Tab execution = new Tab("Execution");
@@ -300,7 +299,6 @@ public class Utils {
 
         TextField memorySize = new TextField();
         memorySize.setPromptText("In range 1000 to 50000");
-        HBox.setHgrow(memorySize, Priority.ALWAYS);
         memorySize.textProperty().addListener((obs, oldVal, newVal) -> {
             if (!newVal.matches("\\d*")) {
                 memorySize.setText(newVal.replaceAll("[^\\d]", ""));
@@ -365,7 +363,13 @@ public class Utils {
 
         alert.setResizable(true);
 
-        WindowsUtils.setStageStyle((Stage) alert.getDialogPane().getScene().getWindow());
+        alert.getDialogPane().setPrefSize(500, 350);
+
+        Stage alertStage = (Stage) alert.getDialogPane().getScene().getWindow();
+        alertStage.setMinWidth(450);
+        alertStage.setMinHeight(350);
+
+        WindowsUtils.setStageStyle(alertStage);
 
         alert.initOwner(stage);
 
@@ -711,13 +715,14 @@ public class Utils {
         alert.getDialogPane().setContent(vBox);
 
         alert.setResizable(true);
-        alert.getDialogPane().setPrefWidth(500);
-        alert.getDialogPane().setPrefHeight(400);
 
-        ((Stage) alert.getDialogPane().getScene().getWindow()).setMinWidth(350);
-        ((Stage) alert.getDialogPane().getScene().getWindow()).setMinHeight(300);
+        alert.getDialogPane().setPrefSize(500, 400);
 
-        WindowsUtils.setStageStyle((Stage) alert.getDialogPane().getScene().getWindow());
+        Stage alertStage = (Stage) alert.getDialogPane().getScene().getWindow();
+        alertStage.setMinWidth(350);
+        alertStage.setMinHeight(300);
+
+        WindowsUtils.setStageStyle(alertStage);
 
         alert.initOwner(currentTab.getTab().getTabPane().getScene().getWindow());
 
@@ -799,7 +804,6 @@ public class Utils {
         splitPane.getStyleClass().add("snippet");
 
         VBox.setVgrow(splitPane, Priority.ALWAYS);
-        splitPane.setPrefSize(600, 300);
 
         splitPane.setDividerPositions(0.3);
 
@@ -842,10 +846,15 @@ public class Utils {
 
         alert.getDialogPane().setContent(vBox);
 
-        // make alert resizable
         alert.setResizable(true);
 
-        WindowsUtils.setStageStyle((Stage) alert.getDialogPane().getScene().getWindow());
+        alert.getDialogPane().setPrefSize(600, 450);
+
+        Stage alertStage = (Stage) alert.getDialogPane().getScene().getWindow();
+        alertStage.setMinWidth(500);
+        alertStage.setMinHeight(400);
+
+        WindowsUtils.setStageStyle(alertStage);
 
         alert.initOwner(stage);
         alert.showAndWait();
@@ -920,7 +929,6 @@ public class Utils {
         VBox.setVgrow(tableView, Priority.ALWAYS);
 
         tableView.setEditable(true);
-        tableView.setPrefSize(600, 300);
 
         tableView.setItems(sortedSnippets);
 
@@ -1066,10 +1074,15 @@ public class Utils {
             }
         });
 
-        // make alert resizable
         alert.setResizable(true);
 
-        WindowsUtils.setStageStyle((Stage) alert.getDialogPane().getScene().getWindow());
+        alert.getDialogPane().setPrefSize(600, 450);
+
+        Stage alertStage = (Stage) alert.getDialogPane().getScene().getWindow();
+        alertStage.setMinWidth(500);
+        alertStage.setMinHeight(400);
+
+        WindowsUtils.setStageStyle(alertStage);
 
         alert.initOwner(stage);
         alert.showAndWait();
