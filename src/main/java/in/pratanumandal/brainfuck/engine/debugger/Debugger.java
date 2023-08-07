@@ -32,6 +32,9 @@ public abstract class Debugger implements Runnable {
 
     protected Thread thread;
 
+    protected final int memorySize;
+    protected final boolean wrapMemory;
+
     protected final ChangeListener<String> textChangeListener;
 
     protected Debugger(TabData tabData) {
@@ -42,8 +45,10 @@ public abstract class Debugger implements Runnable {
         this.codeArea = tabData.getCodeArea();
 
         this.pause = new AtomicBoolean(false);
-
         this.kill = new AtomicBoolean(true);
+
+        this.memorySize = Configuration.getMemorySize();
+        this.wrapMemory = Configuration.getWrapMemory();
 
         this.textChangeListener = (obs, oldVal, newVal) -> {
             this.code = tabData.getFileText();
@@ -188,16 +193,12 @@ public abstract class Debugger implements Runnable {
     }
 
     public static Debugger getDebugger(TabData tabData) {
-        Integer cellSize = Configuration.getCellSize();
-
-        if (cellSize == 8) {
-            return new Debugger8(tabData);
+        switch (Configuration.getCellSize()) {
+            case 8: return new Debugger8(tabData);
+            case 16: return new Debugger16(tabData);
+            case 32: return new Debugger32(tabData);
+            default: return null;
         }
-        else if (cellSize == 16) {
-            return new Debugger16(tabData);
-        }
-
-        return null;
     }
 
     protected void showUnmatchedBrackets(UnmatchedBracketException e) {

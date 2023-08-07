@@ -12,24 +12,26 @@ import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 
 import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class Interpreter16 extends Interpreter {
+public class Interpreter32 extends Interpreter {
 
-    protected Short[] memory;
+    protected Integer[] memory;
 
-    public Interpreter16(TabData tabData) {
+    public Interpreter32(TabData tabData) {
         super(tabData);
 
-        this.memory = new Short[this.memorySize];
+        this.memory = new Integer[this.memorySize];
     }
 
     @Override
     public void start() {
         tabData.getInterpretTerminal().reset();
 
-        Arrays.fill(this.memory, (short) 0);
+        Arrays.fill(this.memory, 0);
 
         try {
             super.start();
@@ -100,7 +102,7 @@ public class Interpreter16 extends Interpreter {
             // handle value update (+ and -)
             else if (ch == DATA) {
                 int sum = jumps[i];
-                memory[dataPointer] = (short) (memory[dataPointer] + sum);
+                memory[dataPointer] = memory[dataPointer] + sum;
             }
             // handle output (.)
             else if (ch == '.') {
@@ -110,7 +112,7 @@ public class Interpreter16 extends Interpreter {
             // handle input (,)
             else if (ch == ',') {
                 Character character = tabData.getInterpretTerminal().readChar();
-                memory[dataPointer] = character == null ? (short) 0 : (short) (int) character;
+                memory[dataPointer] = character == null ? 0 : (int) character;
             }
             // handle [-]
             else if (ch == SET_ZERO) {

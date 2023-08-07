@@ -1,6 +1,9 @@
 package in.pratanumandal.brainfuck.engine.processor.interpreter;
 
 import in.pratanumandal.brainfuck.common.Configuration;
+import in.pratanumandal.brainfuck.engine.debugger.Debugger16;
+import in.pratanumandal.brainfuck.engine.debugger.Debugger32;
+import in.pratanumandal.brainfuck.engine.debugger.Debugger8;
 import in.pratanumandal.brainfuck.engine.processor.Processor;
 import in.pratanumandal.brainfuck.gui.component.TabData;
 
@@ -11,16 +14,12 @@ public abstract class Interpreter extends Processor {
     }
 
     public static Interpreter getInterpreter(TabData tabData) {
-        Integer cellSize = Configuration.getCellSize();
-
-        if (cellSize == 8) {
-            return new Interpreter8(tabData);
+        switch (Configuration.getCellSize()) {
+            case 8: return new Interpreter8(tabData);
+            case 16: return new Interpreter16(tabData);
+            case 32: return new Interpreter32(tabData);
+            default: return null;
         }
-        else if (cellSize == 16) {
-            return new Interpreter16(tabData);
-        }
-
-        return null;
     }
 
 }

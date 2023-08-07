@@ -1,18 +1,20 @@
 package in.pratanumandal.brainfuck.engine;
 
+import in.pratanumandal.brainfuck.common.CharacterUtils;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleLongProperty;
 
 public class Memory {
 
     private SimpleBooleanProperty current;
     private SimpleIntegerProperty address;
-    private SimpleIntegerProperty data;
+    private SimpleLongProperty data;
 
     public Memory(Integer address) {
         this.current = new SimpleBooleanProperty(false);
         this.address = new SimpleIntegerProperty(address);
-        this.data = new SimpleIntegerProperty(0);
+        this.data = new SimpleLongProperty(0);
     }
 
     public boolean isCurrent() {
@@ -35,16 +37,16 @@ public class Memory {
         this.address.set(address);
     }
 
-    public SimpleIntegerProperty dataProperty() {
+    public SimpleLongProperty dataProperty() {
         return data;
     }
 
-    public void setData(int data) {
+    public void setData(long data) {
         this.data.set(data);
     }
 
-    public Character getCharacter() {
-        return Character.valueOf((char) data.intValue());
+    public String getSymbol() {
+        return CharacterUtils.getSymbol(data.get());
     }
 
 }

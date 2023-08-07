@@ -269,21 +269,26 @@ public class Utils {
         cellSizeBox.setAlignment(Pos.CENTER_LEFT);
         vBox1.getChildren().add(cellSizeBox);
 
-        Label cellSizeLabel = new Label("Cell size");
+        Label cellSizeLabel = new Label("Cell size (in bits)");
         cellSizeBox.getChildren().add(cellSizeLabel);
 
         ToggleGroup cellSizeGroup = new ToggleGroup();
         int selectedCellSize = Configuration.getCellSize();
 
-        RadioButton cellSize8 = new RadioButton("8 bits");
+        RadioButton cellSize8 = new RadioButton("8");
         cellSize8.setToggleGroup(cellSizeGroup);
         cellSize8.setSelected(selectedCellSize == 8);
         cellSizeBox.getChildren().add(cellSize8);
 
-        RadioButton cellSize16 = new RadioButton("16 bits");
+        RadioButton cellSize16 = new RadioButton("16");
         cellSize16.setToggleGroup(cellSizeGroup);
         cellSize16.setSelected(selectedCellSize == 16);
         cellSizeBox.getChildren().add(cellSize16);
+
+        RadioButton cellSize32 = new RadioButton("32");
+        cellSize32.setToggleGroup(cellSizeGroup);
+        cellSize32.setSelected(selectedCellSize == 32);
+        cellSizeBox.getChildren().add(cellSize32);
 
         HBox memorySizeBox = new HBox();
         memorySizeBox.setSpacing(10);
@@ -304,7 +309,7 @@ public class Utils {
         memorySize.setText(String.valueOf(Configuration.getMemorySize()));
         memorySizeBox.getChildren().add(memorySize);
 
-        CheckBox wrapMemory = new CheckBox("Wrap memory");
+        CheckBox wrapMemory = new CheckBox("Wrap memory pointer on overflow");
         wrapMemory.setSelected(Configuration.getWrapMemory());
         vBox1.getChildren().add(wrapMemory);
 
@@ -391,7 +396,8 @@ public class Utils {
 
         if (valid) {
             if (cellSize8.isSelected()) Configuration.setCellSize(8);
-            else Configuration.setCellSize(16);
+            else if (cellSize16.isSelected()) Configuration.setCellSize(16);
+            else Configuration.setCellSize(32);
             Configuration.setMemorySize(Integer.valueOf(memorySize.getText()));
             Configuration.setWrapMemory(wrapMemory.isSelected());
             Configuration.setWrapText(wrapText.isSelected());

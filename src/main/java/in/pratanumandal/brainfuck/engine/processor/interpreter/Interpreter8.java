@@ -1,6 +1,6 @@
 package in.pratanumandal.brainfuck.engine.processor.interpreter;
 
-import in.pratanumandal.brainfuck.common.Configuration;
+import in.pratanumandal.brainfuck.common.CharacterUtils;
 import in.pratanumandal.brainfuck.common.Constants;
 import in.pratanumandal.brainfuck.common.Utils;
 import in.pratanumandal.brainfuck.engine.UnmatchedBracketException;
@@ -21,7 +21,7 @@ public class Interpreter8 extends Interpreter {
     public Interpreter8(TabData tabData) {
         super(tabData);
 
-        this.memory = new Byte[Configuration.getMemorySize()];
+        this.memory = new Byte[this.memorySize];
     }
 
     @Override
@@ -87,11 +87,11 @@ public class Interpreter8 extends Interpreter {
                 int sum = jumps[i];
                 dataPointer += sum;
 
-                if (Configuration.getWrapMemory()) {
-                    if (dataPointer < 0) dataPointer += this.memory.length;
-                    else if (dataPointer >= this.memory.length) dataPointer -= this.memory.length;
+                if (this.wrapMemory) {
+                    if (dataPointer < 0) dataPointer += this.memorySize;
+                    else if (dataPointer >= this.memorySize) dataPointer -= this.memorySize;
                 }
-                else if (dataPointer < 0 || dataPointer >= this.memory.length) {
+                else if (dataPointer < 0 || dataPointer >= this.memorySize) {
                     tabData.getInterpretTerminal().writeError("\nError: Memory index out of bounds " + dataPointer + "\n");
                     this.stop(false);
                 }
@@ -103,10 +103,8 @@ public class Interpreter8 extends Interpreter {
             }
             // handle output (.)
             else if (ch == '.') {
-                int codePoint = this.memory[dataPointer].intValue();
-                if (codePoint < 0) codePoint += 256;
-                String text = String.valueOf((char) codePoint);
-                tabData.getInterpretTerminal().write(text);
+                String symbol = CharacterUtils.getSymbol(this.memory[dataPointer]);
+                tabData.getInterpretTerminal().write(symbol);
             }
             // handle input (,)
             else if (ch == ',') {
@@ -173,7 +171,7 @@ public class Interpreter8 extends Interpreter {
                 return i;
             }
         }
-        for (int i = this.memory.length - 1; i > position; i--) {
+        for (int i = this.memorySize - 1; i > position; i--) {
             if (memory[i] == 0) {
                 return i;
             }
@@ -185,7 +183,7 @@ public class Interpreter8 extends Interpreter {
      * Find first zero in memory at or to the right of position.
      */
     private int findZeroRight(int position) {
-        for (int i = position; i < this.memory.length; i++) {
+        for (int i = position; i < this.memorySize; i++) {
             if (memory[i] == 0) {
                 return i;
             }

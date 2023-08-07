@@ -623,10 +623,10 @@ public class Controller {
             TableCell<Memory, Integer> cell = new TableCell<>() {
                 @Override
                 protected void updateItem(Integer item, boolean empty) {
-                    String format1 = "%0" + (int) (Math.log10(tableView.getItems().size()) + 1) + "d";
+                    String format = "%0" + (int) (Math.log10(tableView.getItems().size()) + 1) + "d";
                     super.updateItem(item, empty);
                     if (empty) setText(null);
-                    else setText(String.format(format1, item));
+                    else setText(String.format(format, item));
                 }
             };
             return cell;
@@ -634,16 +634,23 @@ public class Controller {
         column2.setSortable(false);
         tableView.getColumns().add(column2);
 
-        TableColumn<Memory, Integer> column3 = new TableColumn<>("Data");
+        TableColumn<Memory, Long> column3 = new TableColumn<>("Data");
         column3.setCellValueFactory(new PropertyValueFactory<>("data"));
-        String format2 = "%05d";
         column3.setCellFactory(column -> {
-            TableCell<Memory, Integer> cell = new TableCell<>() {
+            TableCell<Memory, Long> cell = new TableCell<>() {
                 @Override
-                protected void updateItem(Integer item, boolean empty) {
+                protected void updateItem(Long item, boolean empty) {
+                    String format;
+                    switch (Configuration.getCellSize()) {
+                        case 8: format = "%03d"; break;
+                        case 16: format = "%05d"; break;
+                        case 32: format = "%010d"; break;
+                        default: format = null; break;
+                    }
+
                     super.updateItem(item, empty);
                     if (empty) setText(null);
-                    else setText(String.format(format2, item));
+                    else setText(String.format(format, item));
                 }
             };
             return cell;
@@ -651,8 +658,8 @@ public class Controller {
         column3.setSortable(false);
         tableView.getColumns().add(column3);
 
-        TableColumn<Memory, Character> column4 = new TableColumn<>("Character");
-        column4.setCellValueFactory(new PropertyValueFactory<>("character"));
+        TableColumn<Memory, String> column4 = new TableColumn<>("Symbol");
+        column4.setCellValueFactory(new PropertyValueFactory<>("symbol"));
         column4.setSortable(false);
         tableView.getColumns().add(column4);
 

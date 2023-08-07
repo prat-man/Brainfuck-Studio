@@ -87,7 +87,7 @@ public class Configuration {
             exists = false;
         }
 
-        if (instance.cellSize == null || (instance.cellSize != 8 && instance.cellSize != 16)) instance.cellSize = 8;
+        if (instance.cellSize == null || (instance.cellSize != 8 && instance.cellSize != 16  && instance.cellSize != 32)) instance.cellSize = 8;
         if (instance.memorySize == null || (instance.memorySize < 1000 || instance.memorySize > 50000)) instance.memorySize = 30000;
         if (instance.wrapMemory == null) instance.wrapMemory = false;
         if (instance.fontSize == null || (!FONT_SIZES.contains(instance.fontSize))) instance.fontSize = 14;

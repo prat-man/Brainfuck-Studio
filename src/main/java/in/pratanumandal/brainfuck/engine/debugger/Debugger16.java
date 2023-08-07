@@ -1,6 +1,6 @@
 package in.pratanumandal.brainfuck.engine.debugger;
 
-import in.pratanumandal.brainfuck.common.Configuration;
+import in.pratanumandal.brainfuck.common.CharacterUtils;
 import in.pratanumandal.brainfuck.common.Utils;
 import in.pratanumandal.brainfuck.engine.Memory;
 import in.pratanumandal.brainfuck.engine.UnmatchedBracketException;
@@ -19,7 +19,7 @@ public class Debugger16 extends Debugger {
     public Debugger16(TabData tabData) {
         super(tabData);
 
-        this.memory = new Short[Configuration.getMemorySize()];
+        this.memory = new Short[this.memorySize];
     }
 
     @Override
@@ -27,14 +27,13 @@ public class Debugger16 extends Debugger {
         Arrays.fill(this.memory, (short) 0);
 
         for (int i = 0; i < memory.length; i++) {
-            tabData.getMemory().get(i).setData(Short.toUnsignedInt(memory[i]));
+            tabData.getMemory().get(i).setData(CharacterUtils.getCodePoint(memory[i]));
         }
         Platform.runLater(() -> tabData.getTableView().refresh());
     }
 
     @Override
     public void run() {
-
         AtomicReference<NotificationManager.Notification> notificationAtomicReference = new AtomicReference<>();
         Utils.runAndWait(() -> notificationAtomicReference.set(Utils.addNotification(tabData.getTab().getText() + " debugging started")));
         NotificationManager.Notification notification = notificationAtomicReference.get();
@@ -56,9 +55,9 @@ public class Debugger16 extends Debugger {
                 this.pause();
             } else if (ch == '>') {
                 dataPointer++;
-                if (dataPointer >= this.memory.length) {
-                    if (Configuration.getWrapMemory()) {
-                        dataPointer -= this.memory.length;
+                if (dataPointer >= this.memorySize) {
+                    if (this.wrapMemory) {
+                        dataPointer -= this.memorySize;
                         tabData.setCurrentMemoryPointer(dataPointer);
                     }
                     else {
@@ -72,8 +71,8 @@ public class Debugger16 extends Debugger {
             } else if (ch == '<') {
                 dataPointer--;
                 if (dataPointer < 0) {
-                    if (Configuration.getWrapMemory()) {
-                        dataPointer += this.memory.length;
+                    if (this.wrapMemory) {
+                        dataPointer += this.memorySize;
                         tabData.setCurrentMemoryPointer(dataPointer);
                     }
                     else {
@@ -89,27 +88,25 @@ public class Debugger16 extends Debugger {
 
                 int finalDataPointer = dataPointer;
                 Memory memoryBlock = tabData.getMemory().get(finalDataPointer);
-                memoryBlock.setData(Short.toUnsignedInt(memory[finalDataPointer]));
+                memoryBlock.setData(CharacterUtils.getCodePoint(memory[finalDataPointer]));
                 Platform.runLater(() ->  tabData.getMemory().set(finalDataPointer, memoryBlock));
             } else if (ch == '-') {
                 memory[dataPointer]--;
 
                 int finalDataPointer = dataPointer;
                 Memory memoryBlock = tabData.getMemory().get(finalDataPointer);
-                memoryBlock.setData(Short.toUnsignedInt(memory[finalDataPointer]));
+                memoryBlock.setData(CharacterUtils.getCodePoint(memory[finalDataPointer]));
                 Platform.runLater(() ->  tabData.getMemory().set(finalDataPointer, memoryBlock));
             } else if (ch == '.') {
-                int codePoint = this.memory[dataPointer].intValue();
-                if (codePoint < 0) codePoint += 256;
-                String text = String.valueOf((char) codePoint);
-                tabData.getDebugTerminal().write(text);
+                String symbol = CharacterUtils.getSymbol(this.memory[dataPointer]);
+                tabData.getDebugTerminal().write(symbol);
             } else if (ch == ',') {
                 Character character = tabData.getDebugTerminal().readChar();
                 memory[dataPointer] = character == null ? (short) 0 : (short) (int) character;
 
                 int finalDataPointer = dataPointer;
                 Memory memoryBlock = tabData.getMemory().get(finalDataPointer);
-                memoryBlock.setData(Short.toUnsignedInt(memory[finalDataPointer]));
+                memoryBlock.setData(CharacterUtils.getCodePoint(memory[finalDataPointer]));
                 Platform.runLater(() ->  tabData.getMemory().set(finalDataPointer, memoryBlock));
             } else if (ch == '[') {
                 if (memory[dataPointer] == 0) {
@@ -163,7 +160,6 @@ public class Debugger16 extends Debugger {
         }
 
         this.stop(false);
-
     }
 
 }

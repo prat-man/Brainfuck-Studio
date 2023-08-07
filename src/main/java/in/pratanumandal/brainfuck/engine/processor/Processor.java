@@ -1,5 +1,6 @@
 package in.pratanumandal.brainfuck.engine.processor;
 
+import in.pratanumandal.brainfuck.common.Configuration;
 import in.pratanumandal.brainfuck.common.Utils;
 import in.pratanumandal.brainfuck.gui.component.TabData;
 import javafx.util.Pair;
@@ -23,6 +24,9 @@ public abstract class Processor implements Runnable {
 
     protected Thread thread;
 
+    protected final int memorySize;
+    protected final boolean wrapMemory;
+
     public static final Character SET_ZERO = '!';
     public static final Character SCAN_ZERO_LEFT = '@';
     public static final Character SCAN_ZERO_RIGHT = '$';
@@ -39,6 +43,9 @@ public abstract class Processor implements Runnable {
         this.codeArea = tabData.getCodeArea();
 
         this.kill = new AtomicBoolean(true);
+
+        this.memorySize = Configuration.getMemorySize();
+        this.wrapMemory = Configuration.getWrapMemory();
     }
 
     public void start() {

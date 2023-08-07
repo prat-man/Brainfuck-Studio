@@ -12,19 +12,19 @@ import javafx.scene.control.Slider;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicReference;
 
-public class Debugger8 extends Debugger {
+public class Debugger32 extends Debugger {
 
-    protected Byte[] memory;
+    protected Integer[] memory;
 
-    public Debugger8(TabData tabData) {
+    public Debugger32(TabData tabData) {
         super(tabData);
 
-        this.memory = new Byte[this.memorySize];
+        this.memory = new Integer[this.memorySize];
     }
 
     @Override
     public void clearMemory() {
-        Arrays.fill(this.memory, (byte) 0);
+        Arrays.fill(this.memory, 0);
 
         for (int i = 0; i < memory.length; i++) {
             tabData.getMemory().get(i).setData(CharacterUtils.getCodePoint(memory[i]));
@@ -102,7 +102,7 @@ public class Debugger8 extends Debugger {
                 tabData.getDebugTerminal().write(symbol);
             } else if (ch == ',') {
                 Character character = tabData.getDebugTerminal().readChar();
-                memory[dataPointer] = character == null ? (byte) 0 : (byte) (int) character;
+                memory[dataPointer] = character == null ? 0 : (int) character;
 
                 int finalDataPointer = dataPointer;
                 Memory memoryBlock = tabData.getMemory().get(finalDataPointer);
