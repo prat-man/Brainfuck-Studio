@@ -1,6 +1,7 @@
 package in.pratanumandal.brainfuck.gui.component;
 
 import javafx.collections.ObservableList;
+import javafx.scene.Node;
 import javafx.scene.control.TableRow;
 import javafx.scene.control.TableView;
 import javafx.util.Callback;
@@ -105,23 +106,26 @@ public class TableViewExtra<T> {
         lastIndex = -1;
 
         // Work out which of the rows are visible
-        double tblViewHeight = tableView.getHeight();
-        double headerHeight = tableView.lookup(".column-header-background").getBoundsInLocal().getHeight();
-        double viewPortHeight = tblViewHeight - headerHeight;
+        Node node = tableView.lookup(".column-header-background");
+        if (node != null) {
+            double tblViewHeight = tableView.getHeight();
+            double headerHeight = node.getBoundsInLocal().getHeight();
+            double viewPortHeight = tblViewHeight - headerHeight;
 
-        for(TableRow<T> r : rows) {
-            if (!r.isVisible()) continue;
+            for (TableRow<T> r : rows) {
+                if (!r.isVisible()) continue;
 
-            double minY = r.getBoundsInParent().getMinY();
-            double maxY = r.getBoundsInParent().getMaxY();
+                double minY = r.getBoundsInParent().getMinY();
+                double maxY = r.getBoundsInParent().getMaxY();
 
-            boolean hidden  = (maxY < 0) || (minY > viewPortHeight);
-            if (!hidden) {
-                if (firstIndex < 0 || r.getIndex() < firstIndex) {
-                    firstIndex = r.getIndex();
-                }
-                if (lastIndex < 0 || r.getIndex() > lastIndex) {
-                    lastIndex = r.getIndex();
+                boolean hidden = (maxY < 0) || (minY > viewPortHeight);
+                if (!hidden) {
+                    if (firstIndex < 0 || r.getIndex() < firstIndex) {
+                        firstIndex = r.getIndex();
+                    }
+                    if (lastIndex < 0 || r.getIndex() > lastIndex) {
+                        lastIndex = r.getIndex();
+                    }
                 }
             }
         }

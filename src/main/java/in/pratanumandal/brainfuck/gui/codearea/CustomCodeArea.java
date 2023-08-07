@@ -32,14 +32,6 @@ public class CustomCodeArea extends CodeArea {
         super();
     }
 
-    public CustomCodeArea(String text) {
-        super(text);
-    }
-
-    public CustomCodeArea(EditableStyledDocument<Collection<String>, String, Collection<String>> document) {
-        super(document);
-    }
-
     public void addTextInsertionListener(TextInsertionListener listener) {
         insertionListeners.add(listener);
     }
