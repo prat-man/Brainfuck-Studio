@@ -70,20 +70,7 @@
                                     </ImageView>
                                 </graphic>
                             </MenuItem>
-                            <SeparatorMenuItem mnemonicParsing="false" />
-                            <MenuItem mnemonicParsing="false" onAction="#exit" text="Exit">
-                                <graphic>
-                                    <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
-                                        <image>
-                                            <Image url="@../images/empty.png" />
-                                        </image>
-                                    </ImageView>
-                                </graphic>
-                            </MenuItem>
-                        </items>
-                    </Menu>
-                    <Menu fx:id="toolsMenu" text="_Tools">
-                        <items>
+                     <SeparatorMenuItem mnemonicParsing="false" />
                             <Menu fx:id="exportMenu" mnemonicParsing="false" text="Export">
                                 <items>
                                     <MenuItem mnemonicParsing="false" onAction="#exportToC" text="C">
@@ -122,6 +109,20 @@
                                     </ImageView>
                                 </graphic>
                             </Menu>
+                            <SeparatorMenuItem mnemonicParsing="false" />
+                            <MenuItem mnemonicParsing="false" onAction="#exit" text="Exit">
+                                <graphic>
+                                    <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                        <image>
+                                            <Image url="@../images/empty.png" />
+                                        </image>
+                                    </ImageView>
+                                </graphic>
+                            </MenuItem>
+                        </items>
+                    </Menu>
+                    <Menu fx:id="toolsMenu" text="_Tools">
+                        <items>
                             <Menu fx:id="generateMenu" mnemonicParsing="false" text="Generate">
                                 <items>
                                     <MenuItem mnemonicParsing="false" onAction="#generateNumber" text="Number">
@@ -209,6 +210,7 @@
                                    </ImageView>
                                 </graphic>
                             </Menu>
+                     <SeparatorMenuItem mnemonicParsing="false" />
                             <MenuItem mnemonicParsing="false" onAction="#showSnippets" text="Snippets">
                                 <graphic>
                                    <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
