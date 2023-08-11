@@ -30,7 +30,7 @@ public class Text {
         StringBuilder sb = new StringBuilder();
         for (Integer n : delta) {
             if (n == null) {
-                sb.append(">");
+                sb.append("[-]");
             }
             else {
                 sb.append(Number.convertToBrainfuck(n));
