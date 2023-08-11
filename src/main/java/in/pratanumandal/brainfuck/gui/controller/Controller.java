@@ -911,8 +911,9 @@ public class Controller {
 
         fileChooser.setInitialDirectory(Configuration.getInitialDirectory());
 
-        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Brainfuck files (*.bf, *.b)", "*.bf", "*.b");
-        fileChooser.getExtensionFilters().add(extFilter);
+        FileChooser.ExtensionFilter extFilterBrainfuck = new FileChooser.ExtensionFilter("Brainfuck files (*.bf, *.b)", "*.bf", "*.b");
+        FileChooser.ExtensionFilter extFilterAll = new FileChooser.ExtensionFilter("All files (*.*)", "*.*");
+        fileChooser.getExtensionFilters().addAll(extFilterBrainfuck, extFilterAll);
 
         File file = fileChooser.showOpenDialog(tabPane.getScene().getWindow());
 
@@ -1005,8 +1006,9 @@ public class Controller {
 
         fileChooser.setInitialDirectory(Configuration.getInitialDirectory());
 
-        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("Brainfuck files (*.bf, *.b)", "*.bf", "*.b");
-        fileChooser.getExtensionFilters().add(extFilter);
+        FileChooser.ExtensionFilter extFilterBrainfuck = new FileChooser.ExtensionFilter("Brainfuck files (*.bf, *.b)", "*.bf", "*.b");
+        FileChooser.ExtensionFilter extFilterAll = new FileChooser.ExtensionFilter("All files (*.*)", "*.*");
+        fileChooser.getExtensionFilters().addAll(extFilterBrainfuck, extFilterAll);
 
         File file = fileChooser.showSaveDialog(tabPane.getScene().getWindow());
 
