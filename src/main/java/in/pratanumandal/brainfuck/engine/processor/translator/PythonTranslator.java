@@ -82,7 +82,7 @@ public class PythonTranslator extends Translator {
         else {
             writer.writeLine("if pointer < 0 or pointer >= MEMORY_SIZE:");
             writer.updateIndentation(1);
-            writer.writeLine("print(\"\\nError: Memory index out of bounds \" + str(pointer))");
+            writer.writeLine("print(f\"\\nError: Memory index out of bounds {pointer}\")");
             writer.writeLine("exit(1)");
             writer.updateIndentation(-1);
         }

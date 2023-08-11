@@ -132,6 +132,7 @@ public class CTranslator extends Translator {
         writer.writeLine("memset(memory, 0, MEMORY_SIZE);");
         writer.writeLine();
         writer.writeLine("int pointer = 0;");
+        writer.writeLine("char ch;");
         writer.writeLine();
 
         for (int i = 0; i < processed.length && !this.kill.get(); i++) {
@@ -159,9 +160,8 @@ public class CTranslator extends Translator {
             }
             // handle input (,)
             else if (ch == ',') {
-                writer.writeLine("char ch;");
                 writer.writeLine("scanf(\"%c\", &ch);");
-                writer.writeLine("memory[pointer] = ch;\n");
+                writer.writeLine("memory[pointer] = ch;");
             }
             // handle [-]
             else if (ch == SET_ZERO) {
