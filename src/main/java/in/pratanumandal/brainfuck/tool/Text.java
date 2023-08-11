@@ -6,15 +6,15 @@ import java.util.List;
 public class Text {
 
     private static List<Integer> computeDelta(String text, boolean optimize) {
-        char[] textArray = text.toCharArray();
+        int[] codePoints = text.codePoints().toArray();
         List<Integer> delta = new ArrayList<>();
 
-        delta.add((int) textArray[0]);
-        for (int i = 1; i < textArray.length; i++) {
-            int diff = textArray[i] - textArray[i - 1];
-            if (optimize && Math.abs(diff) > textArray[i]) {
+        delta.add(codePoints[0]);
+        for (int i = 1; i < codePoints.length; i++) {
+            int diff = codePoints[i] - codePoints[i - 1];
+            if (optimize && Math.abs(diff) > codePoints[i]) {
                 delta.add(null);
-                delta.add((int) textArray[i]);
+                delta.add(codePoints[i]);
             }
             else {
                 delta.add(diff);
