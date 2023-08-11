@@ -1,12 +1,12 @@
 package in.pratanumandal.brainfuck.engine.processor.translator;
 
+import com.sun.jna.Platform;
 import in.pratanumandal.brainfuck.common.Configuration;
 import in.pratanumandal.brainfuck.common.Utils;
 import in.pratanumandal.brainfuck.gui.component.NotificationManager;
 import in.pratanumandal.brainfuck.gui.component.TabData;
 import javafx.stage.FileChooser;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
 
 public class JavaTranslator extends Translator {
@@ -16,26 +16,106 @@ public class JavaTranslator extends Translator {
     }
 
     @Override
-    public void doTranslate(NotificationManager.Notification notification, BufferedWriter bw) throws IOException {
-        bw.write("import java.io.*;\n\n");
-        bw.write("public class " + this.getFileNameWithoutExtension() + " {\n\n");
-        bw.write("\tpublic static final int MEMORY_SIZE = " + Configuration.getMemorySize() + ";\n\n");
-        bw.write("\tpublic static final Reader CR = System.console().reader();\n\n");
+    public void doTranslate(NotificationManager.Notification notification, TranslationWriter writer) throws IOException {
+        String datatype = (this.cellSize == 8) ? "byte" : (this.cellSize == 16) ? "short" : "int";
+        String wrapperDatatype = (this.cellSize == 8) ? "Byte" : (this.cellSize == 16) ? "Short" : "Int";
 
-        if (this.cellSize == 8) {
-            bw.write("\tpublic static final byte[] memory = new byte[MEMORY_SIZE];\n\n");
+        writer.writeLine("import java.io.*;");
+        writer.writeLine();
+        writer.writeLine("public class " + this.getFileNameWithoutExtension() + " {");
+        writer.writeLine();
+        writer.updateIndentation(1);
+
+        writer.writeLine("public static final int MEMORY_SIZE = " + Configuration.getMemorySize() + ";");
+        writer.writeLine();
+
+        writer.writeLine("public static int findZeroLeft(" + datatype + "[] memory, int position) {");
+        writer.updateIndentation(1);
+        writer.writeLine("for (int i = position; i >= 0; i--) {");
+        writer.updateIndentation(1);
+        writer.writeLine("if (memory[i] == 0) return i;");
+        writer.updateIndentation(-1);
+        writer.writeLine("}");
+        writer.writeLine("for (int i = MEMORY_SIZE - 1; i > position; i--) {");
+        writer.updateIndentation(1);
+        writer.writeLine("if (memory[i] == 0) return i;");
+        writer.updateIndentation(-1);
+        writer.writeLine("}");
+        writer.writeLine("return -1;");
+        writer.updateIndentation(-1);
+        writer.writeLine("}");
+        writer.writeLine();
+
+        writer.writeLine("public static int findZeroRight(" + datatype + "[] memory, int position) {");
+        writer.updateIndentation(1);
+        writer.writeLine("for (int i = position; i < MEMORY_SIZE; i++) {");
+        writer.updateIndentation(1);
+        writer.writeLine("if (memory[i] == 0) return i;");
+        writer.updateIndentation(-1);
+        writer.writeLine("}");
+        writer.writeLine("for (int i = 0; i < position; i++) {");
+        writer.updateIndentation(1);
+        writer.writeLine("if (memory[i] == 0) return i;");
+        writer.updateIndentation(-1);
+        writer.writeLine("}");
+        writer.writeLine("return -1;");
+        writer.updateIndentation(-1);
+        writer.writeLine("}");
+        writer.writeLine();
+
+        writer.writeLine("public static int updatePointer(int pointer, int sum) {");
+        writer.updateIndentation(1);
+        writer.writeLine("pointer += sum;");
+        if (this.wrapMemory) {
+            writer.writeLine("if (pointer < 0) pointer += MEMORY_SIZE;");
+            writer.writeLine("else if (pointer >= MEMORY_SIZE) pointer -= MEMORY_SIZE;");
         }
-        else if (this.cellSize == 16) {
-            bw.write("\tpublic static final short[] memory = new short[MEMORY_SIZE];\n\n");
+        else {
+            writer.writeLine("if (pointer < 0 || pointer >= MEMORY_SIZE) {");
+            writer.updateIndentation(1);
+            writer.writeLine("System.out.printf(\"\\nError: Memory index out of bounds %d\\n\", pointer);");
+            writer.writeLine("System.exit(1);");
+            writer.updateIndentation(-1);
+            writer.writeLine("}");
+        }
+        writer.writeLine("return pointer;");
+        writer.updateIndentation(-1);
+        writer.writeLine("}");
+        writer.writeLine();
+
+        writer.writeLine("public static String getSymbol(" + wrapperDatatype + " value) {");
+        writer.updateIndentation(1);
+        writer.writeLine("Long codePoint = " + wrapperDatatype + ".toUnsignedLong(value);");
+        writer.writeLine("return String.valueOf(Character.toChars(codePoint.intValue()));");
+        writer.updateIndentation(-1);
+        writer.writeLine("}");
+        writer.writeLine();
+
+        writer.writeLine("public static void main(String[] args) throws IOException {");
+        writer.updateIndentation(1);
+
+        if (Platform.getOSType() == Platform.WINDOWS) {
+            writer.writeLine("ProcessBuilder pb = new ProcessBuilder(\"cmd.exe\", \"/c\", \"chcp\", \"65001\", \">\", \"nul\").inheritIO();");
+            writer.writeLine("Process p = pb.start();");
+            writer.writeLine("try {");
+            writer.updateIndentation(1);
+            writer.writeLine("p.waitFor();");
+            writer.updateIndentation(-1);
+            writer.writeLine("} catch (InterruptedException e) {}");
+            writer.writeLine();
+            writer.writeLine("PrintStream out = new PrintStream(System.out, true, \"UTF-8\");");
+            writer.writeLine();
+        }
+        else {
+            writer.writeLine("PrintStream out = System.out;");
+            writer.writeLine();
         }
 
-        bw.write("\tpublic static int pointer = 0;\n\n");
-        bw.write("\tpublic static int findZeroLeft(int position) {\n\t\tfor (int i = position; i >= 0; i--) {\n\t\t\tif (memory[i] == 0) {\n\t\t\t\treturn i;\n\t\t\t}\n\t\t}\n\t\tfor (int i = MEMORY_SIZE - 1; i > position; i--) {\n\t\t\tif (memory[i] == 0) {\n\t\t\t\treturn i;\n\t\t\t}\n\t\t}\n\t\treturn -1;\n\t}\n\n");
-        bw.write("\tpublic static int findZeroRight(int position) {\n\t\tfor (int i = position; i < MEMORY_SIZE; i++) {\n\t\t\tif (memory[i] == 0) {\n\t\t\t\treturn i;\n\t\t\t}\n\t\t}\n\t\tfor (int i = 0; i < position; i++) {\n\t\t\tif (memory[i] == 0) {\n\t\t\t\treturn i;\n\t\t\t}\n\t\t}\n\t\treturn -1;\n\t}\n\n");
-        bw.write("\tpublic static int getUpdatedPointer(int pointer, int sum) {\n\t\tpointer += sum;\n\t\tif (pointer < 0 || pointer >= MEMORY_SIZE) {\n\t\t\tSystem.out.printf(\"\\nError: Memory index out of bounds %d\\n\", pointer);\n\t\t\tSystem.exit(1);\n\t\t}\n\t\treturn pointer;\n\t}\n\n");
-        bw.write("\tpublic static void main(String[] args) throws IOException {\n\n");
-
-        String indent = "\t\t";
+        writer.writeLine(datatype + "[] memory = new " + datatype + "[MEMORY_SIZE];");
+        writer.writeLine("int pointer = 0;");
+        writer.writeLine();
+        writer.writeLine("try (BufferedReader br = new BufferedReader(new InputStreamReader(System.in))) {");
+        writer.updateIndentation(1);
 
         for (int i = 0; i < processed.length && !this.kill.get(); i++) {
             if (i % 50 == 0) {
@@ -48,51 +128,53 @@ public class JavaTranslator extends Translator {
             // handle pointer movement (> and <)
             if (ch == ADDRESS) {
                 int sum = jumps[i];
-                bw.write(indent + "pointer = getUpdatedPointer(pointer, " + sum + ");\n");
+                writer.writeLine("pointer = updatePointer(pointer, " + sum + ");");
             }
             // handle value update (+ and -)
             else if (ch == DATA) {
                 int sum = jumps[i];
-                bw.write(indent + "memory[pointer] += " + sum + ";\n");
+                writer.writeLine("memory[pointer] += " + sum + ";");
             }
             // handle output (.)
             else if (ch == '.') {
-                bw.write(indent + "System.out.printf(\"%c\", memory[pointer] >= 0 ? memory[pointer] : memory[pointer] + 256);\n");
+                writer.writeLine("out.print(getSymbol(memory[pointer]));");
             }
             // handle input (,)
             else if (ch == ',') {
-                if (this.cellSize == 8) {
-                    bw.write(indent + "memory[pointer] = (byte) CR.read();\n");
-                }
-                else if (this.cellSize == 16) {
-                    bw.write(indent + "memory[pointer] = (short) CR.read();\n");
-                }
+                writer.writeLine("memory[pointer] = (" + datatype + ") br.read();");
             }
             // handle [-]
             else if (ch == SET_ZERO) {
-                bw.write(indent + "memory[pointer] = 0;\n");
+                writer.writeLine("memory[pointer] = 0;");
             }
             // handle [<]
             else if (ch == SCAN_ZERO_LEFT) {
-                bw.write(indent + "pointer = findZeroLeft(pointer);\n");
+                writer.writeLine("pointer = findZeroLeft(memory, pointer);");
             }
             // handle [>]
             else if (ch == SCAN_ZERO_RIGHT) {
-                bw.write(indent + "pointer = findZeroRight(pointer);\n");
+                writer.writeLine("pointer = findZeroRight(memory, pointer);");
             }
             // handle loop opening ([)
             else if (ch == '[') {
-                bw.write(indent + "while (memory[pointer] != 0) {\n");
-                indent += '\t';
+                writer.writeLine("while (memory[pointer] != 0) {");
+                writer.updateIndentation(1);
             }
             // handle loop closing (])
             else if (ch == ']') {
-                indent = indent.substring(0, indent.length() - 1);
-                bw.write(indent + "}\n");
+                writer.updateIndentation(-1);
+                writer.writeLine("}");
             }
         }
 
-        bw.write("\n\t}\n\n}\n");
+        writer.updateIndentation(-1);
+        writer.writeLine("}");
+        writer.updateIndentation(-1);
+        writer.writeLine("}");
+        writer.writeLine();
+
+        writer.updateIndentation(-1);
+        writer.writeLine("}");
     }
 
     @Override

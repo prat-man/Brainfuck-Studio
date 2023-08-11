@@ -6,7 +6,6 @@ import in.pratanumandal.brainfuck.gui.component.NotificationManager;
 import in.pratanumandal.brainfuck.gui.component.TabData;
 import javafx.stage.FileChooser;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
 
 public class PythonTranslator extends Translator {
@@ -16,24 +15,87 @@ public class PythonTranslator extends Translator {
     }
 
     @Override
-    public void doTranslate(NotificationManager.Notification notification, BufferedWriter bw) throws IOException {
-        bw.write("import sys\n");
-        bw.write("import numpy as np\n\n");
-        bw.write("np.seterr(over='ignore')\n\n");
-        bw.write("MEMORY_SIZE = " + Configuration.getMemorySize() + "\n\n");
+    public void doTranslate(NotificationManager.Notification notification, TranslationWriter writer) throws IOException {
+        String datatype = (this.cellSize == 8) ? "ubyte" : (this.cellSize == 16) ? "ushort" : "uintc";
 
-        if (this.cellSize == 8) {
-            bw.write("memory = np.zeros((MEMORY_SIZE), dtype=np.ubyte)\n");
+        writer.writeLine("import sys");
+        writer.writeLine("import numpy as np");
+        writer.writeLine();
+        writer.writeLine("np.seterr(over='ignore')");
+        writer.writeLine();
+        writer.writeLine("MEMORY_SIZE = " + Configuration.getMemorySize());
+        writer.writeLine();
+
+        writer.writeLine();
+        writer.writeLine("def findZeroLeft(memory, position):");
+        writer.updateIndentation(1);
+        writer.writeLine("for i in range(position, 0, -1):");
+        writer.updateIndentation(1);
+        writer.writeLine("if memory[i] == 0:");
+        writer.updateIndentation(1);
+        writer.writeLine("return i");
+        writer.updateIndentation(-2);
+        writer.writeLine("for i in range(MEMORY_SIZE - 1, position, -1):");
+        writer.updateIndentation(1);
+        writer.writeLine("if memory[i] == 0:");
+        writer.updateIndentation(1);
+        writer.writeLine("return i");
+        writer.updateIndentation(-2);
+        writer.writeLine("return -1");
+        writer.updateIndentation(-1);
+        writer.writeLine();
+
+        writer.writeLine();
+        writer.writeLine("def findZeroRight(memory, position):");
+        writer.updateIndentation(1);
+        writer.writeLine("for i in range(position, MEMORY_SIZE, 1):");
+        writer.updateIndentation(1);
+        writer.writeLine("if memory[i] == 0:");
+        writer.updateIndentation(1);
+        writer.writeLine("return i");
+        writer.updateIndentation(-2);
+        writer.writeLine("for i in range(0, position, 1):");
+        writer.updateIndentation(1);
+        writer.writeLine("if memory[i] == 0:");
+        writer.updateIndentation(1);
+        writer.writeLine("return i");
+        writer.updateIndentation(-2);
+        writer.writeLine("return -1");
+        writer.updateIndentation(-1);
+        writer.writeLine();
+
+        writer.writeLine();
+        writer.writeLine("def updatePointer(pointer, sum):");
+        writer.updateIndentation(1);
+        writer.writeLine("pointer = pointer + sum");
+        if (this.wrapMemory) {
+            writer.writeLine("if pointer < 0:");
+            writer.updateIndentation(1);
+            writer.writeLine("pointer += MEMORY_SIZE");
+            writer.updateIndentation(-1);
+
+            writer.writeLine("elif pointer >= MEMORY_SIZE:");
+            writer.updateIndentation(1);
+            writer.writeLine("pointer -= MEMORY_SIZE");
+            writer.updateIndentation(-1);
         }
-        else if (this.cellSize == 16) {
-            bw.write("memory = np.zeros((MEMORY_SIZE), dtype=np.uintc)\n");
+        else {
+            writer.writeLine("if pointer < 0 or pointer >= MEMORY_SIZE:");
+            writer.updateIndentation(1);
+            writer.writeLine("print(\"\\nError: Memory index out of bounds \" + str(pointer))");
+            writer.writeLine("exit(1)");
+            writer.updateIndentation(-1);
         }
+        writer.writeLine("return pointer");
+        writer.updateIndentation(-1);
+        writer.writeLine();
 
-        bw.write("pointer = 0\n\n");
-        bw.write("def findZeroLeft(position):\n\tfor i in range(position, 0, -1):\n\t\tif memory[i] == 0:\n\t\t\treturn i\n\tfor i in range(MEMORY_SIZE - 1, position, -1):\n\t\tif memory[i] == 0:\n\t\t\treturn i\n\treturn -1\n\n");
-        bw.write("def findZeroRight(position):\n\tfor i in range(position, MEMORY_SIZE, 1):\n\t\tif memory[i] == 0:\n\t\t\treturn i\n\tfor i in range(0, position, 1):\n\t\tif memory[i] == 0:\n\t\t\treturn i\n\treturn -1\n\n");
-
-        String indent = "";
+        writer.writeLine();
+        writer.writeLine("def main():");
+        writer.updateIndentation(1);
+        writer.writeLine("memory = np.zeros((MEMORY_SIZE), dtype=np." + datatype + ")");
+        writer.writeLine("pointer = 0");
+        writer.writeLine();
 
         for (int i = 0; i < processed.length && !this.kill.get(); i++) {
             if (i % 50 == 0) {
@@ -46,58 +108,51 @@ public class PythonTranslator extends Translator {
             // handle pointer movement (> and <)
             if (ch == ADDRESS) {
                 int sum = jumps[i];
-
-                bw.write(indent + "pointer = pointer + " + sum + "\n");
-                bw.write(indent + "if pointer < 0 or pointer >= MEMORY_SIZE:\n");
-                bw.write(indent + "\tprint(\"\\nError: Memory index out of bounds \" + str(pointer))\n");
-                bw.write(indent + "\texit(1)\n");
+                writer.writeLine("pointer = updatePointer(pointer, " + sum + ")");
             }
             // handle value update (+ and -)
             else if (ch == DATA) {
                 int sum = jumps[i];
-
-                if (this.cellSize == 8) {
-                    bw.write(indent + "memory[pointer] = memory[pointer] + np.ubyte(" + sum + ")\n");
-                }
-                else if (this.cellSize == 16) {
-                    bw.write(indent + "memory[pointer] = memory[pointer] + np.uintc(" + sum + ")\n");
-                }
+                writer.writeLine("memory[pointer] += np." + datatype + "(" + sum + ")");
             }
             // handle output (.)
             else if (ch == '.') {
-                bw.write(indent + "print(chr(memory[pointer]), end='', flush=True)\n");
+                writer.writeLine("print(chr(memory[pointer]), end='', flush=True)");
             }
             // handle input (,)
             else if (ch == ',') {
-                if (this.cellSize == 8) {
-                    bw.write(indent + "memory[pointer] = np.ubyte(ord(sys.stdin.read(1)))\n");
-                }
-                else if (this.cellSize == 16) {
-                    bw.write(indent + "memory[pointer] = np.uintc(ord(sys.stdin.read(1)))\n");
-                }
+                writer.writeLine("memory[pointer] = np." + datatype + "(ord(sys.stdin.read(1)))");
             }
             // handle [-]
             else if (ch == SET_ZERO) {
-                bw.write(indent + "memory[pointer] = 0\n");
+                writer.writeLine("memory[pointer] = 0");
             }
             // handle [<]
             else if (ch == SCAN_ZERO_LEFT) {
-                bw.write(indent + "pointer = findZeroLeft(pointer)\n");
+                writer.writeLine("pointer = findZeroLeft(memory, pointer)");
             }
             // handle [>]
             else if (ch == SCAN_ZERO_RIGHT) {
-                bw.write(indent + "pointer = findZeroRight(pointer)\n");
+                writer.writeLine("pointer = findZeroRight(memory, pointer)");
             }
             // handle loop opening ([)
             else if (ch == '[') {
-                bw.write(indent + "while memory[pointer] != 0:\n");
-                indent += '\t';
+                writer.writeLine("while memory[pointer] != 0:");
+                writer.updateIndentation(1);
             }
             // handle loop closing (])
             else if (ch == ']') {
-                indent = indent.substring(0, indent.length() - 1);
+                writer.updateIndentation(-1);
             }
         }
+
+        writer.updateIndentation(-1);
+        writer.writeLine();
+
+        writer.writeLine();
+        writer.writeLine("if __name__ == \"__main__\":");
+        writer.updateIndentation(1);
+        writer.writeLine("main()");
     }
 
     @Override

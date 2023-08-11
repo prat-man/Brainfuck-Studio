@@ -1,9 +1,6 @@
 package in.pratanumandal.brainfuck.engine.processor.interpreter;
 
 import in.pratanumandal.brainfuck.common.Configuration;
-import in.pratanumandal.brainfuck.engine.debugger.Debugger16;
-import in.pratanumandal.brainfuck.engine.debugger.Debugger32;
-import in.pratanumandal.brainfuck.engine.debugger.Debugger8;
 import in.pratanumandal.brainfuck.engine.processor.Processor;
 import in.pratanumandal.brainfuck.gui.component.TabData;
 

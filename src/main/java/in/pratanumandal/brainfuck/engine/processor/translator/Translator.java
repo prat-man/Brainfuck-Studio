@@ -36,7 +36,12 @@ public abstract class Translator extends Processor {
         fileChooser.setTitle(Constants.APPLICATION_NAME);
 
         if (tabData.getFilePath() != null) {
-            String outputFilePath = tabData.getFilePath().substring(0, tabData.getFilePath().length() - 2) + this.getExtension();
+            File file = new File(tabData.getFilePath());
+            String outputFilePath = file.getParent() +
+                    File.separator +
+                    file.getName().substring(0, file.getName().lastIndexOf(".")) +
+                    "." +
+                    this.getExtension();
             this.outputFile = new File(outputFilePath);
 
             fileChooser.setInitialDirectory(this.outputFile.getParentFile());
@@ -93,9 +98,11 @@ public abstract class Translator extends Processor {
         notification.addListener(() -> this.stop(false));
 
         try (
-                BufferedWriter bw = new BufferedWriter(new FileWriter(this.outputFile));
+                FileWriter fw = new FileWriter(this.outputFile);
+                BufferedWriter bw = new BufferedWriter(fw);
+                TranslationWriter tw = new TranslationWriter(bw);
         ) {
-            this.doTranslate(notification, bw);
+            this.doTranslate(notification, tw);
         } catch (IOException e) {
             e.printStackTrace();
 
@@ -120,7 +127,7 @@ public abstract class Translator extends Processor {
         return outputFile.getName().substring(0, outputFile.getName().length() - this.getExtension().length() - 1);
     }
 
-    public abstract void doTranslate(NotificationManager.Notification notification, BufferedWriter writer) throws IOException;
+    public abstract void doTranslate(NotificationManager.Notification notification, TranslationWriter writer) throws IOException;
 
     public abstract String getLanguage();
 

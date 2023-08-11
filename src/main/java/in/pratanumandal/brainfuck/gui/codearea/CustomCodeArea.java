@@ -12,7 +12,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.Selection;
-import org.fxmisc.richtext.model.EditableStyledDocument;
 import org.fxmisc.richtext.model.StyledDocument;
 
 import java.util.ArrayList;
