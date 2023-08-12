@@ -1050,6 +1050,7 @@ public class Controller {
 
             if (success) {
                 tabData.setFilePath(filePath);
+                tabData.setUntitled(false);
                 tabData.setModified(false);
             }
         }
