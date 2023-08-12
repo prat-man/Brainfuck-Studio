@@ -49,7 +49,7 @@ public abstract class Processor implements Runnable {
     }
 
     public void start() {
-        this.code = tabData.getFileText();
+        this.code = Utils.minifyBrainfuck(tabData.getFileText());
 
         this.processed = new char[code.length()];
         this.jumps = new int[code.length()];

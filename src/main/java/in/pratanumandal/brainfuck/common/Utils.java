@@ -1138,9 +1138,7 @@ public class Utils {
     }
 
     public static String minifyBrainfuck(String brainfuck) {
-        brainfuck = brainfuck.replaceAll("\\s+", "");
-        brainfuck = brainfuck.replaceAll("[^><+\\-.,\\[\\]]", "").trim();
-        return brainfuck;
+        return brainfuck.replaceAll("[^><+\\-.,\\[\\]]", "");
     }
 
 }
