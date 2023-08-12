@@ -113,7 +113,7 @@ public class PythonTranslator extends Translator {
             // handle value update (+ and -)
             else if (ch == DATA) {
                 int sum = jumps[i];
-                writer.writeLine("memory[pointer] += np." + datatype + "(" + sum + ")");
+                writer.writeLine("memory[pointer] += np.array(" + sum + ").astype(np." + datatype + ")");
             }
             // handle output (.)
             else if (ch == '.') {
@@ -121,7 +121,7 @@ public class PythonTranslator extends Translator {
             }
             // handle input (,)
             else if (ch == ',') {
-                writer.writeLine("memory[pointer] = np." + datatype + "(ord(sys.stdin.read(1)))");
+                writer.writeLine("memory[pointer] = np.array(ord(sys.stdin.read(1))).astype(np." + datatype + ")");
             }
             // handle [-]
             else if (ch == SET_ZERO) {
