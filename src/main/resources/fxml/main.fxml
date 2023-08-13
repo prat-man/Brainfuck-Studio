@@ -233,6 +233,15 @@
                                     </ImageView>
                                 </graphic>
                             </MenuItem>
+                            <MenuItem mnemonicParsing="false" onAction="#checkUpdates" text="Check for updates">
+                                <graphic>
+                                    <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                                        <image>
+                                            <Image url="@../images/update.png" />
+                                        </image>
+                                    </ImageView>
+                                </graphic>
+                            </MenuItem>
                             <MenuItem mnemonicParsing="false" onAction="#keymapReference" text="Keymap Reference">
                                 <graphic>
                                     <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">

@@ -28,9 +28,9 @@ public class Configuration {
     private Boolean autoComplete;
     private Boolean syntaxHighlighting;
     private Boolean bracketHighlighting;
-
     private Boolean useSpaces;
     private Boolean autoSave;
+    private Boolean checkUpdates;
     private Boolean showTips;
     private String initialDirectory;
 
@@ -59,6 +59,7 @@ public class Configuration {
             this.bracketHighlighting = config.getBoolean("bracketHighlighting", true);
             this.useSpaces = config.getBoolean("useSpaces", true);
             this.autoSave = config.getBoolean("autoSave", true);
+            this.checkUpdates = config.getBoolean("checkUpdates", true);
             this.showTips = config.getBoolean("showTips", true);
             this.initialDirectory = config.getString("initialDirectory", System.getProperty("user.home"));
         }
@@ -75,6 +76,7 @@ public class Configuration {
             this.bracketHighlighting = true;
             this.useSpaces = true;
             this.autoSave = true;
+            this.checkUpdates = true;
             this.showTips = true;
             this.initialDirectory = System.getProperty("user.home");
         }
@@ -97,6 +99,7 @@ public class Configuration {
         if (instance.bracketHighlighting == null) instance.bracketHighlighting = true;
         if (instance.useSpaces == null) instance.useSpaces = true;
         if (instance.autoSave == null) instance.autoSave = true;
+        if (instance.checkUpdates == null) instance.checkUpdates = true;
         if (instance.showTips == null) instance.showTips = true;
         if (instance.initialDirectory == null || !Files.isDirectory(Path.of(instance.initialDirectory))) instance.initialDirectory = System.getProperty("user.home");
 
@@ -159,6 +162,11 @@ public class Configuration {
         return instance.autoSave;
     }
 
+    public static Boolean getCheckUpdates() {
+        sanitize();
+        return instance.checkUpdates;
+    }
+
     public static Boolean getShowTips() {
         sanitize();
         return instance.showTips;
@@ -219,6 +227,11 @@ public class Configuration {
         instance.autoSave = autoSave;
     }
 
+    public static void setCheckUpdates(Boolean checkUpdates) {
+        sanitize();
+        instance.checkUpdates = checkUpdates;
+    }
+
     public static void setShowTips(Boolean showTips) {
         sanitize();
         instance.showTips = showTips;
@@ -258,6 +271,7 @@ public class Configuration {
         config.addProperty("bracketHighlighting", instance.bracketHighlighting);
         config.addProperty("useSpaces", instance.useSpaces);
         config.addProperty("autoSave", instance.autoSave);
+        config.addProperty("checkUpdates", instance.checkUpdates);
         config.addProperty("showTips", instance.showTips);
         config.addProperty("initialDirectory", instance.initialDirectory);
 

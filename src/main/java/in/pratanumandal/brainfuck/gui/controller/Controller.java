@@ -309,6 +309,10 @@ public class Controller {
                 }
             }
         });
+
+        if (Configuration.getCheckUpdates()) {
+            Utils.checkUpdates(stage, true);
+        }
     }
 
     private TabData addUntitledTab() {
@@ -1622,6 +1626,11 @@ public class Controller {
         tabData.getCodeArea().setStyle("-fx-font-size: " + fontSize + "px");
         tabData.getDebugTerminal().setStyle("-fx-font-size: " + fontSize + "px");
         tabData.getInterpretTerminal().setStyle("-fx-font-size: " + fontSize + "px");
+    }
+
+    @FXML
+    private void checkUpdates() {
+        Utils.checkUpdates(stage, false);
     }
 
     @FXML

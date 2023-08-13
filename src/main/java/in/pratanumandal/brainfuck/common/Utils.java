@@ -42,6 +42,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
@@ -56,6 +57,7 @@ import java.awt.Toolkit;
 import java.io.IOException;
 import java.net.URL;
 import java.text.DecimalFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
@@ -87,7 +89,7 @@ public class Utils {
     public static void showTips() {
         if (Configuration.getShowTips()) {
             Random random = new Random();
-            int choice = Configuration.isFirstRun() ? 0 : random.nextInt(3);
+            int choice = Configuration.isFirstRun() ? 0 : random.nextInt(4);
             switch (choice) {
                 case 0:
                     // show breakpoints notification
@@ -102,6 +104,11 @@ public class Utils {
                 case 2:
                     // show memory size notification
                     Utils.addNotificationWithDelay("Tip:\nYou can change the size of interpreter memory from settings", 30000);
+                    break;
+
+                case 3:
+                    // show memory wrap notification
+                    Utils.addNotificationWithDelay("Tip:\nYou can change the memory to wrap on overflow from settings", 30000);
                     break;
             }
         }
@@ -353,6 +360,10 @@ public class Utils {
         autoSave.setSelected(Configuration.getAutoSave());
         vBox3.getChildren().add(autoSave);
 
+        CheckBox checkUpdates = new CheckBox("Check for updates at startup");
+        checkUpdates.setSelected(Configuration.getCheckUpdates());
+        vBox3.getChildren().add(checkUpdates);
+
         CheckBox showTips = new CheckBox("Show tips at startup");
         showTips.setSelected(Configuration.getShowTips());
         vBox3.getChildren().add(showTips);
@@ -410,6 +421,7 @@ public class Utils {
             Configuration.setBracketHighlighting(bracketHighlighting.isSelected());
             Configuration.setUseSpaces(useSpaces.isSelected());
             Configuration.setAutoSave(autoSave.isSelected());
+            Configuration.setCheckUpdates(checkUpdates.isSelected());
             Configuration.setShowTips(showTips.isSelected());
 
             try {
@@ -477,10 +489,10 @@ public class Utils {
         label1.getStyleClass().add("title");
         vBox.getChildren().add(label1);
 
-        Hyperlink hyperlink1 = new Hyperlink("https://brainfuck.pratanumandal.in/");
+        Hyperlink hyperlink1 = new Hyperlink(Constants.WEBSITE_URL);
         hyperlink1.getStyleClass().add("hyperlink");
         hyperlink1.setOnAction(event -> {
-            Utils.browseURL("https://prat-man.github.io/Brainfuck-Studio/");
+            Utils.browseURL(Constants.WEBSITE_URL);
         });
         vBox.getChildren().add(hyperlink1);
 
@@ -492,10 +504,10 @@ public class Utils {
         label3.getStyleClass().add("subheading2");
         vBox.getChildren().add(label3);
 
-        Hyperlink hyperlink2 = new Hyperlink("https://pratanumandal.in/");
+        Hyperlink hyperlink2 = new Hyperlink(Constants.AUTHOR_URL);
         hyperlink2.getStyleClass().add("hyperlink");
         hyperlink2.setOnAction(event -> {
-            Utils.browseURL("https://pratanumandal.in/");
+            Utils.browseURL(Constants.AUTHOR_URL);
         });
         vBox.getChildren().add(hyperlink2);
 
@@ -517,7 +529,7 @@ public class Utils {
         Hyperlink hyperlink3 = new Hyperlink("Licensed under GPL v3.0");
         hyperlink3.getStyleClass().add("subheading4");
         hyperlink3.setOnAction(event -> {
-            Utils.browseURL("https://github.com/prat-man/Brainfuck-Studio/blob/master/LICENSE");
+            Utils.browseURL(Constants.LICENSE_URL);
         });
         vBox.getChildren().add(hyperlink3);
 
@@ -1093,6 +1105,105 @@ public class Utils {
         }
 
         return null;
+    }
+
+    public static void checkUpdates(Stage stage, boolean silent) {
+        Thread thread = new Thread(() -> {
+            if (!silent) Platform.runLater(() -> Utils.addNotification("Checking for updates"));
+
+            try {
+                Release release = Release.getRelease();
+
+                int major = release.getVersion().getMajor();
+                int minor = release.getVersion().getMinor();
+
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMMM d, uuuu");
+                String date = release.getDate().format(formatter);
+
+                if (major > Constants.MAJOR_VERSION || minor > Constants.MINOR_VERSION) {
+                    Platform.runLater(() -> {
+                        ButtonType WEBSITE = new ButtonType("Open Website", ButtonBar.ButtonData.LEFT);
+
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION, null, ButtonType.OK, ButtonType.CANCEL, WEBSITE);
+
+                        alert.setTitle(Constants.APPLICATION_NAME);
+                        alert.setHeaderText("Updates available");
+
+                        Utils.hideButton(alert, ButtonType.CANCEL);
+
+                        VBox vBox = new VBox();
+                        vBox.setSpacing(15);
+
+                        GridPane gridPane = new GridPane();
+                        gridPane.setHgap(10);
+                        vBox.getChildren().add(gridPane);
+
+                        Label label1 = new Label("Current version:");
+                        gridPane.add(label1, 0, 0);
+
+                        Label label2 = new Label(Constants.APPLICATION_VERSION);
+                        label2.getStyleClass().add("version");
+                        gridPane.add(label2, 1, 0);
+
+                        Label label3 = new Label();
+                        gridPane.add(label3, 0, 1);
+
+                        Label label4 = new Label();
+                        gridPane.add(label4, 1, 1);
+
+                        Label label5 = new Label("Latest version:");
+                        gridPane.add(label5, 0, 2);
+
+                        Label label6 = new Label(major + "." + minor);
+                        label6.getStyleClass().add("version");
+                        gridPane.add(label6, 1, 2);
+
+                        Label label7 = new Label("Release date:");
+                        gridPane.add(label7, 0, 3);
+
+                        Label label8 = new Label(date);
+                        gridPane.add(label8, 1, 3);
+
+                        TextArea textArea = new TextArea(release.getNotes());
+                        textArea.setEditable(false);
+                        vBox.getChildren().add(textArea);
+
+                        alert.getDialogPane().setContent(vBox);
+
+                        // handle close request
+                        alert.setOnCloseRequest(event -> {
+                            ButtonType result = alert.getResult();
+
+                            if (result == WEBSITE) {
+                                event.consume();
+                                alert.setResult(null);
+
+                                Utils.browseURL(Constants.WEBSITE_URL);
+                            }
+                        });
+
+                        // enable escape button
+                        alert.getDialogPane().setOnKeyPressed(event -> {
+                            if (event.getCode() == KeyCode.ESCAPE) {
+                                alert.close();
+                            }
+                        });
+
+                        WindowsUtils.setStageStyle((Stage) alert.getDialogPane().getScene().getWindow());
+
+                        alert.initOwner(stage);
+                        alert.showAndWait();
+                    });
+                }
+                else {
+                    if (!silent) Platform.runLater(() -> Utils.addNotification("No updates available"));
+                }
+            }
+            catch (Exception e) {
+                if (!silent) Platform.runLater(() -> Utils.addNotification("Failed to check for updates"));
+            }
+        });
+        thread.start();
     }
 
     public static Alert setDefaultButton(Alert alert, ButtonType btnTyp) {
