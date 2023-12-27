@@ -195,7 +195,9 @@ public class FXTerminal extends CodeArea {
     }
 
     public int getVirtualLength() {
-        return this.existingText.length() + this.writeBuffer.length();
+        String text = this.existingText + this.writeBuffer;
+        String sanitizedText = text.replaceAll("\r\n", "\n");
+        return sanitizedText.length();
     }
 
     public void updateEditable() {
