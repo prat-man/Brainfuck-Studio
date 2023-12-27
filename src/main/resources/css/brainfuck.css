@@ -519,7 +519,6 @@
     -fx-pref-height: 25px;
 }
 
-.version,
 .table-cell.code,
 .text-area.code {
     -fx-font-family: 'Bitstream Vera Sans Mono';

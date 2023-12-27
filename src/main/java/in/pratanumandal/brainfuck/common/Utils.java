@@ -98,7 +98,7 @@ public class Utils {
 
                 case 1:
                     // show cell size notification
-                    Utils.addNotificationWithDelay("Tip:\nYou can switch between 8 bit cells and 16 bit cells from settings", 30000);
+                    Utils.addNotificationWithDelay("Tip:\nYou can switch between 8 bit, 16 bit, and 32 bit cells from settings", 30000);
                     break;
 
                 case 2:
@@ -1138,7 +1138,6 @@ public class Utils {
                         gridPane.add(label1, 0, 0);
 
                         Label label2 = new Label(Constants.APPLICATION_VERSION);
-                        label2.getStyleClass().add("version");
                         gridPane.add(label2, 1, 0);
 
                         Label label3 = new Label();
@@ -1151,7 +1150,6 @@ public class Utils {
                         gridPane.add(label5, 0, 2);
 
                         Label label6 = new Label(major + "." + minor);
-                        label6.getStyleClass().add("version");
                         gridPane.add(label6, 1, 2);
 
                         Label label7 = new Label("Release date:");
