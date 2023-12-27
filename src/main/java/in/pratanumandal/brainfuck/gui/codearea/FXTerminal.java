@@ -47,7 +47,7 @@ public class FXTerminal extends CodeArea {
     }
 
     public FXTerminal(String text) {
-        this.existingText = this.sanitizeText(text);
+        this.existingText = text;
         super.replaceText(0, this.getLength(), this.existingText);
 
         this.readBuffer = "";
@@ -254,25 +254,22 @@ public class FXTerminal extends CodeArea {
     }
 
     public void write(String text) {
-        String sanitizedText = this.sanitizeText(text);
         synchronized (this.writeLock) {
-            this.writeBuffer.append(sanitizedText);
+            this.writeBuffer.append(text);
         }
     }
 
     public void writeMessage(String text) {
-        String sanitizedText = this.sanitizeText(text);
         synchronized (this.writeLock) {
-            this.addStyle(this.getVirtualLength(), sanitizedText.length(), "message");
-            this.writeBuffer.append(sanitizedText);
+            this.addStyle(this.getVirtualLength(), text.length(), "message");
+            this.writeBuffer.append(text);
         }
     }
 
     public void writeError(String text) {
-        String sanitizedText = this.sanitizeText(text);
         synchronized (this.writeLock) {
-            this.addStyle(this.getVirtualLength(), sanitizedText.length(), "error");
-            this.writeBuffer.append(sanitizedText);
+            this.addStyle(this.getVirtualLength(), text.length(), "error");
+            this.writeBuffer.append(text);
         }
     }
 
@@ -322,11 +319,6 @@ public class FXTerminal extends CodeArea {
 
     public void destroy() {
         this.future.cancel(true);
-    }
-
-    private String sanitizeText(String text) {
-        return text.replace("\r", "")
-                .replaceAll("[\\p{Cc}\\p{Cf}\\p{Co}\\p{Cn}&&[^\\s]]", "\uFFFD");
     }
 
     private void updateHighlighting() {

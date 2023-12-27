@@ -673,22 +673,19 @@ public class Utils {
 
             ButtonType buttonType = alert.getResult();
             if (buttonType == ButtonType.OK) {
-                try {
-                    String text = numberField.getText();
+                String text = numberField.getText();
 
-                    if (text.matches("\\+|\\-")) continue;
+                if (text.isBlank() || text.matches("\\+|\\-")) continue;
 
-                    Integer number = Integer.valueOf(text);
+                Integer number = Integer.valueOf(text);
 
-                    String converted = Number.convertToBrainfuck(number);
-                    converted = Utils.formatBrainfuck(converted);
+                String converted = Number.convertToBrainfuck(number);
+                converted = Utils.formatBrainfuck(converted);
 
-                    currentTab.getCodeArea().insertText(currentTab.getCodeArea().getCaretPosition(), converted);
-
-                    break;
-                } catch (NumberFormatException e) { }
+                currentTab.getCodeArea().insertText(currentTab.getCodeArea().getCaretPosition(), converted);
             }
-            else break;
+
+            break;
         }
     }
 
@@ -746,18 +743,17 @@ public class Utils {
 
             ButtonType buttonType = alert.getResult();
             if (buttonType == ButtonType.OK) {
-                try {
-                    String text = textArea.getText();
+                String text = textArea.getText();
 
-                    String converted = Text.convertToBrainfuck(text);
-                    converted = Utils.formatBrainfuck(converted);
+                if (text.isBlank()) continue;
 
-                    currentTab.getCodeArea().insertText(currentTab.getCodeArea().getCaretPosition(), converted);
+                String converted = Text.convertToBrainfuck(text);
+                converted = Utils.formatBrainfuck(converted);
 
-                    break;
-                } catch (NumberFormatException e) { }
+                currentTab.getCodeArea().insertText(currentTab.getCodeArea().getCaretPosition(), converted);
             }
-            else break;
+
+            break;
         }
     }
 
