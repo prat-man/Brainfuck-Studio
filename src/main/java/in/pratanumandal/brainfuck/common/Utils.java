@@ -145,20 +145,24 @@ public class Utils {
         }
     }
 
-    public static String nanoToBestFitTimeUnits(long nano) {
+    public static String nanoToBestFitTimeUnits(long nanoseconds) {
         DecimalFormat df = new DecimalFormat("0.00");
 
-        double seconds = (double) nano / 1_000_000_000.0;
-        if (seconds < 60) return df.format(seconds) + " seconds";
+        double milliseconds = nanoseconds / 1_000_000.0;
+        if (milliseconds < 1000) return df.format(milliseconds) + " milliseconds";
         else {
-            double minutes = seconds / 60;
-            if (minutes < 60) return df.format(minutes) + " minutes";
+            double seconds = milliseconds / 1000.0;
+            if (seconds < 60) return df.format(seconds) + " seconds";
             else {
-                double hours = minutes / 60;
-                if (hours < 24) return df.format(hours) + " hours";
+                double minutes = seconds / 60;
+                if (minutes < 60) return df.format(minutes) + " minutes";
                 else {
-                    double days = hours / 24;
-                    return df.format(days) + " days";
+                    double hours = minutes / 60;
+                    if (hours < 24) return df.format(hours) + " hours";
+                    else {
+                        double days = hours / 24;
+                        return df.format(days) + " days";
+                    }
                 }
             }
         }
