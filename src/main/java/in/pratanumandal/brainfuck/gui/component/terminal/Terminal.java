@@ -1,4 +1,4 @@
-package in.pratanumandal.brainfuck.gui.codearea;
+package in.pratanumandal.brainfuck.gui.component.terminal;
 
 import in.pratanumandal.brainfuck.common.SortedLinkedList;
 import javafx.application.Platform;
@@ -25,7 +25,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class FXTerminal extends CodeArea {
+public class Terminal extends CodeArea {
 
     private String existingText;
     private String readBuffer;
@@ -41,12 +41,13 @@ public class FXTerminal extends CodeArea {
 
     private final Object flushLock;
     private final Object writeLock;
+    private StyleClass currentStyleClass;
 
-    public FXTerminal() {
+    public Terminal() {
         this("");
     }
 
-    public FXTerminal(String text) {
+    public Terminal(String text) {
         this.existingText = text;
         super.replaceText(0, this.getLength(), this.existingText);
 
@@ -79,11 +80,11 @@ public class FXTerminal extends CodeArea {
                 }
                 else {
                     if (this.inputStyle == null) {
-                        this.inputStyle = this.addStyle(this.existingText.length(), 0, "input");
+                        this.inputStyle = this.setStyle("", StyleClass.INPUT);
                     }
 
                     // compute new length
-                    this.inputStyle.length = this.getLength() - inputStyle.start;
+                    this.inputStyle.setText(this.getText().substring(this.inputStyle.getStart()));
 
                     // update highlighting
                     this.updateHighlighting();
@@ -92,7 +93,7 @@ public class FXTerminal extends CodeArea {
         });
 
         this.writeBuffer = new StringBuilder();
-        this.styleList = new SortedLinkedList<>(Comparator.comparingInt(obj -> obj.start));
+        this.styleList = new SortedLinkedList<>(Comparator.comparingInt(Style::getStart));
 
         ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
         this.future = scheduler.scheduleWithFixedDelay(() -> {
@@ -194,12 +195,6 @@ public class FXTerminal extends CodeArea {
         }
     }
 
-    public int getVirtualLength() {
-        String text = this.existingText + this.writeBuffer;
-        String sanitizedText = text.replaceAll("\r\n", "\n");
-        return sanitizedText.length();
-    }
-
     public void updateEditable() {
         IndexRange selection = this.getSelection();
         int caretPosition = this.getCaretPosition();
@@ -257,20 +252,21 @@ public class FXTerminal extends CodeArea {
 
     public void write(String text) {
         synchronized (this.writeLock) {
+            this.setStyle(text, StyleClass.OUTPUT);
             this.writeBuffer.append(text);
         }
     }
 
     public void writeMessage(String text) {
         synchronized (this.writeLock) {
-            this.addStyle(this.getVirtualLength(), text.length(), "message");
+            this.setStyle(text, StyleClass.MESSAGE);
             this.writeBuffer.append(text);
         }
     }
 
     public void writeError(String text) {
         synchronized (this.writeLock) {
-            this.addStyle(this.getVirtualLength(), text.length(), "error");
+            this.setStyle(text, StyleClass.ERROR);
             this.writeBuffer.append(text);
         }
     }
@@ -283,6 +279,7 @@ public class FXTerminal extends CodeArea {
     public void reset() {
         this.readBuffer = "";
         this.inputStyle = null;
+        this.currentStyleClass = StyleClass.OUTPUT;
         this.clear();
     }
 
@@ -292,8 +289,10 @@ public class FXTerminal extends CodeArea {
         synchronized (this.styleList) {
             this.styleList.clear();
         }
+        Platform.runLater(() -> this.updateHighlighting());
+
         if (this.inputStyle != null) {
-            this.inputStyle = this.addStyle(this.existingText.length(), 0, "input");
+            this.inputStyle = this.setStyle("", StyleClass.INPUT);
         }
 
         Platform.runLater(() -> {
@@ -335,47 +334,43 @@ public class FXTerminal extends CodeArea {
     private StyleSpans<Collection<String>> computeHighlighting() {
         StyleSpansBuilder<Collection<String>> spansBuilder = new StyleSpansBuilder<>();
 
-        int lastKwEnd = 0;
-
         synchronized (this.styleList) {
             for (Style style : this.styleList) {
-                // ignore styles for text that has not been actually written yet
-                if (style.start > this.getLength()) break;
-                if (style.start + style.length > this.getLength()) {
-                    style.length = this.getLength() - style.start;
-                }
-
-                spansBuilder.add(Collections.singleton("plain-text"), style.start - lastKwEnd);
-                spansBuilder.add(Collections.singleton(style.styleClass), style.length);
-                lastKwEnd = style.start + style.length;
+                int length = Math.min(style.getEnd(), this.getLength()) - style.getStart();
+                spansBuilder.add(Collections.singleton(style.getStyleClass().toString()), length);
             }
-        }
-
-        if (lastKwEnd < this.getLength()) {
-            spansBuilder.add(Collections.singleton("plain-text"), this.getLength() - lastKwEnd);
         }
 
         return spansBuilder.create();
     }
 
-    private Style addStyle(int start, int length, String styleClass) {
-        Style style = new Style(start, length, styleClass);
-        this.styleList.add(style);
-        return style;
-    }
+    private Style setStyle(String text, StyleClass styleClass) {
+        Style style;
 
-    private class Style {
+        if (this.currentStyleClass == styleClass) {
+            if (this.styleList.isEmpty()) {
+                style = new Style(text, 0, this.currentStyleClass);
+                this.styleList.add(style);
+            }
+            else {
+                style = this.styleList.get(this.styleList.size() - 1);
+                style.setText(style.getText() + text);
+            }
+        }
+        else {
+            int start = 0;
+            if (!this.styleList.isEmpty()) {
+                Style lastStyle = this.styleList.get(this.styleList.size() - 1);
+                start = lastStyle.getEnd();
+            }
 
-        protected int start;
-        protected int length;
-        protected String styleClass;
+            this.currentStyleClass = styleClass;
 
-        public Style(int start, int length, String styleClass) {
-            this.start = start;
-            this.length = length;
-            this.styleClass = styleClass;
+            style = new Style(text, start, this.currentStyleClass);
+            this.styleList.add(style);
         }
 
+        return style;
     }
 
 }

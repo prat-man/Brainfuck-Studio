@@ -1,4 +1,4 @@
-package in.pratanumandal.brainfuck.gui.codearea;
+package in.pratanumandal.brainfuck.gui.component;
 
 import in.pratanumandal.brainfuck.common.Configuration;
 import in.pratanumandal.brainfuck.common.Utils;
@@ -21,13 +21,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class CustomCodeArea extends CodeArea {
+public class CodePad extends CodeArea {
 
     private TabData tabData;
     private List<TextInsertionListener> insertionListeners = new ArrayList<>();
     private AtomicInteger lastBracketDelete = new AtomicInteger(-1);
 
-    public CustomCodeArea() {
+    public CodePad() {
         super();
     }
 

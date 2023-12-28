@@ -1,7 +1,7 @@
 package in.pratanumandal.brainfuck.gui.highlight;
 
 import in.pratanumandal.brainfuck.common.Configuration;
-import in.pratanumandal.brainfuck.gui.codearea.CustomCodeArea;
+import in.pratanumandal.brainfuck.gui.component.CodePad;
 import in.pratanumandal.brainfuck.gui.component.TabData;
 import javafx.application.Platform;
 
@@ -20,7 +20,7 @@ public class BracketHighlighter {
     private final TabData tabData;
 
     // the code area
-    private final CustomCodeArea codeArea;
+    private final CodePad codePad;
 
     // the map of bracket pairs existing in code
     private Map<Integer, Integer> brackets;
@@ -42,15 +42,15 @@ public class BracketHighlighter {
      */
     public BracketHighlighter(TabData tabData) {
         this.tabData = tabData;
-        this.codeArea = tabData.getCodeArea();
+        this.codePad = tabData.getCodePad();
 
         this.brackets = new HashMap<>();
         this.bracketPairs = new ArrayList<>();
 
-        this.codeArea.addTextInsertionListener((start, end, text) -> clearBracket());
-        this.codeArea.textProperty().addListener((obs, oldVal, newVal) -> initializeBrackets(newVal));
-        this.codeArea.caretPositionProperty().addListener((obs, oldVal, newVal) -> Platform.runLater(() -> highlightBracket(newVal)));
-        this.codeArea.selectionProperty().addListener((obs, oldVal, newVal) -> Platform.runLater(() -> highlightBracket()));
+        this.codePad.addTextInsertionListener((start, end, text) -> clearBracket());
+        this.codePad.textProperty().addListener((obs, oldVal, newVal) -> initializeBrackets(newVal));
+        this.codePad.caretPositionProperty().addListener((obs, oldVal, newVal) -> Platform.runLater(() -> highlightBracket(newVal)));
+        this.codePad.selectionProperty().addListener((obs, oldVal, newVal) -> Platform.runLater(() -> highlightBracket()));
     }
 
     /**
@@ -98,10 +98,10 @@ public class BracketHighlighter {
         this.clearBracket();
 
         // do not highlight brackets when text is selected
-        if (codeArea.getSelectedText().length() > 0) return;
+        if (codePad.getSelectedText().length() > 0) return;
 
         // detect caret position both before and after bracket
-        String prevChar = (newVal > 0 && newVal <= codeArea.getLength()) ? codeArea.getText(newVal - 1, newVal) : "";
+        String prevChar = (newVal > 0 && newVal <= codePad.getLength()) ? codePad.getText(newVal - 1, newVal) : "";
         if (prevChar.equals("[") || prevChar.equals("]")) newVal--;
 
         // get other half of matching bracket
@@ -124,7 +124,7 @@ public class BracketHighlighter {
      * Highlight the matching bracket at current caret position
      */
     public void highlightBracket() {
-        this.highlightBracket(codeArea.getCaretPosition());
+        this.highlightBracket(codePad.getCaretPosition());
     }
 
     /**
@@ -166,10 +166,10 @@ public class BracketHighlighter {
      * @param styles the style list to set
      */
     private void styleBracket(int pos, List<String> styles) {
-        if (pos < codeArea.getLength()) {
-            String text = codeArea.getText(pos, pos + 1);
+        if (pos < codePad.getLength()) {
+            String text = codePad.getText(pos, pos + 1);
             if (text.equals("[") || text.equals("]")) {
-                codeArea.setStyle(pos, pos + 1, styles);
+                codePad.setStyle(pos, pos + 1, styles);
             }
         }
     }

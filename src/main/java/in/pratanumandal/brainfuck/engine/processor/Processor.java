@@ -2,9 +2,9 @@ package in.pratanumandal.brainfuck.engine.processor;
 
 import in.pratanumandal.brainfuck.common.Configuration;
 import in.pratanumandal.brainfuck.common.Utils;
+import in.pratanumandal.brainfuck.gui.component.CodePad;
 import in.pratanumandal.brainfuck.gui.component.TabData;
 import javafx.util.Pair;
-import org.fxmisc.richtext.CodeArea;
 
 import java.util.Stack;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -13,7 +13,7 @@ public abstract class Processor implements Runnable {
 
     protected TabData tabData;
 
-    protected CodeArea codeArea;
+    protected CodePad codePad;
 
     protected String code;
 
@@ -40,7 +40,7 @@ public abstract class Processor implements Runnable {
     public Processor(TabData tabData) {
         this.tabData = tabData;
 
-        this.codeArea = tabData.getCodeArea();
+        this.codePad = tabData.getCodePad();
 
         this.kill = new AtomicBoolean(true);
 

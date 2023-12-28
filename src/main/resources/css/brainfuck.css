@@ -554,9 +554,10 @@
 .terminal-toolbar {
     -fx-background-color: #585D66;
 }
-.terminal.code-area .paragraph-box .text.plain-text,
+.terminal.code-area .paragraph-box .text.output,
 .terminal.code-area .paragraph-box .text {
     -fx-fill: white;
+    -fx-font-weight: normal;
 }
 .terminal.code-area .paragraph-box .text.message {
     -fx-fill: gray;

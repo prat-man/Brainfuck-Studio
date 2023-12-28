@@ -6,8 +6,7 @@ import in.pratanumandal.brainfuck.common.Utils;
 import in.pratanumandal.brainfuck.engine.Memory;
 import in.pratanumandal.brainfuck.engine.debugger.Debugger;
 import in.pratanumandal.brainfuck.engine.processor.interpreter.Interpreter;
-import in.pratanumandal.brainfuck.gui.codearea.CustomCodeArea;
-import in.pratanumandal.brainfuck.gui.codearea.FXTerminal;
+import in.pratanumandal.brainfuck.gui.component.terminal.Terminal;
 import in.pratanumandal.brainfuck.gui.highlight.BracketHighlighter;
 import in.pratanumandal.brainfuck.gui.highlight.Highlighter;
 import in.pratanumandal.brainfuck.os.windows.WindowsUtils;
@@ -46,7 +45,7 @@ public class TabData {
 
     private final Tab tab;
     private final SplitPane splitPane;
-    private final CustomCodeArea codeArea;
+    private final CodePad codePad;
 
     private Button debugResumeButton;
     private Button debugPauseButton;
@@ -65,10 +64,10 @@ public class TabData {
     private TableViewExtra<Memory> tableViewExtra;
 
     private Debugger debugger;
-    private FXTerminal debugTerminal;
+    private Terminal debugTerminal;
 
     private Interpreter interpreter;
-    private FXTerminal interpretTerminal;
+    private Terminal interpretTerminal;
 
     private BracketHighlighter bracketHighlighter;
 
@@ -90,10 +89,10 @@ public class TabData {
     // untitled tab index
     private static int untitledTabIndex = 1;
 
-    public TabData(Tab tab, SplitPane splitPane, CustomCodeArea codeArea, String filePath) throws IOException {
+    public TabData(Tab tab, SplitPane splitPane, CodePad codePad, String filePath) throws IOException {
         this.tab = tab;
         this.splitPane = splitPane;
-        this.codeArea = codeArea;
+        this.codePad = codePad;
         this.filePath = filePath;
         this.modified = false;
         this.dividerPosition = 0.5;
@@ -119,10 +118,10 @@ public class TabData {
 
             // set text content
             String fileText = Files.readString(file.toPath());
-            this.codeArea.replaceText(fileText);
+            this.codePad.replaceText(fileText);
 
             // forget undo history
-            codeArea.getUndoManager().forgetHistory();
+            codePad.getUndoManager().forgetHistory();
 
             // start highlighter
             Highlighter.refreshHighlighting(this);
@@ -131,12 +130,12 @@ public class TabData {
             this.registerChangeListener();
         }
 
-        codeArea.textProperty().addListener((observableValue, oldVal, newVal) -> {
+        codePad.textProperty().addListener((observableValue, oldVal, newVal) -> {
             this.setModified(true);
         });
 
-        codeArea.setOnKeyPressed(event -> this.pauseAutoSave = true);
-        codeArea.setOnKeyReleased(event -> this.pauseAutoSave = false);
+        codePad.setOnKeyPressed(event -> this.pauseAutoSave = true);
+        codePad.setOnKeyReleased(event -> this.pauseAutoSave = false);
 
         this.registerAutoSave();
     }
@@ -149,8 +148,8 @@ public class TabData {
         return splitPane;
     }
 
-    public CustomCodeArea getCodeArea() {
-        return codeArea;
+    public CodePad getCodePad() {
+        return codePad;
     }
 
     public Button getDebugResumeButton() {
@@ -225,19 +224,19 @@ public class TabData {
         this.interpretCloseButton = interpretCloseButton;
     }
 
-    public FXTerminal getDebugTerminal() {
+    public Terminal getDebugTerminal() {
         return debugTerminal;
     }
 
-    public void setDebugTerminal(FXTerminal debugTerminal) {
+    public void setDebugTerminal(Terminal debugTerminal) {
         this.debugTerminal = debugTerminal;
     }
 
-    public FXTerminal getInterpretTerminal() {
+    public Terminal getInterpretTerminal() {
         return interpretTerminal;
     }
 
-    public void setInterpretTerminal(FXTerminal interpretTerminal) {
+    public void setInterpretTerminal(Terminal interpretTerminal) {
         this.interpretTerminal = interpretTerminal;
     }
 
@@ -384,7 +383,7 @@ public class TabData {
 
             if (this.largeFile) {
                 Platform.runLater(() -> {
-                    codeArea.clearStyle(0, getFileText().length());
+                    codePad.clearStyle(0, getFileText().length());
 
                     tab.getTabPane().getSelectionModel().select(tab);
 
@@ -421,7 +420,7 @@ public class TabData {
     }
 
     public String getFileText() {
-        return codeArea.getText();
+        return codePad.getText();
     }
 
     private void registerAutoSave() {
@@ -515,9 +514,9 @@ public class TabData {
                     String fileText = Files.readString(path);
 
                     if (!fileText.equals(this.getFileText())) {
-                        if (this.codeArea.isEditable()) {
+                        if (this.codePad.isEditable()) {
                             Platform.runLater(() -> {
-                                this.codeArea.replaceText(fileText);
+                                this.codePad.replaceText(fileText);
                                 this.setModified(false);
                                 Utils.addNotificationWithDelay(path.getFileName() + " was modified outside of Brainfuck Studio", 5000);
                             });
@@ -527,14 +526,14 @@ public class TabData {
                             changeListener.set((obs, oldVal, newVal) -> {
                                 if (newVal) {
                                     Platform.runLater(() -> {
-                                        this.codeArea.replaceText(fileText);
+                                        this.codePad.replaceText(fileText);
                                         this.setModified(false);
                                         Utils.addNotificationWithDelay(path.getFileName() + " was modified outside of Brainfuck Studio", 5000);
                                     });
                                 }
-                                this.codeArea.editableProperty().removeListener(changeListener.get());
+                                this.codePad.editableProperty().removeListener(changeListener.get());
                             });
-                            this.codeArea.editableProperty().addListener(changeListener.get());
+                            this.codePad.editableProperty().addListener(changeListener.get());
                         }
                     }
                 }

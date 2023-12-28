@@ -8,8 +8,8 @@ import in.pratanumandal.brainfuck.engine.Memory;
 import in.pratanumandal.brainfuck.engine.processor.translator.CTranslator;
 import in.pratanumandal.brainfuck.engine.processor.translator.JavaTranslator;
 import in.pratanumandal.brainfuck.engine.processor.translator.PythonTranslator;
-import in.pratanumandal.brainfuck.gui.codearea.CustomCodeArea;
-import in.pratanumandal.brainfuck.gui.codearea.FXTerminal;
+import in.pratanumandal.brainfuck.gui.component.CodePad;
+import in.pratanumandal.brainfuck.gui.component.terminal.Terminal;
 import in.pratanumandal.brainfuck.gui.component.DefaultContextMenu;
 import in.pratanumandal.brainfuck.gui.component.NotificationManager;
 import in.pratanumandal.brainfuck.gui.component.TabData;
@@ -70,7 +70,6 @@ import javafx.stage.WindowEvent;
 import javafx.util.Duration;
 import org.apache.commons.configuration2.ex.ConfigurationException;
 import org.fxmisc.flowless.VirtualizedScrollPane;
-import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.LineNumberFactory;
 import org.reactfx.Subscription;
 
@@ -160,8 +159,8 @@ public class Controller {
                 tabs.add(tabs.size(), tab);
                 tabPane.getSelectionModel().select(tab);
 
-                tabData.getCodeArea().moveTo(0);
-                tabData.getCodeArea().scrollYToPixel(0);
+                tabData.getCodePad().moveTo(0);
+                tabData.getCodePad().scrollYToPixel(0);
             }
             catch (IOException e) {
                 e.printStackTrace();
@@ -212,7 +211,7 @@ public class Controller {
         // automatically put find text
         findAndReplace.visibleProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal) {
-                String selected = currentTab.getCodeArea().getSelectedText();
+                String selected = currentTab.getCodePad().getSelectedText();
                 if (!selected.isEmpty()) {
                     findField.setText(selected);
                 }
@@ -350,29 +349,29 @@ public class Controller {
         horizontalSplitPane.getItems().add(splitPane);
 
         // create a new code area
-        CustomCodeArea codeArea = new CustomCodeArea();
+        CodePad codePad = new CodePad();
 
         // set context menu for code area
-        codeArea.setContextMenu(new DefaultContextMenu());
+        codePad.setContextMenu(new DefaultContextMenu());
 
         // add line numbers to the left of area
-        codeArea.setParagraphGraphicFactory(LineNumberFactory.get(codeArea));
+        codePad.setParagraphGraphicFactory(LineNumberFactory.get(codePad));
 
         // enable text wrapping
-        codeArea.setWrapText(Configuration.getWrapText());
+        codePad.setWrapText(Configuration.getWrapText());
 
         // create new tab data
-        TabData tabData = new TabData(tab, splitPane, codeArea, filePath);
+        TabData tabData = new TabData(tab, splitPane, codePad, filePath);
 
         // highlight brackets
         BracketHighlighter bracketHighlighter = new BracketHighlighter(tabData);
         tabData.setBracketHighlighter(bracketHighlighter);
 
         // set tab data of code area
-        codeArea.setTabData(tabData);
+        codePad.setTabData(tabData);
 
         // auto complete loops
-        codeArea.setOnKeyTyped(keyEvent -> {
+        codePad.setOnKeyTyped(keyEvent -> {
             if (Configuration.getAutoComplete()) {
                 // clear bracket highlighting
                 bracketHighlighter.clearBracket();
@@ -382,24 +381,24 @@ public class Controller {
 
                 // add a ] if [ is typed
                 if (character.equals("[")) {
-                    int position = codeArea.getCaretPosition();
-                    codeArea.insert(position, "]", "loop");
-                    codeArea.moveTo(position);
+                    int position = codePad.getCaretPosition();
+                    codePad.insert(position, "]", "loop");
+                    codePad.moveTo(position);
                 }
                 // remove next ] if ] is typed
                 else if (character.equals("]")) {
-                    int position = codeArea.getCaretPosition();
-                    if (position != codeArea.getLength()) {
-                        String nextChar = codeArea.getText(position, position + 1);
-                        if (nextChar.equals("]")) codeArea.deleteText(position, position + 1);
+                    int position = codePad.getCaretPosition();
+                    if (position != codePad.getLength()) {
+                        String nextChar = codePad.getText(position, position + 1);
+                        if (nextChar.equals("]")) codePad.deleteText(position, position + 1);
                     }
                 }
                 // remove adjacent ] if [ is removed
                 else if (character.equals("\b")) {
-                    int position = codeArea.getLastBracketDelete();
+                    int position = codePad.getLastBracketDelete();
                     if (position != -1) {
-                        if (position < codeArea.getLength() && codeArea.getText(position, position + 1).equals("]")) {
-                            codeArea.deleteText(position, position + 1);
+                        if (position < codePad.getLength() && codePad.getText(position, position + 1).equals("]")) {
+                            codePad.deleteText(position, position + 1);
                         }
                     }
                 }
@@ -410,7 +409,7 @@ public class Controller {
         });
 
         // recompute the syntax highlighting 500 ms after user stops editing area
-        Subscription subscription = codeArea
+        Subscription subscription = codePad
 
                 // plain changes = ignore style changes that are emitted when syntax highlighting is reapplied
                 // multi plain changes = save computation by not rerunning the code multiple times
@@ -421,21 +420,21 @@ public class Controller {
                 .successionEnds(java.time.Duration.ofMillis(100))
 
                 // run the following code block when previous stream emits an event
-                //.subscribe(ignore -> codeArea.setStyleSpans(0, computeHighlighting(codeArea.getText())));
+                //.subscribe(ignore -> codePad.setStyleSpans(0, computeHighlighting(codePad.getText())));
                 .subscribe(changes -> Highlighter.refreshHighlighting(tabData));
 
         // auto-indent: insert previous line's indents on enter
         final Pattern whiteSpace = Pattern.compile("^\\s+");
-        codeArea.addEventHandler(KeyEvent.KEY_PRESSED, KE -> {
+        codePad.addEventHandler(KeyEvent.KEY_PRESSED, KE -> {
             if (KE.getCode() == KeyCode.ENTER) {
-                Matcher matcher = whiteSpace.matcher(codeArea.getParagraph(codeArea.getCurrentParagraph() - 1).getSegments().get(0));
-                if (matcher.find()) Platform.runLater(() -> codeArea.insertText(codeArea.getCaretPosition(), matcher.group()));
+                Matcher matcher = whiteSpace.matcher(codePad.getParagraph(codePad.getCurrentParagraph() - 1).getSegments().get(0));
+                if (matcher.find()) Platform.runLater(() -> codePad.insertText(codePad.getCaretPosition(), matcher.group()));
             }
         });
 
         // create a stack pane to contain the code area
         StackPane codePane = new StackPane();
-        codePane.getChildren().add(new VirtualizedScrollPane<>(codeArea));
+        codePane.getChildren().add(new VirtualizedScrollPane<>(codePad));
         splitPane.getItems().add(codePane);
 
         // create toolbar for debug terminal
@@ -449,7 +448,7 @@ public class Controller {
         debugTerminalControls.getChildren().add(debugLabel);
 
         // create a debug terminal
-        FXTerminal debugTerminal = new FXTerminal();
+        Terminal debugTerminal = new Terminal();
 
         // set the debug terminal
         tabData.setDebugTerminal(debugTerminal);
@@ -534,10 +533,10 @@ public class Controller {
                 true);
         debugBreakpointButton.setOnAction(event -> {
             if (debugBreakpointButton.isSelected()) {
-                codeArea.getStyleClass().remove("disable-breakpoint");
+                codePad.getStyleClass().remove("disable-breakpoint");
             }
             else {
-                codeArea.getStyleClass().add("disable-breakpoint");
+                codePad.getStyleClass().add("disable-breakpoint");
             }
         });
         tabData.setDebugBreakpointButton(debugBreakpointButton);
@@ -724,7 +723,7 @@ public class Controller {
         interpreterCloseButton.setTooltip(closeTooltip);
 
         // create a interpreter terminal
-        FXTerminal interpretTerminal = new FXTerminal();
+        Terminal interpretTerminal = new Terminal();
 
         // set the interpreter terminal
         tabData.setInterpretTerminal(interpretTerminal);
@@ -830,23 +829,23 @@ public class Controller {
         tab.selectedProperty().addListener((ObservableValue<? extends Boolean> observableValue, Boolean oldVal, Boolean newVal) -> {
             if (newVal) {
                 Platform.runLater(() -> {
-                    codeArea.requestFocus();
+                    codePad.requestFocus();
                 });
 
                 if (currentTab != null) {
-                    currentTab.getCodeArea().textProperty().removeListener(charCountListener);
-                    currentTab.getCodeArea().caretPositionProperty().removeListener(caretPositionListener);
+                    currentTab.getCodePad().textProperty().removeListener(charCountListener);
+                    currentTab.getCodePad().caretPositionProperty().removeListener(caretPositionListener);
                 }
 
                 currentTab = tabData;
                 updateTextStatus();
                 updateCaretStatus();
 
-                currentTab.getCodeArea().textProperty().addListener(charCountListener);
-                currentTab.getCodeArea().caretPositionProperty().addListener(caretPositionListener);
+                currentTab.getCodePad().textProperty().addListener(charCountListener);
+                currentTab.getCodePad().caretPositionProperty().addListener(caretPositionListener);
 
                 BooleanBinding emptySelectionBinding = Bindings.selectBoolean(
-                        currentTab.getCodeArea().selectedTextProperty().map(text -> text.isEmpty()));
+                        currentTab.getCodePad().selectedTextProperty().map(text -> text.isEmpty()));
                 formatSelectedMenu.disableProperty().bind(emptySelectionBinding);
                 minifySelectedMenu.disableProperty().bind(emptySelectionBinding);
             }
@@ -961,8 +960,8 @@ public class Controller {
                 tabs.add(tabs.size(), tab);
                 tabPane.getSelectionModel().select(tab);
 
-                tabData.getCodeArea().moveTo(0);
-                tabData.getCodeArea().scrollYToPixel(0);
+                tabData.getCodePad().moveTo(0);
+                tabData.getCodePad().scrollYToPixel(0);
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -1078,9 +1077,9 @@ public class Controller {
     private void findNext(boolean showAlert) {
         TabData tabData = currentTab;
 
-        CodeArea codeArea = tabData.getCodeArea();
+        CodePad codePad = tabData.getCodePad();
 
-        int anchor = codeArea.getCaretPosition();
+        int anchor = codePad.getCaretPosition();
 
         String text = tabData.getFileText().substring(anchor);
 
@@ -1092,7 +1091,7 @@ public class Controller {
             return;
         }
 
-        if (wrapSearch == +1) codeArea.moveTo(0);
+        if (wrapSearch == +1) codePad.moveTo(0);
         wrapSearch = 0;
 
         if (!caseSensitive) {
@@ -1122,7 +1121,7 @@ public class Controller {
             }
             catch (PatternSyntaxException e) {
                 if (showAlert) {
-                    codeArea.setEditable(true);
+                    codePad.setEditable(true);
                     Platform.runLater(() -> Utils.addNotification("Bad regex pattern: " + originalSearch));
                     return;
                 }
@@ -1136,11 +1135,11 @@ public class Controller {
 
         if (start >= 0) {
             // select the text
-            codeArea.selectRange(anchor + start, anchor + end);
+            codePad.selectRange(anchor + start, anchor + end);
 
             // scroll to selection
-            codeArea.scrollXToPixel(0);
-            codeArea.requestFollowCaret();
+            codePad.scrollXToPixel(0);
+            codePad.requestFollowCaret();
         }
         else {
             wrapSearch = +1;
@@ -1159,10 +1158,10 @@ public class Controller {
     private void findPrevious(boolean showAlert) {
         TabData tabData = currentTab;
 
-        CodeArea codeArea = tabData.getCodeArea();
+        CodePad codePad = tabData.getCodePad();
 
-        IndexRange range = codeArea.getSelection();
-        int anchor = range.getLength() > 0 ? Math.min(range.getStart(), range.getEnd()) : codeArea.getCaretPosition();
+        IndexRange range = codePad.getSelection();
+        int anchor = range.getLength() > 0 ? Math.min(range.getStart(), range.getEnd()) : codePad.getCaretPosition();
 
         String text = tabData.getFileText().substring(0, anchor);
 
@@ -1174,7 +1173,7 @@ public class Controller {
             return;
         }
 
-        if (wrapSearch == -1) codeArea.moveTo(codeArea.getText().length());
+        if (wrapSearch == -1) codePad.moveTo(codePad.getText().length());
         wrapSearch = 0;
 
         if (!caseSensitive) {
@@ -1203,7 +1202,7 @@ public class Controller {
                 }
             }
             catch (PatternSyntaxException e) {
-                codeArea.setEditable(true);
+                codePad.setEditable(true);
                 Platform.runLater(() -> Utils.addNotification("Bad regex pattern: " + originalSearch));
                 return;
             }
@@ -1215,11 +1214,11 @@ public class Controller {
 
         if (start >= 0) {
             // select the text
-            codeArea.selectRange(start, end);
+            codePad.selectRange(start, end);
 
             // scroll to selection
-            codeArea.scrollXToPixel(0);
-            codeArea.requestFollowCaret();
+            codePad.scrollXToPixel(0);
+            codePad.requestFollowCaret();
         }
         else {
             wrapSearch = -1;
@@ -1234,9 +1233,9 @@ public class Controller {
     private void replace() {
         TabData tabData = currentTab;
 
-        CodeArea codeArea = tabData.getCodeArea();
+        CodePad codePad = tabData.getCodePad();
 
-        if (!codeArea.isEditable()) {
+        if (!codePad.isEditable()) {
             Utils.addNotification("Text replacement is disabled on this tab at the moment");
             return;
         }
@@ -1253,30 +1252,30 @@ public class Controller {
             Pattern.compile(search);
         }
         catch (PatternSyntaxException e) {
-            codeArea.setEditable(true);
+            codePad.setEditable(true);
             Platform.runLater(() -> Utils.addNotification("Bad regex pattern: " + search));
             return;
         }
 
-        IndexRange range = codeArea.getSelection();
-        String selectedText = codeArea.getSelectedText();
+        IndexRange range = codePad.getSelection();
+        String selectedText = codePad.getSelectedText();
         if (range.getLength() == 0 ||
                 ((caseSensitive && !selectedText.equals(search)) ||
                         (!caseSensitive && !selectedText.equalsIgnoreCase(search)))) {
 
-            IndexRange selection = codeArea.getSelection();
-            codeArea.moveTo(selection.getStart());
+            IndexRange selection = codePad.getSelection();
+            codePad.moveTo(selection.getStart());
 
             findNext(false);
 
-            range = codeArea.getSelection();
+            range = codePad.getSelection();
             if (range.getLength() == 0) {
                 Platform.runLater(() -> Utils.addNotification("Reached end of file, text not found"));
                 return;
             }
         }
 
-        codeArea.replaceText(range, replace);
+        codePad.replaceText(range, replace);
         findNext(false);
     }
 
@@ -1284,9 +1283,9 @@ public class Controller {
     private void replaceAll() {
         TabData tabData = currentTab;
 
-        CodeArea codeArea = tabData.getCodeArea();
+        CodePad codePad = tabData.getCodePad();
 
-        if (!codeArea.isEditable()) {
+        if (!codePad.isEditable()) {
             Utils.addNotification("Text replacement is disabled on this tab at the moment");
             return;
         }
@@ -1308,8 +1307,8 @@ public class Controller {
                 return;
             }
 
-            codeArea.setEditable(false);
-            codeArea.addEventFilter(ContextMenuEvent.CONTEXT_MENU_REQUESTED, consumeAllContextMenu);
+            codePad.setEditable(false);
+            codePad.addEventFilter(ContextMenuEvent.CONTEXT_MENU_REQUESTED, consumeAllContextMenu);
 
             AtomicReference<NotificationManager.Notification> notificationAtomicReference = new AtomicReference<>();
             Utils.runAndWait(() -> notificationAtomicReference.set(Utils.addNotificationWithProgress("Performing text replacement")));
@@ -1335,8 +1334,8 @@ public class Controller {
                     Matcher matcher = Pattern.compile(search).matcher(text);
                     while (matcher.find()) {
                         if (kill.get()) {
-                            codeArea.setEditable(true);
-                            codeArea.removeEventFilter(ContextMenuEvent.CONTEXT_MENU_REQUESTED, consumeAllContextMenu);
+                            codePad.setEditable(true);
+                            codePad.removeEventFilter(ContextMenuEvent.CONTEXT_MENU_REQUESTED, consumeAllContextMenu);
                             Platform.runLater(() -> Utils.addNotification("Text replacement aborted"));
                             return;
                         }
@@ -1350,8 +1349,8 @@ public class Controller {
                     }
                 }
                 catch (PatternSyntaxException e) {
-                    codeArea.setEditable(true);
-                    codeArea.removeEventFilter(ContextMenuEvent.CONTEXT_MENU_REQUESTED, consumeAllContextMenu);
+                    codePad.setEditable(true);
+                    codePad.removeEventFilter(ContextMenuEvent.CONTEXT_MENU_REQUESTED, consumeAllContextMenu);
                     Platform.runLater(() -> {
                         notification.close();
                         Utils.addNotification("Bad regex pattern: " + originalSearch);
@@ -1366,8 +1365,8 @@ public class Controller {
 
                 while (start != -1) {
                     if (kill.get()) {
-                        codeArea.setEditable(true);
-                        codeArea.removeEventFilter(ContextMenuEvent.CONTEXT_MENU_REQUESTED, consumeAllContextMenu);
+                        codePad.setEditable(true);
+                        codePad.removeEventFilter(ContextMenuEvent.CONTEXT_MENU_REQUESTED, consumeAllContextMenu);
                         Platform.runLater(() -> Utils.addNotification("Text replacement aborted"));
                         return;
                     }
@@ -1390,7 +1389,7 @@ public class Controller {
             else {
                 int finalCount = count;
                 Platform.runLater(() -> {
-                    codeArea.replaceText(0, codeArea.getLength(), builder.toString());
+                    codePad.replaceText(0, codePad.getLength(), builder.toString());
                     notification.close();
                     if (finalCount == 1) {
                         Utils.addNotification(finalCount + " occurrence of the text was replaced");
@@ -1401,8 +1400,8 @@ public class Controller {
                 });
             }
 
-            codeArea.setEditable(true);
-            codeArea.removeEventFilter(ContextMenuEvent.CONTEXT_MENU_REQUESTED, consumeAllContextMenu);
+            codePad.setEditable(true);
+            codePad.removeEventFilter(ContextMenuEvent.CONTEXT_MENU_REQUESTED, consumeAllContextMenu);
         });
         thread.start();
     }
@@ -1490,39 +1489,39 @@ public class Controller {
 
     @FXML
     private void formatFile() {
-        String formatted = Utils.formatBrainfuck(currentTab.getCodeArea().getText());
-        currentTab.getCodeArea().replaceText(formatted);
+        String formatted = Utils.formatBrainfuck(currentTab.getCodePad().getText());
+        currentTab.getCodePad().replaceText(formatted);
     }
 
     @FXML
     private void formatSelected() {
-        String formatted = Utils.formatBrainfuck(currentTab.getCodeArea().getSelectedText());
+        String formatted = Utils.formatBrainfuck(currentTab.getCodePad().getSelectedText());
 
-        int start = currentTab.getCodeArea().getSelection().getStart();
-        currentTab.getCodeArea().replaceText(currentTab.getCodeArea().getSelection(), formatted);
-        currentTab.getCodeArea().selectRange(start, start + formatted.length());
+        int start = currentTab.getCodePad().getSelection().getStart();
+        currentTab.getCodePad().replaceText(currentTab.getCodePad().getSelection(), formatted);
+        currentTab.getCodePad().selectRange(start, start + formatted.length());
     }
 
     @FXML
     private void minifyFile() {
-        String formatted = Utils.minifyBrainfuck(currentTab.getCodeArea().getText());
-        currentTab.getCodeArea().replaceText(formatted);
+        String formatted = Utils.minifyBrainfuck(currentTab.getCodePad().getText());
+        currentTab.getCodePad().replaceText(formatted);
     }
 
     @FXML
     private void minifySelected() {
-        String formatted = Utils.minifyBrainfuck(currentTab.getCodeArea().getSelectedText());
+        String formatted = Utils.minifyBrainfuck(currentTab.getCodePad().getSelectedText());
 
-        int start = currentTab.getCodeArea().getSelection().getStart();
-        currentTab.getCodeArea().replaceText(currentTab.getCodeArea().getSelection(), formatted);
-        currentTab.getCodeArea().selectRange(start, start + formatted.length());
+        int start = currentTab.getCodePad().getSelection().getStart();
+        currentTab.getCodePad().replaceText(currentTab.getCodePad().getSelection(), formatted);
+        currentTab.getCodePad().selectRange(start, start + formatted.length());
     }
 
     @FXML
     private void showSnippets() {
         Snippets.Snippet snippet = Utils.showSnippets(stage, !tabPane.getTabs().isEmpty());
         if (snippet != null) {
-            currentTab.getCodeArea().replaceText(currentTab.getCodeArea().getSelection(), snippet.getCode());
+            currentTab.getCodePad().replaceText(currentTab.getCodePad().getSelection(), snippet.getCode());
         }
     }
 
@@ -1587,13 +1586,13 @@ public class Controller {
             lineCount.setText("Lines");
         }
         else {
-            CodeArea codeArea = currentTab.getCodeArea();
+            CodePad codePad = currentTab.getCodePad();
 
-            int chars = codeArea.getText().length();
+            int chars = codePad.getText().length();
             String charsStr = NumberFormat.getNumberInstance(Locale.US).format(chars);
             charCount.setText(charsStr + " characters");
 
-            int lines = codeArea.getParagraphs().size();
+            int lines = codePad.getParagraphs().size();
             String linesStr = NumberFormat.getNumberInstance(Locale.US).format(lines);
             lineCount.setText(linesStr + " lines");
         }
@@ -1606,11 +1605,11 @@ public class Controller {
             caretColumn.setText("Column");
         }
         else {
-            CodeArea codeArea = currentTab.getCodeArea();
+            CodePad codePad = currentTab.getCodePad();
 
-            int pos = codeArea.getCaretPosition() + 1;
-            int row = codeArea.getCurrentParagraph() + 1;
-            int col = codeArea.getCaretColumn() + 1;
+            int pos = codePad.getCaretPosition() + 1;
+            int row = codePad.getCurrentParagraph() + 1;
+            int col = codePad.getCaretColumn() + 1;
 
             String posStr = NumberFormat.getNumberInstance(Locale.US).format(pos);
             String rowStr = NumberFormat.getNumberInstance(Locale.US).format(row);
@@ -1623,7 +1622,7 @@ public class Controller {
     }
 
     private void setFontSize(TabData tabData) {
-        tabData.getCodeArea().setStyle("-fx-font-size: " + fontSize + "px");
+        tabData.getCodePad().setStyle("-fx-font-size: " + fontSize + "px");
         tabData.getDebugTerminal().setStyle("-fx-font-size: " + fontSize + "px");
         tabData.getInterpretTerminal().setStyle("-fx-font-size: " + fontSize + "px");
     }

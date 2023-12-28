@@ -2,9 +2,9 @@ package in.pratanumandal.brainfuck.gui.highlight;
 
 import in.pratanumandal.brainfuck.common.Configuration;
 import in.pratanumandal.brainfuck.common.Utils;
+import in.pratanumandal.brainfuck.gui.component.CodePad;
 import in.pratanumandal.brainfuck.gui.component.TabData;
 import javafx.application.Platform;
-import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.model.StyleSpans;
 import org.fxmisc.richtext.model.StyleSpansBuilder;
 
@@ -55,15 +55,15 @@ public class Highlighter {
         int length = tabData.getFileText().length();
         int end = start + length;
 
-        Utils.runAndWait(() -> tabData.getCodeArea().setStyle(start, end, Collections.singleton("plain-text")));
+        Utils.runAndWait(() -> tabData.getCodePad().setStyle(start, end, Collections.singleton("plain-text")));
     }
 
     private static void doUpdate(TabData tabData, int start, int end) {
         synchronized (tabData) {
-            CodeArea codeArea = tabData.getCodeArea();
+            CodePad codePad = tabData.getCodePad();
 
             if (!tabData.isLargeFile()) {
-                String text = codeArea.getText();
+                String text = codePad.getText();
                 String[] lines = text.split("\r|\n|\r\n");
 
                 int maxLineLength = 0;
@@ -81,12 +81,12 @@ public class Highlighter {
             }
             else {
                 try {
-                    String text = codeArea.getText().substring(start, end);
+                    String text = codePad.getText().substring(start, end);
                     StyleSpans<Collection<String>> styleSpans = computeHighlighting(text);
 
                     Utils.runAndWait(() -> {
                         try {
-                            codeArea.setStyleSpans(start, styleSpans);
+                            codePad.setStyleSpans(start, styleSpans);
                         } catch (IndexOutOfBoundsException e) {
                         }
                     });

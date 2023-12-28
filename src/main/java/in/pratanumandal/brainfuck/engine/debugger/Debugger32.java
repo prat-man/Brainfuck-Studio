@@ -45,8 +45,8 @@ public class Debugger32 extends Debugger {
         for (int i = 0; i < code.length() && !this.kill.get(); i++) {
             int finalI = i;
             Platform.runLater(() -> {
-                this.codeArea.selectRange(finalI, finalI + 1);
-                this.codeArea.requestFollowCaret();
+                this.codePad.selectRange(finalI, finalI + 1);
+                this.codePad.requestFollowCaret();
             });
 
             char ch = code.charAt(i);

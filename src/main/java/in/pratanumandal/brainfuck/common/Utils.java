@@ -2,6 +2,7 @@ package in.pratanumandal.brainfuck.common;
 
 import in.pratanumandal.brainfuck.engine.UnmatchedBracketException;
 import in.pratanumandal.brainfuck.gui.BrainfuckStudioApplication;
+import in.pratanumandal.brainfuck.gui.component.CodePad;
 import in.pratanumandal.brainfuck.gui.component.NotificationManager;
 import in.pratanumandal.brainfuck.gui.component.TabData;
 import in.pratanumandal.brainfuck.gui.highlight.Highlighter;
@@ -50,7 +51,6 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Callback;
 import org.apache.commons.configuration2.ex.ConfigurationException;
-import org.fxmisc.richtext.CodeArea;
 
 import java.awt.Taskbar;
 import java.awt.Toolkit;
@@ -432,7 +432,7 @@ public class Utils {
                 Configuration.flush();
 
                 for (TabData tabData : tabDataList) {
-                    tabData.getCodeArea().setWrapText(Configuration.getWrapText());
+                    tabData.getCodePad().setWrapText(Configuration.getWrapText());
 
                     if (Configuration.getSyntaxHighlighting()) Highlighter.refreshHighlighting(tabData);
                     else Highlighter.clearHighlighting(tabData);
@@ -547,11 +547,11 @@ public class Utils {
     }
 
     public static void goToLine(TabData currentTab) {
-        CodeArea codeArea = currentTab.getCodeArea();
+        CodePad codePad = currentTab.getCodePad();
 
-        int lineCount = codeArea.getParagraphs().size();
-        int currentLine = codeArea.getCurrentParagraph() + 1;
-        int currentColumn = codeArea.getCaretColumn() + 1;
+        int lineCount = codePad.getParagraphs().size();
+        int currentLine = codePad.getCurrentParagraph() + 1;
+        int currentColumn = codePad.getCaretColumn() + 1;
 
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION, null, ButtonType.OK, ButtonType.CANCEL);
 
@@ -609,12 +609,12 @@ public class Utils {
 
                     if (column == 0) column = 1;
                     else {
-                        int columnCount = codeArea.getParagraphLength(line - 1);
+                        int columnCount = codePad.getParagraphLength(line - 1);
                         if (column > columnCount + 1) column = columnCount + 1;
                     }
 
-                    codeArea.moveTo(line - 1, column - 1);
-                    codeArea.requestFollowCaret();
+                    codePad.moveTo(line - 1, column - 1);
+                    codePad.requestFollowCaret();
 
                     break;
                 }
@@ -686,7 +686,7 @@ public class Utils {
                 String converted = Number.convertToBrainfuck(number);
                 converted = Utils.formatBrainfuck(converted);
 
-                currentTab.getCodeArea().insertText(currentTab.getCodeArea().getCaretPosition(), converted);
+                currentTab.getCodePad().insertText(currentTab.getCodePad().getCaretPosition(), converted);
             }
 
             break;
@@ -754,7 +754,7 @@ public class Utils {
                 String converted = Text.convertToBrainfuck(text);
                 converted = Utils.formatBrainfuck(converted);
 
-                currentTab.getCodeArea().insertText(currentTab.getCodeArea().getCaretPosition(), converted);
+                currentTab.getCodePad().insertText(currentTab.getCodePad().getCaretPosition(), converted);
             }
 
             break;

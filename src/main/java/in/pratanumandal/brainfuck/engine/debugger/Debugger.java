@@ -4,13 +4,13 @@ import in.pratanumandal.brainfuck.common.Configuration;
 import in.pratanumandal.brainfuck.common.Constants;
 import in.pratanumandal.brainfuck.common.Utils;
 import in.pratanumandal.brainfuck.engine.UnmatchedBracketException;
+import in.pratanumandal.brainfuck.gui.component.CodePad;
 import in.pratanumandal.brainfuck.gui.component.TabData;
 import in.pratanumandal.brainfuck.os.windows.WindowsUtils;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.scene.control.Alert;
 import javafx.stage.Stage;
-import org.fxmisc.richtext.CodeArea;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -23,7 +23,7 @@ public abstract class Debugger implements Runnable {
 
     protected Map<Integer, Integer> brackets;
 
-    protected CodeArea codeArea;
+    protected CodePad codePad;
 
     protected String code;
 
@@ -42,7 +42,7 @@ public abstract class Debugger implements Runnable {
 
         this.brackets = new HashMap<>();
 
-        this.codeArea = tabData.getCodeArea();
+        this.codePad = tabData.getCodePad();
 
         this.pause = new AtomicBoolean(false);
         this.kill = new AtomicBoolean(true);
@@ -73,7 +73,7 @@ public abstract class Debugger implements Runnable {
             this.initializeBrackets();
         } catch (UnmatchedBracketException e) { }
 
-        this.codeArea.textProperty().addListener(textChangeListener);
+        this.codePad.textProperty().addListener(textChangeListener);
 
         thread = new Thread(this);
         thread.start();
@@ -179,7 +179,7 @@ public abstract class Debugger implements Runnable {
 
         this.tabData.getDebugTerminal().flush();
 
-        this.codeArea.textProperty().removeListener(textChangeListener);
+        this.codePad.textProperty().removeListener(textChangeListener);
 
         this.tabData.getDebugResumeButton().setDisable(true);
         this.tabData.getDebugPauseButton().setDisable(true);
